@@ -1,5 +1,5 @@
 .board {
-    width: min(80vmin, 700px);
+    width: min(100vmin, 90vh);
     aspect-ratio: 1 / 1;
 
     display: grid;
@@ -19,11 +19,11 @@
     position: relative;
 }
 .light {
-    background: #f0d9b5;
+    background: #d0d9e0;
 }
 
 .dark {
-    background: #b58863;
+    background: #5185b5;
 }
 
 .piece {

@@ -17,7 +17,7 @@ export default function ChessBoard() {
                 <Square
                     key={square}
                     square={square}
-                    light={(rank + file) % 2 === 1}
+                    light={(rank + file) % 2 === 0}
                     document={document}
                 />,
             );
