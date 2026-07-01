@@ -1,8 +1,11 @@
 import "./App.css";
 import AppShell from "./layout/appShell";
+import { ChessProvider } from "./context/ChessContext";
 
-function App() {
-    return <AppShell />;
+export default function App() {
+    return (
+        <ChessProvider>
+            <AppShell />
+        </ChessProvider>
+    );
 }
-
-export default App;

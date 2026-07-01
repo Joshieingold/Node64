@@ -1,0 +1,29 @@
+.board {
+    width: 720px;
+    aspect-ratio: 1;
+
+    display: grid;
+
+    grid-template-columns: repeat(8, 1fr);
+}
+
+.square {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.light {
+    background: #f0d9b5;
+}
+
+.dark {
+    background: #b58863;
+}
+
+.square img {
+    width: 85%;
+    user-select: none;
+    pointer-events: none;
+}

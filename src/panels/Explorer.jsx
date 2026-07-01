@@ -1,8 +1,14 @@
+import "./Explorer.css";
 export default function Explorer() {
     return (
-        <div style={{ padding: 10 }}>
-            <h3>Explorer</h3>
-            <p>Open games / repertoire will go here</p>
+        <div className="explorer">
+            <h3 className="extension-title">Explorer</h3>
+            <div className="explorer-content">
+                <div className="explorer-folder">{">"} Repertoires</div>
+                <div className="explorer-folder">{">"} Studies</div>
+                <div className="explorer-folder">{">"} Analysis</div>
+                <div className="explorer-folder">{">"} Databases</div>
+            </div>
         </div>
     );
 }

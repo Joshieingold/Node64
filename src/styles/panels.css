@@ -20,6 +20,7 @@
 .left {
     min-width: 160px;
     max-width: 500px;
+    background-color: #181818;
     overflow: hidden;
 }
 

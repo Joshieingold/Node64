@@ -8,11 +8,12 @@ import Notation from "../panels/Notation";
 import "../styles/layout.css";
 import "../styles/bars.css";
 import "../styles/panels.css";
+import TopBar from "../components/topbar/topbar";
 
 export default function AppShell() {
     const [leftWidth, setLeftWidth] = useState(240);
     const [rightWidth, setRightWidth] = useState(300);
-    const [evalHeight, setEvalHeight] = useState(100);
+    const [evalHeight, setEvalHeight] = useState(50);
 
     const drag = useRef(null);
     const startX = useRef(0);
@@ -80,11 +81,10 @@ export default function AppShell() {
 
     return (
         <div className="shell">
-            <div className="topbar">Node64</div>
+            <TopBar />
 
             <div className="workspace">
                 <div className="main">
-                    {/* LEFT */}
                     <div className="left" style={{ width: leftWidth }}>
                         <Explorer />
                     </div>
@@ -94,7 +94,6 @@ export default function AppShell() {
                         onMouseDown={(e) => startDrag("left", e)}
                     />
 
-                    {/* CENTER */}
                     <div className="center">
                         <Board />
                     </div>
@@ -104,7 +103,6 @@ export default function AppShell() {
                         onMouseDown={(e) => startDrag("right", e)}
                     />
 
-                    {/* RIGHT */}
                     <div className="right" style={{ width: rightWidth }}>
                         <div className="eval" style={{ height: evalHeight }}>
                             <Engine />
