@@ -1,0 +1,26 @@
+.notation {
+    display: flex;
+    flex-direction: column;
+}
+.notation-line {
+    display: flex;
+    text-align: left;
+}
+.move-number {
+    background-color: #33312e;
+    width: 10%;
+    padding: 0.2rem;
+    text-align: center;
+    border-right: 1px solid #404040;
+}
+.move {
+    width: 40%;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+.move:hover {
+    background-color: #33312e;
+}
+.move.active {
+    background-color: #3381ca;
+}

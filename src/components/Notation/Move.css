@@ -1,0 +1,21 @@
+.move {
+    padding: 4px 8px;
+
+    border-radius: 4px;
+
+    cursor: pointer;
+}
+
+.move:hover {
+    background: #2f2f2f;
+}
+
+.move.active {
+    background: #0e639c;
+}
+
+.move-number {
+    color: #888;
+
+    margin-right: 4px;
+}

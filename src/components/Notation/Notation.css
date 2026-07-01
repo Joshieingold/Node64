@@ -1,0 +1,10 @@
+.notation {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 4px;
+
+    padding: 10px;
+
+    align-content: flex-start;
+}
