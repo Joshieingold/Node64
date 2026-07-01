@@ -1,17 +1,19 @@
 export default class Observable {
     constructor() {
         this.listeners = new Set();
+        this.version = 0;
     }
 
-    subscribe(listener) {
+    subscribe = (listener) => {
         this.listeners.add(listener);
 
         return () => {
             this.listeners.delete(listener);
         };
-    }
+    };
 
-    notify() {
-        this.listeners.forEach((listener) => listener());
-    }
+    notify = () => {
+        this.version++;
+        this.listeners.forEach((l) => l());
+    };
 }

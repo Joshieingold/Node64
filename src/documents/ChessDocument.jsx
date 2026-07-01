@@ -1,36 +1,14 @@
 import { Chess } from "chess.js";
-import Observable from "../logic/Observable";
-import SelectionManager from "../logic/SelectionManager";
 
-export default class ChessDocument extends Observable {
+export default class ChessDocument {
     constructor() {
-        super();
-
         this.game = new Chess();
 
-        this.selection = new SelectionManager();
+        this.selectedSquare = null;
+        this.legalMoves = [];
 
         this.lastMove = null;
-    }
-
-    // =========================
-    // GETTERS
-    // =========================
-
-    get fen() {
-        return this.game.fen();
-    }
-
-    get turn() {
-        return this.game.turn();
-    }
-
-    get history() {
-        return this.game.history();
-    }
-
-    board() {
-        return this.game.board();
+        this.moves = [];
     }
 
     getPiece(square) {
@@ -38,107 +16,47 @@ export default class ChessDocument extends Observable {
     }
 
     getLegalMoves(square) {
-        return this.game.moves({
-            square,
-            verbose: true,
-        });
+        return this.game.moves({ square, verbose: true });
     }
 
-    // =========================
-    // MOVES
-    // =========================
+    selectSquare(square) {
+        const piece = this.getPiece(square);
+        if (!piece) return;
 
-    move(move) {
-        const result = this.game.move(move);
+        this.selectedSquare = square;
+        this.legalMoves = this.getLegalMoves(square).map((m) => m.to);
+    }
+
+    clearSelection() {
+        this.selectedSquare = null;
+        this.legalMoves = [];
+    }
+
+    movePiece(from, to) {
+        const piece = this.getPiece(from);
+        if (!piece) return;
+
+        const legal = this.getLegalMoves(from).map((m) => m.to);
+        if (!legal.includes(to)) {
+            this.clearSelection();
+            return;
+        }
+
+        const result = this.game.move({ from, to });
 
         if (result) {
             this.lastMove = result;
-
-            this.notify();
+            this.moves.push(result);
         }
 
-        return result;
+        this.clearSelection();
     }
 
-    undo() {
-        const result = this.game.undo();
-
-        this.selection.clear();
-
-        this.notify();
-
-        return result;
+    isSelected(square) {
+        return this.selectedSquare === square;
     }
 
-    reset() {
-        this.game.reset();
-
-        this.selection.clear();
-
-        this.lastMove = null;
-
-        this.notify();
-    }
-
-    // =========================
-    // USER INTERACTION
-    // =========================
-
-    clickSquare(square) {
-        const piece = this.getPiece(square);
-
-        // Nothing selected yet
-        if (!this.selection.selectedSquare) {
-            if (piece && piece.color === this.turn) {
-                this.selection.select(
-                    square,
-                    this.getLegalMoves(square).map((m) => m.to),
-                );
-
-                this.notify();
-            }
-
-            return;
-        }
-
-        // Clicked same square -> deselect
-        if (square === this.selection.selectedSquare) {
-            this.selection.clear();
-
-            this.notify();
-
-            return;
-        }
-
-        // Clicked another own piece
-        if (piece && piece.color === this.turn) {
-            this.selection.select(
-                square,
-                this.getLegalMoves(square).map((m) => m.to),
-            );
-
-            this.notify();
-
-            return;
-        }
-
-        // Clicked a legal destination
-        if (this.selection.isLegal(square)) {
-            this.move({
-                from: this.selection.selectedSquare,
-                to: square,
-            });
-
-            this.selection.clear();
-
-            this.notify();
-
-            return;
-        }
-
-        // Clicked elsewhere
-        this.selection.clear();
-
-        this.notify();
+    isLegal(square) {
+        return this.legalMoves.includes(square);
     }
 }
