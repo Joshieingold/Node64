@@ -1,7 +1,6 @@
 import { useState } from "react";
-import ChessBoard from "../Components/ChessBoard";
 import Notation from "../Components/Notation";
-import Tab from "../DataClasses/Tab";
+import ChessBoard from "../Components/Board/Board";
 
 export default function AnalysisPage({ data }) {
     const [pageData, setPageData] = useState(data.pageData);
