@@ -1,0 +1,28 @@
+.explorer {
+    display: flex;
+    flex-direction: column;
+    width: 15rem;
+    border-right: 2px solid var(--border);
+}
+.panel-title {
+    margin-left: 1rem;
+    font-size: 12pt;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+}
+.panel-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-right: 10px;
+}
+
+.explorer-folder {
+    display: flex;
+    padding: 0.2rem;
+    border-radius: 7px;
+}
+.explorer-folder:hover {
+    background-color: var(--secondary-bg);
+    cursor: pointer;
+}

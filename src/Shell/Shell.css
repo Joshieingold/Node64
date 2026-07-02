@@ -1,0 +1,105 @@
+.shell {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.top-items {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.title-text {
+    font-size: 18pt;
+    margin-left: 1rem;
+}
+.control-bar {
+    display: flex;
+    flex-direction: row;
+    height: 3rem;
+    text-align: center;
+    align-items: center;
+    width: 100%;
+    gap: 2rem;
+    background-color: var(--bg);
+    border-bottom: 2px solid var(--border);
+}
+.control-wrapper {
+    display: flex;
+    height: 100%;
+}
+.control {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    text-align: center;
+    height: 100%;
+    border-bottom: 1px solid transparent;
+    transition: 0.2s ease-in-out;
+}
+.control:hover {
+    background-color: var(--secondary-bg);
+    border-bottom: 1px solid var(--highlight);
+}
+.tab-bar {
+    display: flex;
+    gap: 0.2rem;
+    background-color: var(--bg);
+}
+.tab-item {
+    padding: 0.5rem;
+    border-right: 1px solid var(--border);
+    display: flex;
+    height: 1.4rem;
+    cursor: pointer;
+    border-top: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+}
+.tab-item:hover {
+    background-color: var(--secondary-bg);
+}
+.tab-text {
+    width: 80%;
+    overflow: hidden;
+}
+.tab-close {
+    cursor: pointer;
+    width: 20%;
+    transition: 0.1s ease-in-out;
+}
+.tab-close:hover {
+    color: pink;
+}
+.active-tab {
+    background-color: var(--secondary-bg);
+    border-right: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+}
+.left-panel {
+    display: flex;
+    height: 100%;
+}
+.main {
+    display: flex;
+    height: 100%;
+}
+.panel-controls {
+    display: flex;
+    flex-direction: column;
+    border-right: 2px solid var(--border);
+    width: 4rem;
+}
+.panel-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    font-size: 24pt;
+}
+.content {
+    background-color: var(--secondary-bg);
+    width: 100%;
+}

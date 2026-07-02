@@ -1,13 +1,25 @@
+* {
+    --bubble: #313131;
+    --bg: #181818;
+    --secondary-bg: #1f1f1f;
+    --border: #272727;
+    --fg: white;
+    --highlight: #0a75c8;
+}
+
 html,
 body,
 #root {
+    display: flex;
     height: 100%;
+    width: 100vw;
     margin: 0;
+    box-sizing: border-box;
 }
 
 body {
-    background: #1e1e1e;
-    color: white;
+    background: var(--bg);
+    color: var(--fg);
     font-family: system-ui;
     overflow: hidden;
 }

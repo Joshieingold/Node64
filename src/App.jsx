@@ -1,11 +1,6 @@
 import "./App.css";
-import AppShell from "./layout/appShell";
-import { ChessProvider } from "./context/ChessContext";
+import Shell from "./Shell/Shell";
 
 export default function App() {
-    return (
-        <ChessProvider>
-            <AppShell />
-        </ChessProvider>
-    );
+    return <Shell />;
 }
