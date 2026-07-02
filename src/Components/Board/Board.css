@@ -1,0 +1,64 @@
+.chess-board {
+    position: relative;
+    width: min(80vh, 80vw);
+    aspect-ratio: 1 / 1;
+    user-select: none;
+}
+
+.board-layer,
+.highlight-layer,
+.piece-layer,
+.input-layer {
+    position: absolute;
+    inset: 0;
+}
+
+.square,
+.selected-square,
+.legal-move,
+.legal-capture,
+.piece {
+    position: absolute;
+    width: 12.5%;
+    height: 12.5%;
+}
+
+.selected-square {
+    background: rgba(255, 215, 0, 0.35);
+}
+
+.legal-move::after {
+    content: "";
+    position: absolute;
+    width: 28%;
+    height: 28%;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.35);
+
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.legal-capture::after {
+    content: "";
+    position: absolute;
+    inset: 6%;
+    border-radius: 50%;
+    border: 6px solid rgba(0, 0, 0, 0.35);
+    box-sizing: border-box;
+}
+
+.piece {
+    pointer-events: none;
+}
+
+.input-layer {
+    z-index: 100;
+}
+.light {
+    background-color: #d0d9e0;
+}
+.dark {
+    background-color: #5185b5;
+}

@@ -1,0 +1,10 @@
+.analysis-page {
+    display: flex;
+    align-items: center;
+    height: 90vh;
+}
+.board-wrapper {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+}

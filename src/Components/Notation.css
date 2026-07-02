@@ -1,0 +1,29 @@
+.notation {
+    display: flex;
+    height: 100%;
+    border: 2px solid var(--border);
+    width: 25rem;
+    flex-direction: column;
+}
+.notation-row {
+    display: flex;
+    text-align: left;
+}
+.notation-number {
+    background-color: #33312e;
+    width: 10%;
+    padding: 0.2rem;
+    text-align: center;
+    border-right: 1px solid #404040;
+}
+.notation-move {
+    width: 40%;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+.notation-move:hover {
+    background-color: #33312e;
+}
+.notation-move.active {
+    background-color: #3381ca;
+}

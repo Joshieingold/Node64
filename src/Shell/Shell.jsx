@@ -2,7 +2,7 @@ import "./Shell.css";
 import AnalysisPage from "../Pages/AnalysisPage";
 import Explorer from "../Components/Explorer/Explorer";
 import { useState } from "react";
-import Tab from "../DataClasses/Tab";
+import ChessDocument from "../DataClasses/ChessDocument";
 
 export default function Shell() {
     const [tabs, setTabs] = useState([]);
@@ -13,7 +13,7 @@ export default function Shell() {
             id: crypto.randomUUID(),
             type: "analysis",
             title: "Analysis",
-            pageData: new Tab(),
+            pageData: new ChessDocument(),
         };
         setTabs((prev) => [...prev, newTab]);
         setActiveTab(newTab.id);
@@ -40,7 +40,12 @@ export default function Shell() {
 
         switch (activeTabData.type) {
             case "analysis":
-                return <AnalysisPage data={activeTabData.pageData} />;
+                return (
+                    <AnalysisPage
+                        data={activeTabData.pageData}
+                        key={activeTabData.id}
+                    />
+                );
 
             default:
                 return null;

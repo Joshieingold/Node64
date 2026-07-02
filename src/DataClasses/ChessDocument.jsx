@@ -10,6 +10,13 @@ export default class ChessDocument {
         this.lastMove = null;
         this.moves = [];
     }
+    handleSquareClick(square) {
+        if (this.selectedSquare) {
+            this.movePiece(this.selectedSquare, square);
+        } else {
+            this.selectSquare(square);
+        }
+    }
 
     getPiece(square) {
         return this.game.get(square);
