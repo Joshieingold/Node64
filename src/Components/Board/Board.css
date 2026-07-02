@@ -24,7 +24,7 @@
 }
 
 .selected-square {
-    background: rgba(255, 215, 0, 0.35);
+    background: #6d937b;
 }
 
 .legal-move::after {
@@ -43,7 +43,7 @@
 .legal-capture::after {
     content: "";
     position: absolute;
-    inset: 6%;
+    inset: 3%;
     border-radius: 50%;
     border: 6px solid rgba(0, 0, 0, 0.35);
     box-sizing: border-box;
