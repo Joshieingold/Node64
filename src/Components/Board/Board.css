@@ -62,3 +62,37 @@
 .dark {
     background-color: #5185b5;
 }
+.check-square {
+    position: absolute;
+    width: 12.5%;
+    height: 12.5%;
+    box-sizing: border-box;
+    filter: blur(10px);
+    background: rgba(255, 0, 0, 0.3);
+    pointer-events: none;
+}
+.rank-container {
+    display: flex;
+}
+.ranks {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.rank {
+    width: 20px;
+}
+.file-container {
+    display: flex;
+    width: 100%;
+}
+.files {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+}
+.file {
+    margin-top: 10px;
+}

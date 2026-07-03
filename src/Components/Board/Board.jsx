@@ -1,8 +1,24 @@
 import "./Board.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function ChessBoard({ data, onChange }) {
     const [, forceUpdate] = useState(0);
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            const isZ = event.key.toLowerCase() === "z";
+            const isMod = event.ctrlKey || event.metaKey;
+            if (isZ && isMod) {
+                event.preventDefault();
+                data.game.undo();
+                forceUpdate((v) => v + 1);
+                onChange();
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [data.game.undo]);
 
     function BoardLayer() {
         const squares = [];
@@ -29,6 +45,7 @@ export default function ChessBoard({ data, onChange }) {
 
     function HighlightLayer() {
         const highlights = [];
+        const checkedKing = data.getCheckedKingSquare();
 
         for (let y = 0; y < 8; y++) {
             for (let x = 0; x < 8; x++) {
@@ -61,12 +78,24 @@ export default function ChessBoard({ data, onChange }) {
                         />,
                     );
                 }
+
+                if (square === checkedKing) {
+                    highlights.push(
+                        <div
+                            key={`check-${square}`}
+                            className="check-square"
+                            style={{
+                                left: `${x * 12.5}%`,
+                                top: `${y * 12.5}%`,
+                            }}
+                        />,
+                    );
+                }
             }
         }
 
         return <div className="highlight-layer">{highlights}</div>;
     }
-
     function PieceLayer() {
         const board = data.game.board();
 
@@ -127,11 +156,37 @@ export default function ChessBoard({ data, onChange }) {
     }
 
     return (
-        <div className="chess-board">
-            <BoardLayer />
-            <HighlightLayer />
-            <PieceLayer />
-            <InputLayer />
+        <div className="board-container">
+            <div className="rank-container">
+                <div className="ranks">
+                    <div className="rank">8</div>
+                    <div className="rank">7</div>
+                    <div className="rank">6</div>
+                    <div className="rank">5</div>
+                    <div className="rank">4</div>
+                    <div className="rank">3</div>
+                    <div className="rank">2</div>
+                    <div className="rank">1</div>
+                </div>
+                <div className="chess-board">
+                    <BoardLayer />
+                    <HighlightLayer />
+                    <PieceLayer />
+                    <InputLayer />
+                </div>
+            </div>
+            <div className="file-container">
+                <div className="files">
+                    <div className="file">A</div>
+                    <div className="file">B</div>
+                    <div className="file">C</div>
+                    <div className="file">D</div>
+                    <div className="file">E</div>
+                    <div className="file">F</div>
+                    <div className="file">G</div>
+                    <div className="file">H</div>
+                </div>
+            </div>
         </div>
     );
 }

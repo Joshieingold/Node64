@@ -52,16 +52,13 @@
     border-right: 1px solid var(--border);
     display: flex;
     height: 1.4rem;
+    gap: 1rem;
     cursor: pointer;
     border-top: 1px solid var(--border);
     border-left: 1px solid var(--border);
 }
 .tab-item:hover {
     background-color: var(--secondary-bg);
-}
-.tab-text {
-    width: 80%;
-    overflow: hidden;
 }
 .tab-close {
     cursor: pointer;

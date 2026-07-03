@@ -10,6 +10,28 @@ export default class ChessDocument {
         this.lastMove = null;
         this.moves = [];
     }
+    getCheckedKingSquare() {
+        if (!this.game.inCheck()) return null;
+
+        const board = this.game.board();
+        const colorInCheck = this.game.turn(); // "w" or "b"
+
+        for (let y = 0; y < 8; y++) {
+            for (let x = 0; x < 8; x++) {
+                const piece = board[y][x];
+
+                if (
+                    piece &&
+                    piece.type === "k" &&
+                    piece.color === colorInCheck
+                ) {
+                    return "abcdefgh"[x] + (8 - y);
+                }
+            }
+        }
+
+        return null;
+    }
     handleSquareClick(square) {
         if (this.selectedSquare) {
             this.movePiece(this.selectedSquare, square);
