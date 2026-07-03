@@ -100,3 +100,15 @@
     background-color: var(--secondary-bg);
     width: 100%;
 }
+.panel-img {
+    display: flex;
+    width: 50%;
+    transition: 0.1s ease-in-out;
+    cursor: pointer;
+}
+.panel-img:hover {
+    filter: invert();
+}
+.panel-img.selected {
+    filter: invert();
+}

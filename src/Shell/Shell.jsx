@@ -1,5 +1,6 @@
 import "./Shell.css";
 import AnalysisPage from "../Pages/AnalysisPage";
+import Compass from "/Compass.png";
 import Explorer from "../Components/Explorer/Explorer";
 import { useState } from "react";
 import ChessDocument from "../DataClasses/ChessDocument";
@@ -70,7 +71,9 @@ export default function Shell() {
             <div className="main">
                 <div className="left-panel">
                     <div className="panel-controls">
-                        <div className="panel-control">A</div>
+                        <div className="panel-control">
+                            <img className="panel-img selected" src={Compass} />
+                        </div>
                         <div className="panel-control">B</div>
                         <div className="panel-control">C</div>
                         <div className="panel-control">D</div>
