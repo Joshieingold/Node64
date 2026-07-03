@@ -4,17 +4,19 @@ import Notation from "../Components/Notation";
 import ChessBoard from "../Components/Board/Board";
 
 export default function AnalysisPage({ data }) {
-    const [pageData, setPageData] = useState(data);
-    const [version, setVersion] = useState(0);
+    const [, setVersion] = useState(0);
+
+    const update = () => setVersion((v) => v + 1);
+
+    data.onChange = update;
+
     return (
         <div className="analysis-page">
             <div className="board-wrapper">
-                <ChessBoard
-                    data={pageData}
-                    onChange={() => setVersion((v) => v + 1)}
-                />
+                <ChessBoard data={data} update={update} />
             </div>
-            <Notation data={pageData} version={version} />
+
+            <Notation data={data} update={update} />
         </div>
     );
 }

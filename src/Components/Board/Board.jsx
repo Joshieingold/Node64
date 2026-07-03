@@ -1,24 +1,60 @@
 import "./Board.css";
 import { useState, useEffect } from "react";
 
-export default function ChessBoard({ data, onChange }) {
+export default function ChessBoard({ data, update }) {
     const [, forceUpdate] = useState(0);
+
+    const rerender = () => {
+        forceUpdate((v) => v + 1);
+        onChange();
+    };
+
     useEffect(() => {
         const handleKeyDown = (event) => {
-            const isZ = event.key.toLowerCase() === "z";
+            const key = event.key;
+
             const isMod = event.ctrlKey || event.metaKey;
-            if (isZ && isMod) {
+
+            // (optional) keep undo
+            if (key.toLowerCase() === "z" && isMod) {
                 event.preventDefault();
                 data.game.undo();
-                forceUpdate((v) => v + 1);
-                onChange();
+                update();
+                return;
+            }
+
+            switch (key) {
+                case "ArrowLeft":
+                    data.previousMove();
+                    update();
+                    break;
+
+                case "ArrowRight":
+                    data.nextMove();
+                    update();
+                    break;
+
+                case "Home":
+                    data.goToStart();
+                    update();
+                    break;
+
+                case "End":
+                    data.goToEnd();
+                    update();
+                    break;
+
+                default:
+                    break;
             }
         };
+
         window.addEventListener("keydown", handleKeyDown);
+
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
         };
-    }, [data.game.undo]);
+    }, [data]);
 
     function BoardLayer() {
         const squares = [];
@@ -96,6 +132,7 @@ export default function ChessBoard({ data, onChange }) {
 
         return <div className="highlight-layer">{highlights}</div>;
     }
+
     function PieceLayer() {
         const board = data.game.board();
 
@@ -141,15 +178,13 @@ export default function ChessBoard({ data, onChange }) {
             const rect = e.currentTarget.getBoundingClientRect();
 
             const x = Math.floor((e.clientX - rect.left) / (rect.width / 8));
-
             const y = Math.floor((e.clientY - rect.top) / (rect.height / 8));
 
             const square = "abcdefgh"[x] + (8 - y);
 
             data.handleSquareClick(square);
 
-            forceUpdate((v) => v + 1);
-            onChange();
+            update();
         };
 
         return <div className="input-layer" onClick={handleClick} />;
@@ -168,6 +203,7 @@ export default function ChessBoard({ data, onChange }) {
                     <div className="rank">2</div>
                     <div className="rank">1</div>
                 </div>
+
                 <div className="chess-board">
                     <BoardLayer />
                     <HighlightLayer />
@@ -175,6 +211,7 @@ export default function ChessBoard({ data, onChange }) {
                     <InputLayer />
                 </div>
             </div>
+
             <div className="file-container">
                 <div className="files">
                     <div className="file">A</div>
