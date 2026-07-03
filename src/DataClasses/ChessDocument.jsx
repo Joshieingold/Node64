@@ -9,6 +9,13 @@ export default class ChessDocument {
         this.history = [];
         this.currentMove = -1;
         this.lastMove = null;
+
+        // STOCKFISH STUFF
+        this.stockfishOn = null;
+        this.analyzing = false;
+        this.analysisTimeout = null;
+        this.session = 0;
+        this.onSessionChange = null;
     }
 
     // Notifies Components to update
