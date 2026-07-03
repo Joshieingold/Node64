@@ -2,13 +2,6 @@ import "./Board.css";
 import { useState, useEffect } from "react";
 
 export default function ChessBoard({ data, update }) {
-    const [, forceUpdate] = useState(0);
-
-    const rerender = () => {
-        forceUpdate((v) => v + 1);
-        onChange();
-    };
-
     useEffect(() => {
         const handleKeyDown = (event) => {
             const key = event.key;
@@ -18,7 +11,7 @@ export default function ChessBoard({ data, update }) {
             // (optional) keep undo
             if (key.toLowerCase() === "z" && isMod) {
                 event.preventDefault();
-                data.game.undo();
+                data.undo();
                 update();
                 return;
             }

@@ -51,7 +51,15 @@ export default class ChessDocument {
         this.selectedSquare = null;
         this.legalMoves = [];
     }
+    undo() {
+        if (this.history.length === 0) return;
 
+        this.history.pop();
+        this.currentMove--;
+
+        this.rebuildBoard();
+        this.notify();
+    }
     movePiece(from, to) {
         // if we're in the middle of history, jump to end first
         if (this.currentMove !== this.history.length - 1) {
