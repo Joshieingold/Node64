@@ -1697,6 +1697,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "interactive_process"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cb1a3c097cfdd0dc4bd03143a587b8cd44b492d763c768b06f7dfecaad7eeda4"
+
+[[package]]
 name = "ipnet"
 version = "2.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2033,6 +2039,7 @@ version = "0.1.0"
 dependencies = [
  "serde",
  "serde_json",
+ "stockfish",
  "tauri",
  "tauri-build",
  "tauri-plugin-opener",
@@ -3115,6 +3122,15 @@ name = "stable_deref_trait"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6ce2be8dc25455e1f91df71bfa12ad37d7af1092ae736f3a6cd0e37bc7810596"
+
+[[package]]
+name = "stockfish"
+version = "0.2.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "abac57d8283c1719c157837e2b7f97c383b226e763899f1c2f6c9bc9b5bff50c"
+dependencies = [
+ "interactive_process",
+]
 
 [[package]]
 name = "string_cache"

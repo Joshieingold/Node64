@@ -3,30 +3,33 @@ import { useState } from "react";
 
 export default function SFToggle({ data }) {
     const [doAnalysis, setDoAnalysis] = useState(false);
-    const [currentSfResponse, setCurrentSfResponse] = useState(null);
     const HandleAnalysis = () => {
-        setDoAnalysis(!doAnalysis);
+        setDoAnalysis((prevState) => !prevState);
         // Request stockfish json;
-        setCurrentSfResponse(data.requestStockFish);
-        console.log(currentSfResponse);
+        if (!doAnalysis) {
+            data.turnOnStockFish();
+        } else {
+            data.turnOffStockFish();
+            console.log("dead fish");
+        }
     };
     const GetEval = () => {
         if (!doAnalysis) {
             return "--";
         }
-        if (!currentSfResponse) {
+        if (!data.engineInfo.evaluation) {
             return "...";
         }
-        return currentSfResponse.evaluation;
+        return data.engineInfo.evaluation;
     };
     const GetBestMove = () => {
         if (!doAnalysis) {
             return "--";
         }
-        if (!currentSfResponse) {
+        if (!data.engineInfo.bestMove) {
             return "...";
         }
-        return currentSfResponse.bestMove;
+        return data.engineInfo.bestMove;
     };
     return (
         <div className="sf-toggle">

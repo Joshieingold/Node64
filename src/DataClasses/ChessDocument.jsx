@@ -12,10 +12,15 @@ export default class ChessDocument {
 
         // STOCKFISH STUFF
         this.stockfishOn = null;
-        this.analyzing = false;
-        this.analysisTimeout = null;
-        this.session = 0;
-        this.onSessionChange = null;
+        this.stockfish = null;
+        this.engineStatus = "Offline";
+
+        this.engineInfo = {
+            depth: 0,
+            evaluation: "--",
+            bestMove: "--",
+            pv: [],
+        };
     }
 
     // Notifies Components to update
@@ -102,6 +107,9 @@ export default class ChessDocument {
         this.currentMove++;
 
         this.clearSelection();
+        if (this.stockfish) {
+            this.updateStockfish();
+        }
         this.notify();
     }
 
@@ -169,13 +177,139 @@ export default class ChessDocument {
         this.goToMove(this.history.length - 1);
     }
 
-    /////////////////////////
-    // Backend Integration //
-    /////////////////////////
-    requestStockFish() {
-        return {
-            bestMove: "e4",
-            evaluation: "+1",
+    /////////////////////
+    // Stockfish Stuff //
+    /////////////////////
+    turnOnStockFish() {
+        this.stockfish = new Worker("/stockfish/stockfish.js");
+
+        this.stockfish.onmessage = (event) => {
+            const line = event.data;
+            if (line === "readyok") {
+                this.engineStatus = "Ready";
+                this.stockfish.postMessage("uci");
+                return;
+            }
+
+            if (line === "uciok") {
+                this.engineStatus = "UciMode";
+                this.stockfish.postMessage("ucinewgame");
+                this.updateStockfish();
+                return;
+            }
+
+            if (line.startsWith("info")) {
+                const info = this.parseInfo(line);
+
+                if (info.depth !== undefined) {
+                    this.engineInfo.depth = info.depth;
+                }
+
+                if (info.evaluation !== undefined) {
+                    this.engineInfo.evaluation = info.evaluation;
+                }
+
+                if (info.pvSAN) {
+                    this.engineInfo.pv = info.pvSAN;
+
+                    if (info.pvSAN.length > 0) {
+                        this.engineInfo.bestMove = info.pvSAN[0];
+                    }
+                }
+
+                this.notify();
+                return;
+            }
         };
+
+        this.stockfish.postMessage("isready");
+    }
+    turnOffStockFish() {
+        if (!this.stockfish) return;
+
+        this.stockfish.terminate();
+        this.stockfish = null;
+
+        this.fishMove = null;
+        this.fishEval = null;
+        this.engineStatus = "Offline";
+
+        this.notify();
+    }
+    updateStockfish() {
+        if (this.currentMove === -1) {
+            this.stockfish.postMessage("position startpos");
+        } else {
+            this.stockfish.postMessage(
+                `position fen ${this.history[this.currentMove].after}`,
+            );
+        }
+
+        this.stockfish.postMessage("go depth 20");
+    }
+
+    convertPVToSAN(pv) {
+        const board = new Chess(this.game.fen());
+
+        const san = [];
+
+        for (const move of pv) {
+            const played = board.move({
+                from: move.substring(0, 2),
+                to: move.substring(2, 4),
+                promotion: move[4],
+            });
+
+            if (!played) break;
+
+            san.push(played.san);
+        }
+
+        return san;
+    }
+    parseInfo(line) {
+        const tokens = line.split(" ");
+
+        const info = {};
+
+        for (let i = 0; i < tokens.length; i++) {
+            switch (tokens[i]) {
+                case "depth":
+                    info.depth = Number(tokens[++i]);
+                    break;
+
+                case "score": {
+                    const type = tokens[++i];
+                    let value = Number(tokens[++i]);
+
+                    // Convert to White's perspective
+                    if (this.game.turn() === "b") {
+                        value = -value;
+                    }
+
+                    if (type === "cp") {
+                        const evalString =
+                            (value >= 0 ? "+" : "") + (value / 100).toFixed(2);
+
+                        info.evaluation = evalString;
+                    } else {
+                        info.evaluation = "M" + (value >= 0 ? "+" : "") + value;
+                    }
+
+                    break;
+                }
+
+                case "pv": {
+                    const pv = tokens.slice(i + 1);
+
+                    info.pv = pv;
+                    info.pvSAN = this.convertPVToSAN(pv);
+
+                    return info;
+                }
+            }
+        }
+
+        return info;
     }
 }
