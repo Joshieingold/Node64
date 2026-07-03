@@ -1,0 +1,36 @@
+.sf-toggle {
+    display: flex;
+    height: 5rem;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+}
+.toggler {
+    border-radius: 1rem;
+    width: 4rem;
+    height: 2rem;
+    cursor: pointer;
+    border: 2px solid var(--border);
+    transition: 0.2s ease-in-out;
+}
+.toggle-on {
+    background-color: green;
+}
+.toggle-off {
+    background-color: var(--secondary-bg);
+}
+.toggle-circle {
+    height: 100%;
+    width: 50%;
+    transition: 0.2s ease-in-out;
+    border-radius: 50%;
+}
+.circle-on {
+    transform: translateX(100%);
+    background-color: lightgreen;
+}
+.circle-off {
+    background-color: whitesmoke;
+}

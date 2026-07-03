@@ -161,4 +161,14 @@ export default class ChessDocument {
     goToEnd() {
         this.goToMove(this.history.length - 1);
     }
+
+    /////////////////////////
+    // Backend Integration //
+    /////////////////////////
+    requestStockFish() {
+        return {
+            bestMove: "e4",
+            evaluation: "+1",
+        };
+    }
 }

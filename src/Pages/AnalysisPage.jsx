@@ -18,7 +18,7 @@ export default function AnalysisPage({ data }) {
             </div>
 
             <div className="right-content-container">
-                <SFToggle />
+                <SFToggle data={data} />
                 <Notation data={data} update={update} />
             </div>
         </div>
