@@ -2,6 +2,7 @@ import "./AnalysisPage.css";
 import { useState } from "react";
 import Notation from "../Components/Notation";
 import ChessBoard from "../Components/Board/Board";
+import SFToggle from "../Components/StockFish/SFToggle";
 
 export default function AnalysisPage({ data }) {
     const [, setVersion] = useState(0);
@@ -16,7 +17,10 @@ export default function AnalysisPage({ data }) {
                 <ChessBoard data={data} update={update} />
             </div>
 
-            <Notation data={data} update={update} />
+            <div className="right-content-container">
+                <SFToggle />
+                <Notation data={data} update={update} />
+            </div>
         </div>
     );
 }
