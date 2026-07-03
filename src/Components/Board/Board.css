@@ -96,3 +96,9 @@
 .file {
     margin-top: 10px;
 }
+.flipped-file {
+    flex-direction: row-reverse;
+}
+.flipped-rank {
+    flex-direction: column-reverse;
+}

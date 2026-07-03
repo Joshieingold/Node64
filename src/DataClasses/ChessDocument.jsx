@@ -4,24 +4,29 @@ export default class ChessDocument {
     constructor(onChange) {
         this.game = new Chess();
         this.onChange = onChange;
-
         this.selectedSquare = null;
         this.legalMoves = [];
-
         this.history = [];
         this.currentMove = -1;
-
         this.lastMove = null;
     }
 
+    // Notifies Components to update
     notify() {
         if (this.onChange) this.onChange();
     }
 
-    // --------------------
-    // GAME LOGIC
-    // --------------------
+    rebuildBoard() {
+        this.game = new Chess();
 
+        for (let i = 0; i <= this.currentMove; i++) {
+            this.game.move(this.history[i]);
+        }
+
+        this.clearSelection();
+    }
+
+    // Handles if a square is selected to try to move a piece there or select.
     handleSquareClick(square) {
         if (this.selectedSquare) {
             this.movePiece(this.selectedSquare, square);
@@ -30,14 +35,17 @@ export default class ChessDocument {
         }
     }
 
+    // Finds a piece at a given square
     getPiece(square) {
         return this.game.get(square);
     }
 
+    // Finds Legal Moves for a piece at a square.
     getLegalMoves(square) {
         return this.game.moves({ square, verbose: true });
     }
 
+    // Sets a square to be the one that is trying to be moved.
     selectSquare(square) {
         const piece = this.getPiece(square);
         if (!piece) return;
@@ -47,21 +55,24 @@ export default class ChessDocument {
         this.notify();
     }
 
+    // Clears selection..
     clearSelection() {
         this.selectedSquare = null;
         this.legalMoves = [];
     }
+
+    // Removes last move from history
     undo() {
         if (this.history.length === 0) return;
 
         this.history.pop();
         this.currentMove--;
-
         this.rebuildBoard();
         this.notify();
     }
+
+    // Handles moving a piece
     movePiece(from, to) {
-        // if we're in the middle of history, jump to end first
         if (this.currentMove !== this.history.length - 1) {
             this.goToEnd();
         }
@@ -87,10 +98,11 @@ export default class ChessDocument {
         this.notify();
     }
 
-    // --------------------
-    // CHECK
-    // --------------------
+    ////////////////
+    // UI Helpers //
+    ////////////////
 
+    // Tells UI the square of a checked king.
     getCheckedKingSquare() {
         if (!this.game.inCheck()) return null;
 
@@ -110,20 +122,19 @@ export default class ChessDocument {
         return null;
     }
 
-    // --------------------
-    // NAVIGATION
-    // --------------------
-
-    rebuildBoard() {
-        this.game = new Chess();
-
-        for (let i = 0; i <= this.currentMove; i++) {
-            this.game.move(this.history[i]);
-        }
-
-        this.clearSelection();
+    isSelected(square) {
+        return this.selectedSquare === square;
     }
 
+    isLegal(square) {
+        return this.legalMoves.includes(square);
+    }
+
+    ////////////////
+    // Navigation //
+    ////////////////
+
+    // Brings the board to the index the board is referring to.
     goToMove(index) {
         if (index < -1) index = -1;
         if (index > this.history.length - 1) index = this.history.length - 1;
@@ -141,23 +152,13 @@ export default class ChessDocument {
         this.goToMove(this.currentMove - 1);
     }
 
+    // Brings board to start of the game.
     goToStart() {
         this.goToMove(-1);
     }
 
+    // Brings board to end of the game.
     goToEnd() {
         this.goToMove(this.history.length - 1);
-    }
-
-    // --------------------
-    // UI HELPERS
-    // --------------------
-
-    isSelected(square) {
-        return this.selectedSquare === square;
-    }
-
-    isLegal(square) {
-        return this.legalMoves.includes(square);
     }
 }
