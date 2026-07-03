@@ -36,6 +36,10 @@ export default class ChessDocument {
         }
 
         this.clearSelection();
+        if (this.stockfish) {
+            this.updateStockfish();
+        }
+        this.notify();
     }
 
     // Handles if a square is selected to try to move a piece there or select.
