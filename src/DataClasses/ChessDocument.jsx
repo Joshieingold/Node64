@@ -30,11 +30,11 @@ export default class ChessDocument {
 
     rebuildBoard() {
         this.game = new Chess();
-
         for (let i = 0; i <= this.currentMove; i++) {
             this.game.move(this.history[i]);
         }
-
+        this.lastMove =
+            this.currentMove >= 0 ? this.history[this.currentMove] : null;
         this.clearSelection();
         if (this.stockfish) {
             this.updateStockfish();

@@ -49,10 +49,6 @@
     box-sizing: border-box;
 }
 
-.piece {
-    pointer-events: none;
-}
-
 .input-layer {
     z-index: 100;
 }
@@ -101,4 +97,16 @@
 }
 .flipped-rank {
     flex-direction: column-reverse;
+}
+.last-move-layer {
+    position: absolute;
+    inset: 0;
+}
+
+.last-move-square {
+    position: absolute;
+    width: 12.5%;
+    height: 12.5%;
+    background-color: rgba(255, 215, 0, 0.35);
+    pointer-events: none;
 }

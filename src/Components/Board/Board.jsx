@@ -1,89 +1,113 @@
 import "./Board.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function ChessBoard({ data, update }) {
     const [flipped, setFlipped] = useState(false);
+    const [drag, setDrag] = useState(null);
+    const boardRef = useRef(null);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
             const key = event.key;
-
             const isMod = event.ctrlKey || event.metaKey;
-
-            // Undo
             if (key.toLowerCase() === "z" && isMod) {
                 event.preventDefault();
                 data.undo();
                 update();
                 return;
             }
-
-            // Flip board
             if (key.toLowerCase() === "f") {
                 setFlipped((f) => !f);
                 update();
                 return;
             }
-
             switch (key) {
                 case "ArrowLeft":
                     data.previousMove();
                     update();
                     break;
-
                 case "ArrowRight":
                     data.nextMove();
                     update();
                     break;
-
                 case "Home":
                     data.goToStart();
                     update();
                     break;
-
                 case "End":
                     data.goToEnd();
                     update();
                     break;
-
                 default:
                     break;
             }
         };
-
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [data]);
 
-    // ---------------------------
-    // TRANSFORM (FLIP LOGIC)
-    // ---------------------------
+    useEffect(() => {
+        if (!drag) return;
+
+        const handlePointerMove = (e) => {
+            setDrag((d) => {
+                if (!d) return d;
+                const dx = e.clientX - d.startX;
+                const dy = e.clientY - d.startY;
+                const moved = d.moved || Math.hypot(dx, dy) > 4;
+                return { ...d, x: e.clientX, y: e.clientY, moved };
+            });
+        };
+
+        const handlePointerUp = (e) => {
+            setDrag((d) => {
+                if (!d) return null;
+                const { rect } = d;
+                let x = Math.floor((e.clientX - rect.left) / (rect.width / 8));
+                let y = Math.floor((e.clientY - rect.top) / (rect.height / 8));
+                x = Math.max(0, Math.min(7, x));
+                y = Math.max(0, Math.min(7, y));
+                if (flipped) {
+                    x = 7 - x;
+                    y = 7 - y;
+                }
+                const targetSquare = "abcdefgh"[x] + (8 - y);
+
+                if (d.isDraggablePiece && d.moved) {
+                    data.movePiece(d.square, targetSquare);
+                } else if (!d.isDraggablePiece) {
+                    data.handleSquareClick(targetSquare);
+                }
+                update();
+                return null;
+            });
+        };
+
+        window.addEventListener("pointermove", handlePointerMove);
+        window.addEventListener("pointerup", handlePointerUp);
+        return () => {
+            window.removeEventListener("pointermove", handlePointerMove);
+            window.removeEventListener("pointerup", handlePointerUp);
+        };
+    }, [drag, flipped, data]);
+
     function transform(x, y) {
         if (!flipped) return { x, y };
         return { x: 7 - x, y: 7 - y };
     }
 
-    function squareToCoords(square) {
-        const file = square[0];
-        const rank = square[1];
-
-        const x = "abcdefgh".indexOf(file);
-        const y = 8 - parseInt(rank);
-
+    function squareToXY(square) {
+        const x = "abcdefgh".indexOf(square[0]);
+        const y = 8 - Number(square[1]);
         return { x, y };
     }
 
-    // ---------------------------
-    // BOARD LAYER
-    // ---------------------------
     function BoardLayer() {
         const squares = [];
-
         for (let y = 0; y < 8; y++) {
             for (let x = 0; x < 8; x++) {
                 const square = "abcdefgh"[x] + (8 - y);
                 const t = transform(x, y);
-
                 squares.push(
                     <div
                         key={square}
@@ -96,22 +120,16 @@ export default function ChessBoard({ data, update }) {
                 );
             }
         }
-
         return <div className="board-layer">{squares}</div>;
     }
 
-    // ---------------------------
-    // HIGHLIGHTS
-    // ---------------------------
     function HighlightLayer() {
         const highlights = [];
         const checkedKing = data.getCheckedKingSquare();
-
         for (let y = 0; y < 8; y++) {
             for (let x = 0; x < 8; x++) {
                 const square = "abcdefgh"[x] + (8 - y);
                 const t = transform(x, y);
-
                 if (data.isSelected(square)) {
                     highlights.push(
                         <div
@@ -124,10 +142,8 @@ export default function ChessBoard({ data, update }) {
                         />,
                     );
                 }
-
                 if (data.isLegal(square)) {
                     const piece = data.getPiece(square);
-
                     highlights.push(
                         <div
                             key={`legal-${square}`}
@@ -139,7 +155,6 @@ export default function ChessBoard({ data, update }) {
                         />,
                     );
                 }
-
                 if (square === checkedKing) {
                     highlights.push(
                         <div
@@ -154,25 +169,23 @@ export default function ChessBoard({ data, update }) {
                 }
             }
         }
-
         return <div className="highlight-layer">{highlights}</div>;
     }
 
-    // ---------------------------
-    // PIECES
-    // ---------------------------
     function PieceLayer() {
         const board = data.game.board();
-
         const pieces = [];
+        const hiding =
+            drag && drag.isDraggablePiece && drag.moved
+                ? squareToXY(drag.square)
+                : null;
 
         for (let y = 0; y < 8; y++) {
             for (let x = 0; x < 8; x++) {
                 const piece = board[y][x];
                 if (!piece) continue;
-
+                if (hiding && hiding.x === x && hiding.y === y) continue;
                 const t = transform(x, y);
-
                 pieces.push(
                     <img
                         key={`${piece.color}${piece.type}-${x}-${y}`}
@@ -188,39 +201,108 @@ export default function ChessBoard({ data, update }) {
                 );
             }
         }
-
         return <div className="piece-layer">{pieces}</div>;
     }
 
-    // ---------------------------
-    // INPUT
-    // ---------------------------
-    function InputLayer() {
-        const handleClick = (e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
+    function DragGhostLayer() {
+        if (!drag || !drag.isDraggablePiece || !drag.moved) return null;
+        const { rect, piece, x, y } = drag;
+        const squareSize = rect.width / 8;
+        return (
+            <img
+                className="piece dragging-piece"
+                src={`/pieces/${piece.color}${piece.type}.svg`}
+                alt={`${piece.color}${piece.type}`}
+                draggable={false}
+                style={{
+                    position: "absolute",
+                    left: `${x - rect.left - squareSize / 2}px`,
+                    top: `${y - rect.top - squareSize / 2}px`,
+                    width: `${squareSize}px`,
+                    height: `${squareSize}px`,
+                    pointerEvents: "none",
+                    zIndex: 1000,
+                }}
+            />
+        );
+    }
+    function LastMoveLayer() {
+        if (!data.lastMove) return null;
+        const { from, to } = data.lastMove;
+        const squares = [from, to];
+        return (
+            <div className="last-move-layer">
+                {squares.map((square) => {
+                    const { x, y } = squareToXY(square);
+                    const t = transform(x, y);
+                    return (
+                        <div
+                            key={`lastmove-${square}`}
+                            className="last-move-square"
+                            style={{
+                                left: `${t.x * 12.5}%`,
+                                top: `${t.y * 12.5}%`,
+                            }}
+                        />
+                    );
+                })}
+            </div>
+        );
+    }
 
+    function InputLayer() {
+        const handlePointerDown = (e) => {
+            if (e.button !== undefined && e.button !== 0) return;
+            const rect = boardRef.current.getBoundingClientRect();
             let x = Math.floor((e.clientX - rect.left) / (rect.width / 8));
             let y = Math.floor((e.clientY - rect.top) / (rect.height / 8));
-
             if (flipped) {
                 x = 7 - x;
                 y = 7 - y;
             }
-
             const square = "abcdefgh"[x] + (8 - y);
+            const piece = data.getPiece(square);
+            const isTurnPiece = piece && piece.color === data.game.turn();
 
-            data.handleSquareClick(square);
-            update();
+            let isDraggablePiece = false;
+            if (
+                isTurnPiece &&
+                (!data.selectedSquare || data.selectedSquare === square)
+            ) {
+                if (!data.selectedSquare) {
+                    data.selectSquare(square);
+                    update();
+                }
+                isDraggablePiece = true;
+            }
+
+            setDrag({
+                square,
+                piece: isDraggablePiece ? piece : null,
+                isDraggablePiece,
+                startX: e.clientX,
+                startY: e.clientY,
+                x: e.clientX,
+                y: e.clientY,
+                moved: false,
+                rect,
+            });
         };
 
-        return <div className="input-layer" onClick={handleClick} />;
+        return (
+            <div
+                className="input-layer"
+                onPointerDown={handlePointerDown}
+                style={{ touchAction: "none" }}
+            />
+        );
     }
 
-    // ---------------------------
-    // RENDER
-    // ---------------------------
     return (
-        <div className="board-container">
+        <div
+            className="board-container"
+            style={{ userSelect: drag ? "none" : "auto" }}
+        >
             <div className="rank-container">
                 <div className={`ranks ${flipped ? "flipped-rank" : ""}`}>
                     <div className="rank">8</div>
@@ -232,15 +314,15 @@ export default function ChessBoard({ data, update }) {
                     <div className="rank">2</div>
                     <div className="rank">1</div>
                 </div>
-
-                <div className="chess-board">
+                <div className="chess-board" ref={boardRef}>
                     <BoardLayer />
+                    <LastMoveLayer />
                     <HighlightLayer />
                     <PieceLayer />
                     <InputLayer />
+                    <DragGhostLayer />
                 </div>
             </div>
-
             <div className="file-container">
                 <div className={`files ${flipped ? "flipped-file" : ""}`}>
                     <div className="file">A</div>
