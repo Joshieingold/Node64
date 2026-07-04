@@ -1,0 +1,27 @@
+.eval-bar {
+    background-color: pink;
+    width: 1.5rem;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 80vh;
+    display: flex;
+    overflow: hidden;
+    border-radius: 1rem;
+    border: 2px solid var(--border);
+    margin-bottom: 2rem;
+}
+.white-eval {
+    display: flex;
+    transition: 0.4s ease-in-out;
+    width: 100%;
+    background-color: #c0c0c0;
+}
+.black-eval {
+    display: flex;
+    transition: 0.4s ease-in-out;
+    background-color: #444444;
+    width: 100%;
+}
+.hidden {
+    display: none;
+}

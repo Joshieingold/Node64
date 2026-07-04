@@ -1,7 +1,9 @@
 .sf-toggle {
     display: flex;
-    height: 5rem;
-    justify-content: space-around;
+    padding: 1rem;
+    height: 2rem;
+    justify-content: left;
+    gap: 1rem;
     align-items: center;
     width: 100%;
     background-color: var(--bg);
@@ -30,7 +32,12 @@
 .circle-on {
     transform: translateX(100%);
     background-color: lightgreen;
+    filter: blur(1px);
 }
 .circle-off {
     background-color: whitesmoke;
+    filter: blur(1px);
+}
+.evaluation {
+    font-size: 20pt;
 }

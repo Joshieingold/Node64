@@ -3,18 +3,18 @@ import { useState } from "react";
 import Notation from "../Components/Notation";
 import ChessBoard from "../Components/Board/Board";
 import SFToggle from "../Components/StockFish/SFToggle";
+import EvalBar from "../Components/StockFish/EvalBar";
 
 export default function AnalysisPage({ data }) {
     const [, setVersion] = useState(0);
-
     const update = () => setVersion((v) => v + 1);
-
     data.onChange = update;
 
     return (
         <div className="analysis-page">
             <div className="board-wrapper">
                 <ChessBoard data={data} update={update} />
+                <EvalBar data={data} update={update} />
             </div>
 
             <div className="right-content-container">

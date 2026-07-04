@@ -41,8 +41,8 @@ export default function SFToggle({ data }) {
                     className={`toggle-circle ${doAnalysis ? "circle-on" : "circle-off"}`}
                 ></div>
             </div>
-            <div className="best-move">{GetBestMove()}</div>
             <div className="evaluation">{GetEval()}</div>
+            <div className="best-move">{GetBestMove()}</div>
         </div>
     );
 }
