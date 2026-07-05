@@ -65,6 +65,7 @@ export default function Shell() {
                         <div className="control">Practice</div>
                         <div className="control">Openings</div>
                         <div className="control">Simulation</div>
+                        <div className="control">Settings</div>
                     </div>
                 </div>
             </div>

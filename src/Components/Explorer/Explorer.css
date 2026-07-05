@@ -16,13 +16,3 @@
     gap: 0.5rem;
     margin-right: 10px;
 }
-
-.explorer-folder {
-    display: flex;
-    padding: 0.2rem;
-    border-radius: 7px;
-}
-.explorer-folder:hover {
-    background-color: var(--secondary-bg);
-    cursor: pointer;
-}

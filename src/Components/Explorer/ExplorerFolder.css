@@ -1,0 +1,46 @@
+.explorer-folder {
+    flex-direction: column;
+    display: flex;
+    padding: 0.2rem;
+    border-radius: 7px;
+    justify-content: space-between;
+}
+.folder-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 11pt;
+}
+
+.folder-header:hover {
+    background: var(--secondary-bg);
+    cursor: pointer;
+}
+.explorer-folder:hover {
+    background-color: var(--secondary-bg);
+    cursor: pointer;
+}
+.folder-wrapper {
+    display: flex;
+    gap: 1rem;
+    width: 90%;
+}
+.folder-label-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+.folder-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.folder-button.new {
+    font-size: 12pt;
+    width: 10%;
+}
+.folder-button.new:hover {
+    color: var(--highlight);
+}
