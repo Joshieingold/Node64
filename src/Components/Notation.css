@@ -10,6 +10,7 @@
 .notation-row {
     display: flex;
     text-align: left;
+    font-size: 12pt;
 }
 .notation-number {
     display: flex;

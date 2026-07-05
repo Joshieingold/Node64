@@ -23,3 +23,6 @@ body {
     font-family: system-ui;
     overflow: hidden;
 }
+div {
+    font-size: 10pt;
+}

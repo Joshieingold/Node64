@@ -23,9 +23,9 @@ export default class ChessDocument {
 
         // Engine tuning / internal bookkeeping
         this.engineOptions = {
-            depth: 18, // used if useMoveTime is false
-            moveTime: 800, // ms, used if useMoveTime is true
-            useMoveTime: true,
+            depth: 20, // used if useMoveTime is false
+            moveTime: 3000, // ms, used if useMoveTime is true
+            useMoveTime: false,
             threads: 4,
             hashMB: 64,
         };

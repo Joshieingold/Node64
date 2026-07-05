@@ -31,6 +31,15 @@ export default function SFToggle({ data }) {
         }
         return data.engineInfo.bestMove;
     };
+    const GetDepth = () => {
+        if (!doAnalysis) {
+            return "Depth: 0";
+        }
+        if (!data.engineInfo.depth) {
+            return "Depth: 1";
+        }
+        return `Depth: ${data.engineInfo.depth}`;
+    };
     return (
         <div className="sf-toggle">
             <div
@@ -43,6 +52,7 @@ export default function SFToggle({ data }) {
             </div>
             <div className="evaluation">{GetEval()}</div>
             <div className="best-move">{GetBestMove()}</div>
+            <div className="depth">{GetDepth()}</div>
         </div>
     );
 }

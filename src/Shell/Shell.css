@@ -54,8 +54,10 @@
     height: 1.4rem;
     gap: 1rem;
     cursor: pointer;
+    align-items: center;
     border-top: 1px solid var(--border);
     border-left: 1px solid var(--border);
+    justify-content: center;
 }
 .tab-item:hover {
     background-color: var(--secondary-bg);
@@ -63,6 +65,7 @@
 .tab-close {
     cursor: pointer;
     width: 20%;
+    font-size: 14pt;
     transition: 0.1s ease-in-out;
 }
 .tab-close:hover {
