@@ -4,6 +4,7 @@ import Notation from "../Components/Notation";
 import ChessBoard from "../Components/Board/Board";
 import SFToggle from "../Components/StockFish/SFToggle";
 import EvalBar from "../Components/StockFish/EvalBar";
+import OptionsBar from "../Components/OptionsBar/OptionsBar";
 
 export default function AnalysisPage({ data }) {
     const [, setVersion] = useState(0);
@@ -20,13 +21,16 @@ export default function AnalysisPage({ data }) {
 
     return (
         <div className="analysis-page">
-            <div className="board-wrapper">
-                <ChessBoard data={data} update={update} />
-                <EvalBar data={data} update={update} />
-            </div>
-            <div className="right-content-container">
-                <SFToggle data={data} />
-                <Notation data={data} update={update} />
+            <div className="content-container">
+                <div className="board-wrapper">
+                    <ChessBoard data={data} update={update} />
+                    <EvalBar data={data} update={update} />
+                </div>
+                <div className="right-content-container">
+                    <OptionsBar />
+                    <SFToggle data={data} />
+                    <Notation data={data} update={update} />
+                </div>
             </div>
         </div>
     );

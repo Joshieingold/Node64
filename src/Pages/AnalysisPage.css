@@ -2,6 +2,12 @@
     display: flex;
     align-items: center;
     height: 90vh;
+    flex-direction: column;
+}
+.content-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
 }
 .board-wrapper {
     flex: 1;
