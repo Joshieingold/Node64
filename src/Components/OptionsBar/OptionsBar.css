@@ -1,36 +1,75 @@
 .options-bar-wrapper {
     display: flex;
+    align-items: center;
     background-color: var(--bg);
     border: 1px solid var(--border);
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 2rem;
-    align-items: center;
 }
 
 .options-container {
     display: flex;
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    justify-content: space-evenly;
-    gap: 1rem;
+    gap: 0.5rem;
 }
+
 .option {
+    padding: 0.4rem 0.9rem;
     height: 100%;
-    min-width: 4rem;
-    padding-left: 20px;
-    padding-right: 20px;
-    justify-content: center;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid transparent;
-    transition: 0.2s ease-in-out;
+    font-size: 0.85rem;
+    color: #e5e5e5;
+    border: 1px solid transparent;
     cursor: pointer;
+    user-select: none;
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease;
+    white-space: nowrap;
 }
+
 .option:hover {
-    background-color: var(--secondary-bg);
     border-bottom: 1px solid var(--highlight);
+    background-color: var(--secondary-bg);
+}
+.form-section h4 {
+    margin: 0 0 0.5rem 0;
+    color: #999;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.input-block {
+    width: 15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    align-items: flex-start;
+}
+
+.input-block input,
+.input-block select {
+    background-color: var(--secondary-bg);
+    color: white;
+    padding: 0.5rem;
+    width: 12rem;
+    border-radius: 0.3rem;
+    border: 1px solid var(--border);
+}
+
+.player-data-container {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.white-data,
+.black-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.general-data-container {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 0.5rem 1rem;
 }

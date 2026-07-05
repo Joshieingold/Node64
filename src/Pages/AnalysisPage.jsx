@@ -27,7 +27,7 @@ export default function AnalysisPage({ data }) {
                     <EvalBar data={data} update={update} />
                 </div>
                 <div className="right-content-container">
-                    <OptionsBar />
+                    <OptionsBar data={data} />
                     <SFToggle data={data} />
                     <Notation data={data} update={update} />
                 </div>
