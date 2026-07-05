@@ -1,13 +1,26 @@
 import { Chess } from "chess.js";
 
+let nodeCounter = 0;
+function createNode(move, parent) {
+    return {
+        id: nodeCounter++,
+        move, // verbose chess.js move object, or null for the root
+        parent, // parent node, or null for the root
+        children: [], // array of child nodes; children[0] is the mainline
+        activeChildIndex: 0, // which child nextMove()/goToEnd() should follow
+    };
+}
+
 export default class ChessDocument {
     constructor(onChange) {
         this.game = new Chess();
         this.onChange = onChange;
         this.selectedSquare = null;
         this.legalMoves = [];
-        this.history = [];
-        this.currentMove = -1;
+
+        // Move tree (replaces the old flat `history` array + `currentMove` index)
+        this.root = createNode(null, null);
+        this.currentNode = this.root;
         this.lastMove = null;
 
         // STOCKFISH STUFF
@@ -21,16 +34,15 @@ export default class ChessDocument {
             pv: [],
         };
 
-        // Engine tuning / internal bookkeeping
         this.engineOptions = {
-            depth: 20, // used if useMoveTime is false
-            moveTime: 3000, // ms, used if useMoveTime is true
+            depth: 20,
+            moveTime: 3000,
             useMoveTime: false,
             threads: 4,
             hashMB: 64,
         };
         this._updateTimer = null;
-        this._searchToken = 0; // increments each search; used to ignore stale results
+        this._searchToken = 0;
     }
 
     // Notifies Components to update
@@ -38,13 +50,34 @@ export default class ChessDocument {
         if (this.onChange) this.onChange();
     }
 
+    // Walks from root down to `node`, returning the array of nodes (excluding root).
+    getPathFromRoot(node) {
+        const path = [];
+        let n = node;
+        while (n && n.parent) {
+            path.unshift(n);
+            n = n.parent;
+        }
+        return path;
+    }
+
+    // The path for the line currently being viewed (handy for a move-list UI).
+    getCurrentPath() {
+        return this.getPathFromRoot(this.currentNode);
+    }
+
+    // Replays the game state from root to currentNode.
     rebuildBoard() {
         this.game = new Chess();
-        for (let i = 0; i <= this.currentMove; i++) {
-            this.game.move(this.history[i]);
+        const path = this.getPathFromRoot(this.currentNode);
+        for (const node of path) {
+            this.game.move({
+                from: node.move.from,
+                to: node.move.to,
+                promotion: node.move.promotion,
+            });
         }
-        this.lastMove =
-            this.currentMove >= 0 ? this.history[this.currentMove] : null;
+        this.lastMove = this.currentNode.move || null;
         this.clearSelection();
         if (this.stockfish) {
             this.updateStockfish();
@@ -86,20 +119,24 @@ export default class ChessDocument {
         this.legalMoves = [];
     }
 
-    // Removes last move from history
+    // Deletes the current node (and everything under it) and steps back to its parent.
     undo() {
-        if (this.history.length === 0) return;
-        this.history.pop();
-        this.currentMove--;
+        if (!this.currentNode.parent) return;
+        const parent = this.currentNode.parent;
+        const idx = parent.children.indexOf(this.currentNode);
+        parent.children.splice(idx, 1);
+        if (parent.activeChildIndex >= parent.children.length) {
+            parent.activeChildIndex = Math.max(0, parent.children.length - 1);
+        }
+        this.currentNode = parent;
         this.rebuildBoard();
         this.notify();
     }
 
-    // Handles moving a piece
+    // Handles moving a piece. This is the key change: no more forcing
+    // goToEnd() first, so playing a move from any point in the tree
+    // creates (or enters) a branch instead of overwriting the future.
     movePiece(from, to) {
-        if (this.currentMove !== this.history.length - 1) {
-            this.goToEnd();
-        }
         const piece = this.getPiece(from);
         if (!piece) return;
         const legal = this.getLegalMoves(from).map((m) => m.to);
@@ -110,9 +147,25 @@ export default class ChessDocument {
         }
         const result = this.game.move({ from, to });
         if (!result) return;
+
+        // If this exact move already exists as a child (you replayed a
+        // known line), just step into it instead of duplicating it.
+        let child = this.currentNode.children.find(
+            (c) =>
+                c.move.from === result.from &&
+                c.move.to === result.to &&
+                c.move.promotion === result.promotion,
+        );
+
+        if (!child) {
+            child = createNode(result, this.currentNode);
+            this.currentNode.children.push(child);
+        }
+        this.currentNode.activeChildIndex =
+            this.currentNode.children.indexOf(child);
+
+        this.currentNode = child;
         this.lastMove = result;
-        this.history.push(result);
-        this.currentMove++;
         this.clearSelection();
         if (this.stockfish) {
             this.updateStockfish();
@@ -124,7 +177,6 @@ export default class ChessDocument {
     // UI Helpers //
     ////////////////
 
-    // Tells UI the square of a checked king.
     getCheckedKingSquare() {
         if (!this.game.inCheck()) return null;
         const board = this.game.board();
@@ -152,31 +204,100 @@ export default class ChessDocument {
     // Navigation //
     ////////////////
 
-    // Brings the board to the index the board is referring to.
-    goToMove(index) {
-        if (index < -1) index = -1;
-        if (index > this.history.length - 1) index = this.history.length - 1;
-        this.currentMove = index;
+    previousMove() {
+        if (!this.currentNode.parent) return;
+        this.currentNode = this.currentNode.parent;
         this.rebuildBoard();
+    }
+
+    // Follows the "active" child — the branch you were last viewing/playing.
+    nextMove() {
+        if (this.currentNode.children.length === 0) return;
+        const idx = this.currentNode.activeChildIndex ?? 0;
+        this.currentNode = this.currentNode.children[idx];
+        this.rebuildBoard();
+    }
+
+    goToStart() {
+        this.currentNode = this.root;
+        this.rebuildBoard();
+    }
+
+    // Follows active children all the way to the end of the current line.
+    goToEnd() {
+        let node = this.currentNode;
+        while (node.children.length > 0) {
+            node = node.children[node.activeChildIndex ?? 0];
+        }
+        this.currentNode = node;
+        this.rebuildBoard();
+    }
+
+    // Jump straight to a specific node (e.g. from a move-list/variation click).
+    // Also updates activeChildIndex up the chain so nextMove/goToEnd follow
+    // this path afterwards.
+    goToNode(node) {
+        this.currentNode = node;
+        let n = node;
+        while (n.parent) {
+            n.parent.activeChildIndex = n.parent.children.indexOf(n);
+            n = n.parent;
+        }
+        this.rebuildBoard();
+    }
+
+    /////////////////////////
+    // Variation Utilities //
+    /////////////////////////
+
+    // Is this node part of the "main line" all the way back to the start?
+    isMainlineNode(node) {
+        let n = node;
+        while (n.parent) {
+            if (n.parent.children[0] !== n) return false;
+            n = n.parent;
+        }
+        return true;
+    }
+
+    // Makes `node` the new mainline continuation of its parent (moves it to children[0]).
+    promoteVariation(node) {
+        const parent = node.parent;
+        if (!parent) return;
+        const idx = parent.children.indexOf(node);
+        if (idx <= 0) return;
+        parent.children.splice(idx, 1);
+        parent.children.unshift(node);
+        parent.activeChildIndex = 0;
         this.notify();
     }
 
-    nextMove() {
-        this.goToMove(this.currentMove + 1);
-    }
-
-    previousMove() {
-        this.goToMove(this.currentMove - 1);
-    }
-
-    // Brings board to start of the game.
-    goToStart() {
-        this.goToMove(-1);
-    }
-
-    // Brings board to end of the game.
-    goToEnd() {
-        this.goToMove(this.history.length - 1);
+    // Deletes a node (and its whole subtree) without touching sibling variations.
+    deleteVariation(node) {
+        const parent = node.parent;
+        if (!parent) return; // can't delete the root
+        const idx = parent.children.indexOf(node);
+        if (idx === -1) return;
+        parent.children.splice(idx, 1);
+        if (parent.activeChildIndex >= parent.children.length) {
+            parent.activeChildIndex = Math.max(0, parent.children.length - 1);
+        }
+        // If we deleted the branch we were currently viewing, back up to its parent.
+        let n = this.currentNode;
+        let wasInsideDeleted = false;
+        while (n) {
+            if (n === node) {
+                wasInsideDeleted = true;
+                break;
+            }
+            n = n.parent;
+        }
+        if (wasInsideDeleted) {
+            this.currentNode = parent;
+            this.rebuildBoard();
+        } else {
+            this.notify();
+        }
     }
 
     /////////////////////
@@ -184,7 +305,7 @@ export default class ChessDocument {
     /////////////////////
 
     turnOnStockFish() {
-        if (this.stockfish) return; // guard against double-init / leaked workers
+        if (this.stockfish) return;
 
         this.engineStatus = "Loading";
         this.notify();
@@ -256,8 +377,6 @@ export default class ChessDocument {
         this.notify();
     }
 
-    // Debounced so rapid navigation (holding arrow keys, fast history
-    // scrubbing) doesn't spam Stockfish with searches it'll never finish.
     updateStockfish() {
         if (!this.stockfish) return;
         clearTimeout(this._updateTimer);
@@ -270,15 +389,9 @@ export default class ChessDocument {
         if (!this.stockfish) return;
 
         this._searchToken++;
-
-        // Always stop any in-flight search before starting a new one,
-        // otherwise info lines from the old + new position interleave.
         this.stockfish.postMessage("stop");
 
-        const fen =
-            this.currentMove === -1
-                ? null
-                : this.history[this.currentMove].after;
+        const fen = this.currentNode.move ? this.currentNode.move.after : null;
         this.stockfish.postMessage(
             fen ? `position fen ${fen}` : "position startpos",
         );
@@ -295,7 +408,6 @@ export default class ChessDocument {
         }
     }
 
-    // Optional: let the UI change search behavior (e.g. a "deep analyze" button).
     setEngineOptions(options) {
         this.engineOptions = { ...this.engineOptions, ...options };
         if (this.stockfish) {
@@ -342,7 +454,6 @@ export default class ChessDocument {
                 case "score": {
                     const type = tokens[++i];
                     let value = Number(tokens[++i]);
-                    // Convert to White's perspective
                     if (this.game.turn() === "b") {
                         value = -value;
                     }
@@ -364,5 +475,17 @@ export default class ChessDocument {
             }
         }
         return info;
+    }
+    // Cycles nodes so the user can choose from either of its siblings
+    cycleVariation(direction) {
+        const parent = this.currentNode.parent;
+        if (!parent || parent.children.length < 2) return;
+
+        const idx = parent.children.indexOf(this.currentNode);
+        let newIdx = idx + direction;
+        if (newIdx < 0) newIdx = parent.children.length - 1;
+        if (newIdx >= parent.children.length) newIdx = 0;
+
+        this.goToNode(parent.children[newIdx]);
     }
 }

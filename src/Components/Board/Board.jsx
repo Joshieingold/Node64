@@ -6,6 +6,7 @@ export default function ChessBoard({ data, update }) {
     const [drag, setDrag] = useState(null);
     const boardRef = useRef(null);
 
+    // Keyboard Interactions
     useEffect(() => {
         const handleKeyDown = (event) => {
             const key = event.key;
@@ -24,6 +25,16 @@ export default function ChessBoard({ data, update }) {
             switch (key) {
                 case "ArrowLeft":
                     data.previousMove();
+                    update();
+                    break;
+                case "ArrowUp":
+                    event.preventDefault();
+                    data.cycleVariation(-1);
+                    update();
+                    break;
+                case "ArrowDown":
+                    event.preventDefault();
+                    data.cycleVariation(1);
                     update();
                     break;
                 case "ArrowRight":
@@ -46,9 +57,9 @@ export default function ChessBoard({ data, update }) {
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [data]);
 
+    // Handling Piece Dragging
     useEffect(() => {
         if (!drag) return;
-
         const handlePointerMove = (e) => {
             setDrag((d) => {
                 if (!d) return d;
@@ -58,11 +69,11 @@ export default function ChessBoard({ data, update }) {
                 return { ...d, x: e.clientX, y: e.clientY, moved };
             });
         };
-
         const handlePointerUp = (e) => {
-            setDrag((d) => {
-                if (!d) return null;
-                const { rect } = d;
+            setDrag((currentDrag) => {
+                if (!currentDrag) return currentDrag;
+
+                const { rect } = currentDrag;
                 let x = Math.floor((e.clientX - rect.left) / (rect.width / 8));
                 let y = Math.floor((e.clientY - rect.top) / (rect.height / 8));
                 x = Math.max(0, Math.min(7, x));
@@ -72,13 +83,15 @@ export default function ChessBoard({ data, update }) {
                     y = 7 - y;
                 }
                 const targetSquare = "abcdefgh"[x] + (8 - y);
+                queueMicrotask(() => {
+                    if (currentDrag.isDraggablePiece && currentDrag.moved) {
+                        data.movePiece(currentDrag.square, targetSquare);
+                    } else if (!currentDrag.isDraggablePiece) {
+                        data.handleSquareClick(targetSquare);
+                    }
+                    update();
+                });
 
-                if (d.isDraggablePiece && d.moved) {
-                    data.movePiece(d.square, targetSquare);
-                } else if (!d.isDraggablePiece) {
-                    data.handleSquareClick(targetSquare);
-                }
-                update();
                 return null;
             });
         };
@@ -91,17 +104,18 @@ export default function ChessBoard({ data, update }) {
         };
     }, [drag, flipped, data]);
 
+    // Flipping Board
     function transform(x, y) {
         if (!flipped) return { x, y };
         return { x: 7 - x, y: 7 - y };
     }
-
     function squareToXY(square) {
         const x = "abcdefgh".indexOf(square[0]);
         const y = 8 - Number(square[1]);
         return { x, y };
     }
 
+    // Draws Chess Board
     function BoardLayer() {
         const squares = [];
         for (let y = 0; y < 8; y++) {
@@ -123,6 +137,7 @@ export default function ChessBoard({ data, update }) {
         return <div className="board-layer">{squares}</div>;
     }
 
+    // Draws highlight layer
     function HighlightLayer() {
         const highlights = [];
         const checkedKing = data.getCheckedKingSquare();
@@ -172,6 +187,7 @@ export default function ChessBoard({ data, update }) {
         return <div className="highlight-layer">{highlights}</div>;
     }
 
+    // Draws Pieces
     function PieceLayer() {
         const board = data.game.board();
         const pieces = [];
@@ -204,6 +220,7 @@ export default function ChessBoard({ data, update }) {
         return <div className="piece-layer">{pieces}</div>;
     }
 
+    // Draws Ghost Layer
     function DragGhostLayer() {
         if (!drag || !drag.isDraggablePiece || !drag.moved) return null;
         const { rect, piece, x, y } = drag;
@@ -226,6 +243,8 @@ export default function ChessBoard({ data, update }) {
             />
         );
     }
+
+    // Draws Last Move Highlight
     function LastMoveLayer() {
         if (!data.lastMove) return null;
         const { from, to } = data.lastMove;
@@ -250,6 +269,7 @@ export default function ChessBoard({ data, update }) {
         );
     }
 
+    // Captures piece inputs
     function InputLayer() {
         const handlePointerDown = (e) => {
             if (e.button !== undefined && e.button !== 0) return;

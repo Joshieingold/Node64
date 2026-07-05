@@ -34,3 +34,35 @@
 .notation-move.active {
     background-color: #3381ca;
 }
+.notation-variation {
+    font-style: italic;
+    opacity: 0.75;
+    margin: 0 2px;
+}
+.notation-row-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.notation-var-number {
+    color: #999;
+    font-size: 0.85em;
+}
+
+.notation-var-move {
+    cursor: pointer;
+    padding: 0 3px;
+    border-radius: 2px;
+}
+
+.notation-var-move:hover {
+    background-color: #33312e;
+}
+
+.notation-var-move.active {
+    background-color: #3381ca;
+}
+
+.notation-variation.nested {
+    margin-left: 1.2em;
+}
