@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./OptionsBar.css";
 import Modal from "./Modal";
 import PgnStuct from "../../DataClasses/PgnTracker";
+import { invoke } from "@tauri-apps/api/core";
 
 const TITLES = [
     "None",
@@ -99,7 +100,7 @@ export default function OptionsBar({ data }) {
     };
     const closeSave = () => setSaveOpen(false);
 
-    const handleSave = () => {
+    const handleSave = async () => {
         const headers = {
             White: pgn.whiteName || "?",
             Black: pgn.blackName || "?",
@@ -136,6 +137,12 @@ export default function OptionsBar({ data }) {
 
         data.pgnHeader = pgn;
         console.log(data.getFullPgn());
+        await invoke("create_file", {
+            destination:
+                "/home/josh/Documents/repos/Node64/ChessData/Analysis/",
+            name: "new Analysis",
+            pgn: data.getFullPgn(),
+        });
         // data.downloadPGN(`${pgn.whiteName || "game"}.pgn`, headers);
         closeSave();
     };

@@ -46,7 +46,7 @@ pub fn create_file(destination: String, name: String, pgn: String) -> Result<(),
     let mut file = File::create(full_path).map_err(|e| e.to_string())?;
 
     let contents = if pgn.is_empty() {
-        "BLANK PGN GOES HERE".to_string()
+        "".to_string()
     } else {
         pgn
     };
