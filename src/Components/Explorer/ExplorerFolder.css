@@ -18,7 +18,7 @@
     background: var(--secondary-bg);
     cursor: pointer;
 }
-.explorer-folder:hover {
+.folder-label-wrapper:hover {
     background-color: var(--secondary-bg);
     cursor: pointer;
 }

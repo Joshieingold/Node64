@@ -1,7 +1,12 @@
 import "./ExplorerFolder.css";
 import { useState } from "react";
 
-export default function ExplorerFolder({ type, plusClick }) {
+export default function ExplorerFolder({
+    name,
+    children = [],
+    plusClick,
+    level = 0,
+}) {
     const [dirOpen, setDirOpen] = useState(false);
 
     const handleOpenDir = () => {
@@ -16,7 +21,7 @@ export default function ExplorerFolder({ type, plusClick }) {
                         {dirOpen ? "v " : "> "}
                     </div>
 
-                    <div className="folder-text">{type}</div>
+                    <div className="folder-text">{name}</div>
                 </div>
 
                 <div className="folder-button new" onClick={plusClick}>
@@ -25,8 +30,25 @@ export default function ExplorerFolder({ type, plusClick }) {
             </div>
 
             {dirOpen && (
-                <div className="folder-contents">
-                    {/* Render files/folders here */}
+                <div
+                    className="folder-contents"
+                    style={{ paddingLeft: `${level * 48}px` }}
+                >
+                    {children.map((item) =>
+                        item.is_directory ? (
+                            <ExplorerFolder
+                                key={item.path}
+                                name={item.name}
+                                children={item.children}
+                                plusClick={plusClick}
+                                level={level + 1}
+                            />
+                        ) : (
+                            <div key={item.path} className="file-item">
+                                {item.name.split(".")[0]}
+                            </div>
+                        ),
+                    )}
                 </div>
             )}
         </div>

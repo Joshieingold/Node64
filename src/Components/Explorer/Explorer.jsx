@@ -1,28 +1,34 @@
+import { invoke } from "@tauri-apps/api/core";
+import { useState, useEffect } from "react";
 import "./Explorer.css";
 import ExplorerFolder from "./ExplorerFolder";
+
 export default function Explorer() {
+    const [directoryNodeTree, setDirectoryNodeTree] = useState(null);
+
+    useEffect(() => {
+        async function load() {
+            const response = await invoke("list_directory", {
+                path: "/home/josh/Documents/repos/Node64/ChessData/",
+            });
+
+            setDirectoryNodeTree(response);
+        }
+
+        load();
+    }, []);
     return (
         <div className="explorer">
             <div className="panel-title">Explorer</div>
+
             <div className="panel-items">
-                <ExplorerFolder
-                    type={"Analysis"}
-                    plusClick={() => {
-                        console.log("Time to learn bois");
-                    }}
-                />
-                <ExplorerFolder
-                    type={"Repertoires"}
-                    plusClick={() => {
-                        console.log("I am the repertoires!");
-                    }}
-                />
-                <ExplorerFolder
-                    type={"Databases"}
-                    plusClick={() => {
-                        console.log("LOOK AT ME A BIG SPOOKY DATABASE");
-                    }}
-                />
+                {directoryNodeTree && (
+                    <ExplorerFolder
+                        name={directoryNodeTree.name}
+                        children={directoryNodeTree.children}
+                        level={0}
+                    />
+                )}
             </div>
         </div>
     );

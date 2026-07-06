@@ -56,7 +56,8 @@
     background-color: #d0d9e0;
 }
 .dark {
-    background-color: #5185b5;
+    /* background-color: #5185b5; */
+    background-color: hotpink;
 }
 .check-square {
     position: absolute;
