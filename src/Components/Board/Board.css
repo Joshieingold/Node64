@@ -3,6 +3,7 @@
     width: min(80vh, 80vw);
     aspect-ratio: 1 / 1;
     user-select: none;
+    overflow: hidden;
 }
 
 .board-layer,
