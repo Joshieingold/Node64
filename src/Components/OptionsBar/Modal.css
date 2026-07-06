@@ -73,8 +73,3 @@
 .modal-btn:hover {
     filter: brightness(1.15);
 }
-
-.modal-btn.primary {
-    background-color: #3381ca;
-    border-color: #3381ca;
-}

@@ -5,15 +5,8 @@
     --border: #272727;
     --fg: white;
     --highlight: #0a75c8;
-
-    /* Chess Board Colors */
     --light-sq-color: #d0d9e0;
-    /* background-color: #5185b5; */
     --dark-sq-color: hotpink;
-    --legal-move-color: rgba(0, 0, 0, 0.35);
-    --last-move-color: rgba(255, 215, 0, 0.35);
-
-    --bad-red: rgba(255, 0, 0, 0.3);
 }
 
 html,

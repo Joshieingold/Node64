@@ -12,6 +12,9 @@
     position: absolute;
     inset: 0;
 }
+.input-layer {
+    cursor: default;
+}
 
 .square,
 .selected-square,
@@ -33,7 +36,7 @@
     width: 28%;
     height: 28%;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.35);
+    background: var(--legal-move-color);
 
     left: 50%;
     top: 50%;
@@ -45,7 +48,7 @@
     position: absolute;
     inset: 3%;
     border-radius: 50%;
-    border: 6px solid rgba(0, 0, 0, 0.35);
+    border: 6px solid var(--legal-move-color);
     box-sizing: border-box;
 }
 
@@ -53,11 +56,10 @@
     z-index: 100;
 }
 .light {
-    background-color: #d0d9e0;
+    background-color: var(--light-sq-color);
 }
 .dark {
-    /* background-color: #5185b5; */
-    background-color: hotpink;
+    background-color: var(--dark-sq-color);
 }
 .check-square {
     position: absolute;
@@ -65,7 +67,7 @@
     height: 12.5%;
     box-sizing: border-box;
     filter: blur(10px);
-    background: rgba(255, 0, 0, 0.3);
+    background: var(--bad-red);
     pointer-events: none;
 }
 .rank-container {
@@ -108,6 +110,6 @@
     position: absolute;
     width: 12.5%;
     height: 12.5%;
-    background-color: rgba(255, 215, 0, 0.35);
+    background-color: var(--last-move-color);
     pointer-events: none;
 }
