@@ -3,12 +3,12 @@ import { useState } from "react";
 
 export default function ExplorerFolder({
     name,
+    path,
     children = [],
     plusClick,
     level = 0,
 }) {
     const [dirOpen, setDirOpen] = useState(false);
-
     const handleOpenDir = () => {
         setDirOpen((prev) => !prev);
     };
@@ -20,15 +20,18 @@ export default function ExplorerFolder({
                     <div className="folder-button expand">
                         {dirOpen ? "v " : "> "}
                     </div>
-
                     <div className="folder-text">{name}</div>
                 </div>
-
-                <div className="folder-button new" onClick={plusClick}>
+                <div
+                    className="folder-button new"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        plusClick(path);
+                    }}
+                >
                     +
                 </div>
             </div>
-
             {dirOpen && (
                 <div
                     className="folder-contents"
@@ -39,6 +42,7 @@ export default function ExplorerFolder({
                             <ExplorerFolder
                                 key={item.path}
                                 name={item.name}
+                                path={item.path}
                                 children={item.children}
                                 plusClick={plusClick}
                                 level={level + 1}
