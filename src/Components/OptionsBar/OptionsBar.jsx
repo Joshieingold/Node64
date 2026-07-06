@@ -56,6 +56,7 @@ function TextField({ label, id, value, onChange, type = "text" }) {
                 id={id}
                 value={value ?? ""}
                 onChange={(e) => onChange(e.target.value)}
+                {...(type === "number" ? { min: 1 } : {})}
             />
         </Field>
     );
