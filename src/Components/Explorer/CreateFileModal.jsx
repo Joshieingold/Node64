@@ -68,14 +68,13 @@ export default function CreateFileModal({
     const handleSave = async () => {
         if (!name.trim() || !destination) return;
         try {
-            await invoke("create_file", { path: destination, name });
+            await invoke("create_file", { destination, name, pgn: "" });
             setName("");
             onClose();
         } catch (err) {
             console.error("Failed to create file:", err);
         }
     };
-
     const handleClose = () => {
         setName("");
         onClose();

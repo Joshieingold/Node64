@@ -1,5 +1,6 @@
 use serde::Serialize;
-use std::fs;
+use std::fs::{self, File};
+use std::io::Write;
 use std::path::Path;
 
 #[derive(Debug, Clone, Serialize)]
@@ -13,7 +14,6 @@ pub struct ExplorerNode {
 
 fn build_tree(path: &Path) -> ExplorerNode {
     let metadata = fs::metadata(path).unwrap();
-
     let mut node = ExplorerNode {
         name: path
             .file_name()
@@ -25,7 +25,6 @@ fn build_tree(path: &Path) -> ExplorerNode {
         expanded: false,
         children: Vec::new(),
     };
-
     if metadata.is_dir() {
         if let Ok(entries) = fs::read_dir(path) {
             for entry in entries.flatten() {
@@ -33,11 +32,25 @@ fn build_tree(path: &Path) -> ExplorerNode {
             }
         }
     }
-
     node
 }
+
 #[tauri::command]
 pub fn list_directory(path: String) -> Result<ExplorerNode, String> {
     Ok(build_tree(Path::new(&path)))
 }
 
+#[tauri::command]
+pub fn create_file(destination: String, name: String, pgn: String) -> Result<(), String> {
+    let full_path = format!("{}/{}", destination, name);
+    let mut file = File::create(full_path).map_err(|e| e.to_string())?;
+
+    let contents = if pgn.is_empty() {
+        "BLANK PGN GOES HERE".to_string()
+    } else {
+        pgn
+    };
+
+    file.write_all(contents.as_bytes()).map_err(|e| e.to_string())?;
+    Ok(())
+}

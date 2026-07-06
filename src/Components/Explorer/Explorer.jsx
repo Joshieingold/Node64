@@ -23,13 +23,13 @@ export default function Explorer() {
     const [newFileModalState, setNewFileModalState] = useState(false);
     const [targetFolder, setTargetFolder] = useState(null);
 
+    async function load() {
+        const response = await invoke("list_directory", {
+            path: "/home/josh/Documents/repos/Node64/ChessData/",
+        });
+        setDirectoryNodeTree(response);
+    }
     useEffect(() => {
-        async function load() {
-            const response = await invoke("list_directory", {
-                path: "/home/josh/Documents/repos/Node64/ChessData/",
-            });
-            setDirectoryNodeTree(response);
-        }
         load();
     }, []);
 
@@ -38,8 +38,9 @@ export default function Explorer() {
         setNewFileModalState(true);
     };
 
-    const handleCloseModal = () => {
+    const handleCloseModal = async () => {
         setNewFileModalState(false);
+        load();
         setTargetFolder(null);
     };
 
