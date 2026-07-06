@@ -1,4 +1,5 @@
 import { Chess } from "chess.js";
+import PgnStuct from "./PgnTracker";
 
 let nodeCounter = 0;
 function createNode(move, parent) {
@@ -18,12 +19,11 @@ export default class ChessDocument {
         this.selectedSquare = null;
         this.legalMoves = [];
 
-        // Move tree (replaces the old flat `history` array + `currentMove` index)
         this.root = createNode(null, null);
         this.currentNode = this.root;
         this.lastMove = null;
 
-        // STOCKFISH STUFF
+        // STOCKFISH STUFF //
         this.stockfishOn = null;
         this.stockfish = null;
         this.engineStatus = "Offline"; // Offline | Loading | Ready | Thinking
@@ -33,6 +33,9 @@ export default class ChessDocument {
             bestMove: "--",
             pv: [],
         };
+
+        // PGN STUFF //
+        this.pgnHeader = new PgnStuct();
 
         this.engineOptions = {
             depth: 20,

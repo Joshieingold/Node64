@@ -87,7 +87,9 @@ export default function OptionsBar({ data }) {
     const set = (field) => (value) =>
         setPgn((prev) => ({ ...prev, [field]: value }));
 
-    const openSave = () => setSaveOpen(true);
+    const openSave = () => {
+        setSaveOpen(true);
+    };
     const closeSave = () => setSaveOpen(false);
 
     const handleSave = () => {
@@ -125,6 +127,7 @@ export default function OptionsBar({ data }) {
             (key) => headers[key] === undefined && delete headers[key],
         );
 
+        data.pgnHeader = pgn;
         console.log(JSON.stringify(pgn));
         // data.downloadPGN(`${pgn.whiteName || "game"}.pgn`, headers);
         closeSave();
