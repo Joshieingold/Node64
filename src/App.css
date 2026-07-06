@@ -8,14 +8,26 @@
 
     /* Chess Board Colors */
     --light-sq-color: #d0d9e0;
-    /* background-color: #5185b5; */
-    --dark-sq-color: hotpink;
+    --dark-sq-color: #5185b5;
     --legal-move-color: rgba(0, 0, 0, 0.35);
     --last-move-color: rgba(255, 215, 0, 0.35);
 
     --bad-red: rgba(255, 0, 0, 0.3);
 }
 
+/* --bubble: #2d1b4e; */
+/* --bg: #120b1f; */
+/* --secondary-bg: #1e1235; */
+/* --border: #4a2d7a; */
+/* --fg: #f2f2f2; */
+/* --highlight: #ff3ea5; */
+/* /* Chess Board Colors */
+*/
+    /* --light-sq-color: #baffc9; */
+    /* --dark-sq-color: #7b2ff7; */
+    /* --legal-move-color: rgba(255, 230, 0, 0.35); */
+    /* --last-move-color: rgba(0, 255, 200, 0.35); */
+    /* --bad-red: rgba(255, 0, 90, 0.4); */
 html,
 body,
 #root {

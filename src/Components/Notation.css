@@ -16,11 +16,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #33312e;
+    background-color: var(--secondary-bg);
     width: 10%;
     padding: 0.2rem;
     text-align: center;
-    border-right: 1px solid #404040;
+    border-right: 1px solid var(--border);
 }
 .notation-move {
     width: 40%;
@@ -29,10 +29,10 @@
     cursor: pointer;
 }
 .notation-move:hover {
-    background-color: #33312e;
+    background-color: var(--secondary-bg);
 }
 .notation-move.active {
-    background-color: #3381ca;
+    background-color: var(--highlight);
 }
 .notation-variation {
     font-style: italic;
@@ -45,7 +45,7 @@
 }
 
 .notation-var-number {
-    color: #999;
+    color: var(--fg);
     font-size: 0.85em;
 }
 
@@ -56,7 +56,7 @@
 }
 
 .notation-var-move:hover {
-    background-color: #33312e;
+    background-color: var(--secondary-bg);
 }
 
 .notation-var-move.active {
