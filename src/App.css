@@ -26,3 +26,18 @@ body {
 div {
     font-size: 10pt;
 }
+input {
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    background: var(--bg);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background-image: url("data:image/svg+xml;utf8,<svg.../>");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+}
