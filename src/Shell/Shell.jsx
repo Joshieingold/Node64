@@ -90,15 +90,6 @@ export default function Shell() {
                                 onClick={() => setActiveTab(tab.id)}
                             >
                                 <div className="tab-text">{tab.title}</div>
-                                <div
-                                    className="tab-close"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        removeTab(tab.id);
-                                    }}
-                                >
-                                    ×
-                                </div>
                             </div>
                         ))}
                     </div>

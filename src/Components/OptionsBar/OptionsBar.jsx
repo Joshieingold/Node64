@@ -85,8 +85,14 @@ export default function OptionsBar({ data }) {
     const [saveOpen, setSaveOpen] = useState(false);
     const [pgn, setPgn] = useState(() => new PgnStuct());
 
+    // Preserves the PgnStuct prototype by cloning instead of spreading
+    // into a plain object literal.
     const set = (field) => (value) =>
-        setPgn((prev) => ({ ...prev, [field]: value }));
+        setPgn((prev) => {
+            const next = prev.clone();
+            next[field] = value;
+            return next;
+        });
 
     const openSave = () => {
         setSaveOpen(true);
@@ -129,7 +135,7 @@ export default function OptionsBar({ data }) {
         );
 
         data.pgnHeader = pgn;
-        console.log(JSON.stringify(pgn));
+        console.log(data.getFullPgn());
         // data.downloadPGN(`${pgn.whiteName || "game"}.pgn`, headers);
         closeSave();
     };
