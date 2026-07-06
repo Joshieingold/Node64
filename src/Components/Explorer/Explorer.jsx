@@ -6,7 +6,6 @@ import CreateFileModal from "./CreateFileModal";
 
 export function flattenFolders(node, list = []) {
     if (!node || (!node.is_directory && node.children === undefined)) {
-        // leaf file node, skip
     }
     if (node.children !== undefined) {
         list.push({ path: node.path, name: node.name });
@@ -61,15 +60,23 @@ export default function Explorer() {
             )}
             <div className="panel-title">Explorer</div>
             <div className="panel-items">
-                {directoryNodeTree && (
-                    <ExplorerFolder
-                        name={directoryNodeTree.name}
-                        path={directoryNodeTree.path}
-                        children={directoryNodeTree.children}
-                        level={0}
-                        plusClick={handlePlusClick}
-                    />
-                )}
+                {directoryNodeTree &&
+                    directoryNodeTree.children.map((item) =>
+                        item.is_directory ? (
+                            <ExplorerFolder
+                                key={item.path}
+                                name={item.name}
+                                path={item.path}
+                                children={item.children}
+                                level={1}
+                                plusClick={handlePlusClick}
+                            />
+                        ) : (
+                            <div key={item.path} className="file-item">
+                                {item.name.split(".")[0]}
+                            </div>
+                        ),
+                    )}
             </div>
         </div>
     );
