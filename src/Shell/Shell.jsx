@@ -19,25 +19,42 @@ export default function Shell() {
         setTabs((prev) => [...prev, newTab]);
         setActiveTab(newTab.id);
     };
+    const SwitchToOpenTab = (name) => {
+        if (tabs.length <= 0) {
+            return false;
+        }
+        for (let i = 0; i < tabs.length; i++) {
+            let currentTab = tabs[i];
+            if (currentTab.title === name) {
+                setActiveTab(currentTab.id);
+                return true;
+            }
+        }
+        return false;
+    };
     const LoadAnalysisTabFromFile = (pathToFile) => {
         const lastSlash = pathToFile.lastIndexOf("/");
         const directory = pathToFile.slice(0, lastSlash);
         const fileWithExt = pathToFile.slice(lastSlash + 1);
         const nameWithoutExt = fileWithExt.replace(/\.[^./]+$/, "");
 
-        const newTab = {
-            id: crypto.randomUUID(),
-            type: "analysis",
-            title: "Analysis",
-        };
-        newTab.pageData = new ChessDocument(() => {
-            setTabs((prev) => [...prev]);
-        });
-        newTab.pageData.fileLocation = directory;
-        newTab.pageData.fileName = nameWithoutExt;
-        newTab.pageData.loadPgn(pathToFile);
-        setTabs((prev) => [...prev, newTab]);
-        setActiveTab(newTab.id);
+        // Check to make sure its not already open
+        if (!SwitchToOpenTab(nameWithoutExt)) {
+            console.log("HIT?!?");
+            const newTab = {
+                id: crypto.randomUUID(),
+                type: "analysis",
+                title: nameWithoutExt,
+            };
+            newTab.pageData = new ChessDocument(() => {
+                setTabs((prev) => [...prev]);
+            });
+            newTab.pageData.fileLocation = directory;
+            newTab.pageData.fileName = nameWithoutExt;
+            newTab.pageData.loadPgn(pathToFile);
+            setTabs((prev) => [...prev, newTab]);
+            setActiveTab(newTab.id);
+        }
     };
     const removeTab = (tabId) => {
         setTabs((prev) => {

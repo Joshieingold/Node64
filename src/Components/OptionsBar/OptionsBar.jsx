@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./OptionsBar.css";
 import Modal from "./Modal";
 import PgnHead from "../../DataClasses/PgnHead";
@@ -45,7 +45,7 @@ const TERMINATIONS_BY_RESULT = {
 
 export default function OptionsBar({ data }) {
     const [saveOpen, setSaveOpen] = useState(false);
-    const [pgn, setPgn] = useState(() => new PgnHead());
+    const [pgn, setPgn] = useState(() => data.pgnHeader ?? new PgnHead());
     const [selectedFileType, setSelectedFileType] = useState("Analysis");
     const [fileName, setFileName] = useState("");
     const set = (field) => (value) =>
@@ -58,6 +58,9 @@ export default function OptionsBar({ data }) {
     const openSave = () => {
         setSaveOpen(true);
     };
+    useEffect(() => {
+        setPgn(data.pgnHeader ?? new PgnHead());
+    }, [data.pgnHeader]);
     const closeSave = () => setSaveOpen(false);
 
     const handleSave = async () => {

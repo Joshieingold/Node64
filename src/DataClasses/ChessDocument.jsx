@@ -569,30 +569,55 @@ export default class ChessDocument {
         this.loadPgnString(pgnText);
     }
     loadPgnString(pgnText) {
-        console.log(pgnText);
         const headers = {};
         const headerRegex = /\[(\w+)\s+"([^"]*)"\]/g;
         let m;
         while ((m = headerRegex.exec(pgnText))) {
             headers[m[1]] = m[2];
         }
+
+        const PGN_TAG_TO_FIELD = {
+            White: "whiteName",
+            Black: "blackName",
+            WhiteElo: "whiteElo",
+            BlackElo: "blackElo",
+            WhiteTitle: "whiteTitle",
+            BlackTitle: "blackTitle",
+            WhiteFideId: "whiteFideId",
+            BlackFideId: "blackFideId",
+            WhiteNA: "whiteNationalId",
+            BlackNA: "blackNationalId",
+            TimeControl: "timeControl",
+            Date: "date",
+            Result: "result",
+            Termination: "termination",
+            Site: "site",
+            Event: "event",
+            Round: "round",
+            Board: "board",
+            Annotator: "annotator",
+            GameId: "gameId",
+        };
+
+        const mappedHeaders = {};
+        for (const [tag, value] of Object.entries(headers)) {
+            const field = PGN_TAG_TO_FIELD[tag];
+            if (field) mappedHeaders[field] = value;
+        }
+
         if (typeof this.pgnHeader.setHeaders === "function") {
-            this.pgnHeader.setHeaders(headers);
+            this.pgnHeader.setHeaders(mappedHeaders);
         } else {
-            Object.assign(this.pgnHeader, headers);
+            Object.assign(this.pgnHeader, mappedHeaders);
         }
 
         this.root = createNode(null, null);
         this.currentNode = this.root;
-
         const movetext = pgnText.replace(/\[[^\]]*\]/g, "").trim();
         this.parseMovetext(movetext);
-        console.log("Parsed root children:", this.root.children.length); // NEW
-
         this.currentNode = this.root;
         this.rebuildBoard();
     }
-
     parseMovetext(movetext) {
         let text = movetext
             .replace(/\{[^}]*\}/g, " ") // strip {comments}
@@ -661,4 +686,5 @@ export default class ChessDocument {
             currentNode = child;
         }
     }
+    updateHeaders() {}
 }
