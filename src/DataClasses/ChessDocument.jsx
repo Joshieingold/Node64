@@ -34,10 +34,6 @@ export default class ChessDocument {
             bestMove: "--",
             pv: [],
         };
-
-        // PGN STUFF //
-        this.pgnHeader = new PgnStuct();
-
         this.engineOptions = {
             depth: 20,
             moveTime: 3000,
@@ -47,6 +43,11 @@ export default class ChessDocument {
         };
         this._updateTimer = null;
         this._searchToken = 0;
+
+        // PGN STUFF //
+        this.pgnHeader = new PgnStuct();
+        this.fileLocation = "";
+        this.fileName = "";
     }
 
     // Notifies Components to update

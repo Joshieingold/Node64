@@ -20,12 +20,21 @@ export default function Shell() {
         setActiveTab(newTab.id);
     };
     const LoadAnalysisTabFromFile = (pathToFile) => {
+        const lastSlash = pathToFile.lastIndexOf("/");
+        const directory = pathToFile.slice(0, lastSlash);
+        const fileWithExt = pathToFile.slice(lastSlash + 1);
+        const nameWithoutExt = fileWithExt.replace(/\.[^./]+$/, "");
+
         const newTab = {
             id: crypto.randomUUID(),
             type: "analysis",
             title: "Analysis",
-            pageData: new ChessDocument(),
         };
+        newTab.pageData = new ChessDocument(() => {
+            setTabs((prev) => [...prev]);
+        });
+        newTab.pageData.fileLocation = directory;
+        newTab.pageData.fileName = nameWithoutExt;
         newTab.pageData.loadPgn(pathToFile);
         setTabs((prev) => [...prev, newTab]);
         setActiveTab(newTab.id);

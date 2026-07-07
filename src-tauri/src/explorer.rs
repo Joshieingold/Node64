@@ -39,18 +39,29 @@ fn build_tree(path: &Path) -> ExplorerNode {
 pub fn list_directory(path: String) -> Result<ExplorerNode, String> {
     Ok(build_tree(Path::new(&path)))
 }
-
 #[tauri::command]
-pub fn create_file(destination: String, name: String, pgn: String) -> Result<(), String> {
-    let full_path = format!("{}/{}", destination, name);
-    let mut file = File::create(full_path).map_err(|e| e.to_string())?;
+pub fn create_file(
+    destination: String,
+    name: String,
+    file_type: String,
+    pgn: String,
+) -> Result<(), String> {
+    let extension = match file_type.as_str() {
+        "Analysis" => "pgn",
+        "Database" => "dbpgn",
+        "Repertoire" => "rpgn",
+        _ => "pgn",
+    };
 
+    let full_path = format!("{}/{}.{}", destination, name, extension);
+
+    let mut file = File::create(full_path).map_err(|e| e.to_string())?;
     let contents = if pgn.is_empty() {
         "".to_string()
     } else {
         pgn
     };
-
     file.write_all(contents.as_bytes()).map_err(|e| e.to_string())?;
     Ok(())
 }
+

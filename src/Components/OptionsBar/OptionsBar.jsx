@@ -81,10 +81,24 @@ function SelectField({ label, id, value, onChange, options }) {
         </Field>
     );
 }
-
+function FileNameField({ data }) {
+    const handleChange = (e) => {
+        data.fileName = e.target.value;
+        data.notify();
+    };
+    return (
+        <input
+            type="text"
+            value={data.fileName ?? ""}
+            onChange={handleChange}
+        />
+    );
+}
 export default function OptionsBar({ data }) {
     const [saveOpen, setSaveOpen] = useState(false);
     const [pgn, setPgn] = useState(() => new PgnStuct());
+    const [selectedFileType, setSelectedFileType] = useState("Analysis");
+    const [fileName, setFileName] = useState("");
 
     // Preserves the PgnStuct prototype by cloning instead of spreading
     // into a plain object literal.
@@ -136,11 +150,17 @@ export default function OptionsBar({ data }) {
         );
 
         data.pgnHeader = pgn;
-        console.log(data.getFullPgn());
+
+        const getDest = () => {
+            if (data.fileLocation) {
+                return data.fileLocation;
+            }
+            return "/home/josh/Documents/repos/Node64/ChessData/Analysis/";
+        };
         await invoke("create_file", {
-            destination:
-                "/home/josh/Documents/repos/Node64/ChessData/Analysis/",
-            name: "new Analysis",
+            destination: getDest(),
+            name: data.fileName || "new Analysis",
+            fileType: selectedFileType,
             pgn: data.getFullPgn(),
         });
         // data.downloadPGN(`${pgn.whiteName || "game"}.pgn`, headers);
@@ -166,18 +186,33 @@ export default function OptionsBar({ data }) {
                 title="Save PGN"
                 footer={
                     <>
-                        <button
-                            className="modal-btn secondary"
-                            onClick={closeSave}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            className="modal-btn primary"
-                            onClick={handleSave}
-                        >
-                            Save PGN
-                        </button>
+                        <div className="file-options-container">
+                            <FileNameField data={data} />
+                            <select
+                                value={selectedFileType}
+                                onChange={(e) =>
+                                    setSelectedFileType(e.target.value)
+                                }
+                            >
+                                <option value="Analysis">Analysis</option>
+                                <option value="Database">Database</option>
+                                <option value="Repertoire">Repertoire</option>
+                            </select>
+                        </div>
+                        <div className="modal-button-container">
+                            <button
+                                className="modal-btn secondary"
+                                onClick={closeSave}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="modal-btn primary"
+                                onClick={handleSave}
+                            >
+                                Save PGN
+                            </button>
+                        </div>
                     </>
                 }
             >
