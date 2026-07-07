@@ -1,6 +1,7 @@
 import "./Board.css";
 import { useState, useEffect, useRef } from "react";
 
+// Handing Board Flip //
 function transformXY(x, y, flipped) {
     if (!flipped) return { x, y };
     return { x: 7 - x, y: 7 - y };
@@ -11,6 +12,162 @@ function squareToXY(square) {
     const y = 8 - Number(square[1]);
     return { x, y };
 }
+
+export default function ChessBoard({ data, update }) {
+    const [flipped, setFlipped] = useState(false); // Tracking Flipped Board
+    const [drag, setDrag] = useState(null); // For Piece Drag
+    const boardRef = useRef(null); // Maintaining board stability. No need to reload
+
+    // Keybind handling //
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            const key = event.key;
+            const isMod = event.ctrlKey || event.metaKey;
+
+            // UNDO MOVE//
+            if (key.toLowerCase() === "z" && isMod) {
+                event.preventDefault();
+                data.undo();
+                update();
+                return;
+            }
+            // FLIP //
+            if (key.toLowerCase() === "f") {
+                setFlipped((f) => !f);
+                update();
+                return;
+            }
+            switch (key) {
+                // Go back a move //
+                case "ArrowLeft":
+                    data.previousMove();
+                    update();
+                    break;
+                // Go forward a move //
+                case "ArrowRight":
+                    data.nextMove();
+                    update();
+                    break;
+                // Cycle Variations //
+                case "ArrowUp":
+                    event.preventDefault();
+                    data.cycleVariation(-1);
+                    update();
+                    break;
+                // Cycle Variations //
+                case "ArrowDown":
+                    event.preventDefault();
+                    data.cycleVariation(1);
+                    update();
+                    break;
+                // Go to Move One //
+                case "Home":
+                    data.goToStart();
+                    update();
+                    break;
+                // Go to last Move //
+                case "End":
+                    data.goToEnd();
+                    update();
+                    break;
+                default:
+                    break;
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [data]);
+
+    // For Drag handing as well as board flipping on keybind //
+    useEffect(() => {
+        if (!drag) return;
+        const handlePointerMove = (e) => {
+            setDrag((d) => {
+                if (!d) return d;
+                const dx = e.clientX - d.startX;
+                const dy = e.clientY - d.startY;
+                const moved = d.moved || Math.hypot(dx, dy) > 4;
+                return { ...d, x: e.clientX, y: e.clientY, moved };
+            });
+        };
+        const handlePointerUp = (e) => {
+            const { rect } = drag;
+            let x = Math.floor((e.clientX - rect.left) / (rect.width / 8));
+            let y = Math.floor((e.clientY - rect.top) / (rect.height / 8));
+            x = Math.max(0, Math.min(7, x));
+            y = Math.max(0, Math.min(7, y));
+            if (flipped) {
+                x = 7 - x;
+                y = 7 - y;
+            }
+            const targetSquare = "abcdefgh"[x] + (8 - y);
+
+            if (drag.isDraggablePiece && drag.moved) {
+                data.movePiece(drag.square, targetSquare);
+            } else if (!drag.isDraggablePiece) {
+                data.handleSquareClick(targetSquare);
+            }
+            update();
+            setDrag(null);
+        };
+
+        window.addEventListener("pointermove", handlePointerMove);
+        window.addEventListener("pointerup", handlePointerUp);
+        return () => {
+            window.removeEventListener("pointermove", handlePointerMove);
+            window.removeEventListener("pointerup", handlePointerUp);
+        };
+    }, [drag, flipped, data]);
+
+    return (
+        <div
+            className="board-container"
+            style={{ userSelect: drag ? "none" : "auto" }}
+        >
+            <div className="rank-container">
+                <div className={`ranks ${flipped ? "flipped-rank" : ""}`}>
+                    <div className="rank">8</div>
+                    <div className="rank">7</div>
+                    <div className="rank">6</div>
+                    <div className="rank">5</div>
+                    <div className="rank">4</div>
+                    <div className="rank">3</div>
+                    <div className="rank">2</div>
+                    <div className="rank">1</div>
+                </div>
+                <div className="chess-board" ref={boardRef}>
+                    <BoardLayer flipped={flipped} />
+                    <LastMoveLayer data={data} flipped={flipped} />
+                    <HighlightLayer data={data} flipped={flipped} />
+                    <PieceLayer data={data} flipped={flipped} drag={drag} />
+                    <InputLayer
+                        data={data}
+                        flipped={flipped}
+                        boardRef={boardRef}
+                        setDrag={setDrag}
+                    />
+                    <DragGhostLayer drag={drag} />
+                </div>
+            </div>
+            <div className="file-container">
+                <div className={`files ${flipped ? "flipped-file" : ""}`}>
+                    <div className="file">A</div>
+                    <div className="file">B</div>
+                    <div className="file">C</div>
+                    <div className="file">D</div>
+                    <div className="file">E</div>
+                    <div className="file">F</div>
+                    <div className="file">G</div>
+                    <div className="file">H</div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+////////////
+// Layers //
+////////////
 
 function BoardLayer({ flipped }) {
     const squares = [];
@@ -203,148 +360,5 @@ function InputLayer({ data, flipped, boardRef, setDrag }) {
             onPointerDown={handlePointerDown}
             style={{ touchAction: "none" }}
         />
-    );
-}
-
-export default function ChessBoard({ data, update }) {
-    const [flipped, setFlipped] = useState(false);
-    const [drag, setDrag] = useState(null);
-    const boardRef = useRef(null);
-
-    useEffect(() => {
-        const handleKeyDown = (event) => {
-            const key = event.key;
-            const isMod = event.ctrlKey || event.metaKey;
-            if (key.toLowerCase() === "z" && isMod) {
-                event.preventDefault();
-                data.undo();
-                update();
-                return;
-            }
-            if (key.toLowerCase() === "f") {
-                setFlipped((f) => !f);
-                update();
-                return;
-            }
-            switch (key) {
-                case "ArrowLeft":
-                    data.previousMove();
-                    update();
-                    break;
-                case "ArrowRight":
-                    data.nextMove();
-                    update();
-                    break;
-                case "ArrowUp":
-                    event.preventDefault();
-                    data.cycleVariation(-1);
-                    update();
-                    break;
-                case "ArrowDown":
-                    event.preventDefault();
-                    data.cycleVariation(1);
-                    update();
-                    break;
-                case "Home":
-                    data.goToStart();
-                    update();
-                    break;
-                case "End":
-                    data.goToEnd();
-                    update();
-                    break;
-                default:
-                    break;
-            }
-        };
-        window.addEventListener("keydown", handleKeyDown);
-        return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [data]);
-
-    useEffect(() => {
-        if (!drag) return;
-
-        const handlePointerMove = (e) => {
-            setDrag((d) => {
-                if (!d) return d;
-                const dx = e.clientX - d.startX;
-                const dy = e.clientY - d.startY;
-                const moved = d.moved || Math.hypot(dx, dy) > 4;
-                return { ...d, x: e.clientX, y: e.clientY, moved };
-            });
-        };
-
-        const handlePointerUp = (e) => {
-            const { rect } = drag;
-            let x = Math.floor((e.clientX - rect.left) / (rect.width / 8));
-            let y = Math.floor((e.clientY - rect.top) / (rect.height / 8));
-            x = Math.max(0, Math.min(7, x));
-            y = Math.max(0, Math.min(7, y));
-            if (flipped) {
-                x = 7 - x;
-                y = 7 - y;
-            }
-            const targetSquare = "abcdefgh"[x] + (8 - y);
-
-            if (drag.isDraggablePiece && drag.moved) {
-                data.movePiece(drag.square, targetSquare);
-            } else if (!drag.isDraggablePiece) {
-                data.handleSquareClick(targetSquare);
-            }
-            update();
-            setDrag(null);
-        };
-
-        window.addEventListener("pointermove", handlePointerMove);
-        window.addEventListener("pointerup", handlePointerUp);
-        return () => {
-            window.removeEventListener("pointermove", handlePointerMove);
-            window.removeEventListener("pointerup", handlePointerUp);
-        };
-    }, [drag, flipped, data]);
-
-    return (
-        <div
-            className="board-container"
-            style={{ userSelect: drag ? "none" : "auto" }}
-        >
-            <div className="rank-container">
-                <div className={`ranks ${flipped ? "flipped-rank" : ""}`}>
-                    <div className="rank">8</div>
-                    <div className="rank">7</div>
-                    <div className="rank">6</div>
-                    <div className="rank">5</div>
-                    <div className="rank">4</div>
-                    <div className="rank">3</div>
-                    <div className="rank">2</div>
-                    <div className="rank">1</div>
-                </div>
-                <div className="chess-board" ref={boardRef}>
-                    <BoardLayer flipped={flipped} />
-                    <LastMoveLayer data={data} flipped={flipped} />
-                    <HighlightLayer data={data} flipped={flipped} />
-                    <PieceLayer data={data} flipped={flipped} drag={drag} />
-                    <InputLayer
-                        data={data}
-                        flipped={flipped}
-                        boardRef={boardRef}
-                        setDrag={setDrag}
-                    />
-                    <DragGhostLayer drag={drag} />
-                </div>
-            </div>
-            <div className="file-container">
-                <div className={`files ${flipped ? "flipped-file" : ""}`}>
-                    <div className="file">A</div>
-                    <div className="file">B</div>
-                    <div className="file">C</div>
-                    <div className="file">D</div>
-                    <div className="file">E</div>
-                    <div className="file">F</div>
-                    <div className="file">G</div>
-                    <div className="file">H</div>
-                </div>
-            </div>
-        </div>
     );
 }

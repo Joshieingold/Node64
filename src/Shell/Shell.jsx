@@ -79,7 +79,7 @@ export default function Shell() {
                         <div className="panel-control">C</div>
                         <div className="panel-control">D</div>
                     </div>
-                    <Explorer />
+                    <Explorer openAnalysisCallback={CreateAnalysisTab} />
                 </div>
                 <div className="content">
                     <div className="tab-bar">

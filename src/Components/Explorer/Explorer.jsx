@@ -4,24 +4,13 @@ import "./Explorer.css";
 import ExplorerFolder from "./ExplorerFolder";
 import CreateFileModal from "./CreateFileModal";
 
-export function flattenFolders(node, list = []) {
-    if (!node || (!node.is_directory && node.children === undefined)) {
-    }
-    if (node.children !== undefined) {
-        list.push({ path: node.path, name: node.name });
-        node.children.forEach((child) => {
-            if (child.is_directory) {
-                flattenFolders(child, list);
-            }
-        });
-    }
-    return list;
-}
-
-export default function Explorer() {
+export default function Explorer({ openAnalysisCallback }) {
     const [directoryNodeTree, setDirectoryNodeTree] = useState(null);
     const [newFileModalState, setNewFileModalState] = useState(false);
     const [targetFolder, setTargetFolder] = useState(null);
+    const folderOptions = directoryNodeTree
+        ? flattenFolders(directoryNodeTree)
+        : [];
 
     async function load() {
         const response = await invoke("list_directory", {
@@ -43,10 +32,6 @@ export default function Explorer() {
         load();
         setTargetFolder(null);
     };
-
-    const folderOptions = directoryNodeTree
-        ? flattenFolders(directoryNodeTree)
-        : [];
 
     return (
         <div className="explorer">
@@ -71,6 +56,7 @@ export default function Explorer() {
                                 children={item.children}
                                 level={1}
                                 plusClick={handlePlusClick}
+                                openAnalysisCallback={openAnalysisCallback}
                             />
                         ) : (
                             <div key={item.path} className="file-item">
@@ -81,4 +67,17 @@ export default function Explorer() {
             </div>
         </div>
     );
+}
+export function flattenFolders(node, list = []) {
+    if (!node || (!node.is_directory && node.children === undefined)) {
+    }
+    if (node.children !== undefined) {
+        list.push({ path: node.path, name: node.name });
+        node.children.forEach((child) => {
+            if (child.is_directory) {
+                flattenFolders(child, list);
+            }
+        });
+    }
+    return list;
 }

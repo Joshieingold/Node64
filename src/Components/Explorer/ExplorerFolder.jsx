@@ -7,10 +7,21 @@ export default function ExplorerFolder({
     children = [],
     plusClick,
     level = 0,
+    openAnalysisCallback,
 }) {
     const [dirOpen, setDirOpen] = useState(false);
     const handleOpenDir = () => {
         setDirOpen((prev) => !prev);
+    };
+    const HandleOpenFile = (fileName) => {
+        let suffix = fileName.split(".")[1];
+        console.log("hit");
+        console.log(suffix);
+        switch (suffix) {
+            case "pgn":
+                openAnalysisCallback();
+                return;
+        }
     };
 
     return (
@@ -35,7 +46,7 @@ export default function ExplorerFolder({
             {dirOpen && (
                 <div
                     className="folder-contents"
-                    style={{ paddingLeft: `${level * 48}px` }}
+                    style={{ paddingLeft: `${level * 22}px` }}
                 >
                     {children.map((item) =>
                         item.is_directory ? (
@@ -48,7 +59,11 @@ export default function ExplorerFolder({
                                 level={level + 1}
                             />
                         ) : (
-                            <div key={item.path} className="file-item">
+                            <div
+                                key={item.path}
+                                className="file-item"
+                                onClick={() => HandleOpenFile(item.name)}
+                            >
                                 {item.name.split(".")[0]}
                             </div>
                         ),

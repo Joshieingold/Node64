@@ -44,3 +44,12 @@
 .folder-button.new:hover {
     color: var(--highlight);
 }
+.file-item {
+    display: flex;
+    padding: 0.3rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+}
+.file-item:hover {
+    background-color: var(--secondary-bg);
+}

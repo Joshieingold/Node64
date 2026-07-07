@@ -3,54 +3,7 @@ import { useState, useEffect } from "react";
 import Modal from "../OptionsBar/Modal";
 import { invoke } from "@tauri-apps/api/core";
 
-function CreateFileBody({
-    name,
-    onNameChange,
-    destination,
-    onDestinationChange,
-    folderOptions,
-}) {
-    return (
-        <div className="modal-body">
-            <div className="small-input-area">
-                <label htmlFor="file-name">Name</label>
-                <input
-                    id="file-name"
-                    value={name}
-                    onChange={(e) => onNameChange(e.target.value)}
-                />
-            </div>
-            <div className="destination-area">
-                <label htmlFor="file-destination">Destination</label>
-                <select
-                    id="file-destination"
-                    value={destination}
-                    onChange={(e) => onDestinationChange(e.target.value)}
-                >
-                    {folderOptions.map((folder) => (
-                        <option key={folder.path} value={folder.path}>
-                            {folder.path}
-                        </option>
-                    ))}
-                </select>
-            </div>
-        </div>
-    );
-}
-
-function CreateButtonOptions({ onSave, onClose }) {
-    return (
-        <div className="button-container">
-            <div className="btn" onClick={onSave}>
-                Save
-            </div>
-            <div className="btn" onClick={onClose}>
-                Close
-            </div>
-        </div>
-    );
-}
-
+// Component for opening a save file modal
 export default function CreateFileModal({
     open,
     title,
@@ -101,5 +54,57 @@ export default function CreateFileModal({
                 />
             }
         />
+    );
+}
+
+///////////////////////
+// Helper Components //
+///////////////////////
+
+function CreateFileBody({
+    name,
+    onNameChange,
+    destination,
+    onDestinationChange,
+    folderOptions,
+}) {
+    return (
+        <div className="modal-body">
+            <div className="small-input-area">
+                <label htmlFor="file-name">Name</label>
+                <input
+                    id="file-name"
+                    value={name}
+                    onChange={(e) => onNameChange(e.target.value)}
+                />
+            </div>
+            <div className="destination-area">
+                <label htmlFor="file-destination">Destination</label>
+                <select
+                    id="file-destination"
+                    value={destination}
+                    onChange={(e) => onDestinationChange(e.target.value)}
+                >
+                    {folderOptions.map((folder) => (
+                        <option key={folder.path} value={folder.path}>
+                            {folder.path}
+                        </option>
+                    ))}
+                </select>
+            </div>
+        </div>
+    );
+}
+
+function CreateButtonOptions({ onSave, onClose }) {
+    return (
+        <div className="button-container">
+            <div className="btn" onClick={onSave}>
+                Save
+            </div>
+            <div className="btn" onClick={onClose}>
+                Close
+            </div>
+        </div>
     );
 }
