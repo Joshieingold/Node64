@@ -53,3 +53,24 @@
 .file-item:hover {
     background-color: var(--secondary-bg);
 }
+.panel-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.panel-button {
+    padding: 0.2rem;
+    width: 1rem;
+    border-radius: 1rem;
+    height: 1rem;
+    border: 1px solid transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.panel-button:hover {
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--highlight);
+}

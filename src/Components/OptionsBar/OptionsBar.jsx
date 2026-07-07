@@ -106,7 +106,7 @@ export default function OptionsBar({ data }) {
         };
         await invoke("create_file", {
             destination: getDest(),
-            name: data.fileName || "unamed_analysis",
+            name: data.fileName || "unnamed_analysis",
             fileType: selectedFileType,
             pgn: data.getFullPgn(),
         });
@@ -127,6 +127,7 @@ export default function OptionsBar({ data }) {
             </div>
 
             <Modal
+                className="long"
                 open={saveOpen}
                 onClose={closeSave}
                 title="Save PGN"

@@ -1,6 +1,5 @@
 import "./ExplorerFolder.css";
 import { useState } from "react";
-
 export default function ExplorerFolder({
     name,
     path,
@@ -8,6 +7,7 @@ export default function ExplorerFolder({
     plusClick,
     level = 0,
     openAnalysisCallback,
+    onContextMenu,
 }) {
     const [dirOpen, setDirOpen] = useState(false);
     const handleOpenDir = () => {
@@ -22,11 +22,18 @@ export default function ExplorerFolder({
                 return;
         }
     };
-
     return (
         <div className="explorer-folder">
             <div className="folder-label-wrapper">
-                <div className="folder-wrapper" onClick={handleOpenDir}>
+                <div
+                    className="folder-wrapper"
+                    onClick={handleOpenDir}
+                    onContextMenu={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onContextMenu(e, { path, name, is_directory: true });
+                    }}
+                >
                     <div className="folder-button expand">
                         {dirOpen ? "v " : "> "}
                     </div>
@@ -56,12 +63,23 @@ export default function ExplorerFolder({
                                 children={item.children}
                                 plusClick={plusClick}
                                 level={level + 1}
+                                openAnalysisCallback={openAnalysisCallback}
+                                onContextMenu={onContextMenu}
                             />
                         ) : (
                             <div
                                 key={item.path}
                                 className="file-item"
                                 onClick={() => HandleOpenFile(item)}
+                                onContextMenu={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    onContextMenu(e, {
+                                        path: item.path,
+                                        name: item.name,
+                                        is_directory: false,
+                                    });
+                                }}
                             >
                                 {item.name.split(".")[0]}
                             </div>

@@ -23,7 +23,12 @@ export default function CreateFileModal({
     const handleSave = async () => {
         if (!name.trim() || !destination) return;
         try {
-            await invoke("create_file", { destination, name, pgn: "" });
+            await invoke("create_file", {
+                destination,
+                name,
+                pgn: "",
+                fileType: "Analysis",
+            });
             setName("");
             onClose();
         } catch (err) {

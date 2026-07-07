@@ -12,7 +12,8 @@
     --legal-move-color: rgba(0, 0, 0, 0.35);
     --last-move-color: rgba(255, 215, 0, 0.35);
 
-    --bad-red: rgba(255, 0, 0, 0.3);
+    --bad-red: rgba(255, 0, 0);
+    --bad-red-transparent: rgba(255, 0, 0, 0.3);
 }
 
 /* --bubble: #2d1b4e; */
