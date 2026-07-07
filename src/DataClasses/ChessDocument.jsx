@@ -6,10 +6,10 @@ let nodeCounter = 0;
 function createNode(move, parent) {
     return {
         id: nodeCounter++,
-        move, // verbose chess.js move object, or null for the root
-        parent, // parent node, or null for the root
-        children: [], // array of child nodes; children[0] is the mainline
-        activeChildIndex: 0, // which child nextMove()/goToEnd() should follow
+        move,
+        parent,
+        children: [],
+        activeChildIndex: 0,
     };
 }
 
