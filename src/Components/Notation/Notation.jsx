@@ -1,74 +1,4 @@
 import "./Notation.css";
-
-function getPly(node) {
-    let ply = 0;
-    let n = node;
-    while (n.parent) {
-        ply++;
-        n = n.parent;
-    }
-    return ply;
-}
-
-function VariationLine({ node, data, onMoveClick }) {
-    const elements = [];
-    let current = node;
-    let first = true;
-
-    while (current) {
-        const thisNode = current;
-        const ply = getPly(thisNode);
-        const moveNumber = Math.ceil(ply / 2);
-        const isWhite = ply % 2 === 1;
-        const showNumber = isWhite || first;
-        const isActive = data.currentNode === thisNode;
-
-        elements.push(
-            <span key={thisNode.id}>
-                {showNumber && (
-                    <span className="notation-var-number">
-                        {moveNumber}
-                        {isWhite ? "." : "..."}{" "}
-                    </span>
-                )}
-                <span
-                    className={
-                        isActive
-                            ? "notation-var-move active"
-                            : "notation-var-move"
-                    }
-                    onClick={() => onMoveClick(thisNode)}
-                >
-                    {thisNode.move.san}{" "}
-                </span>
-            </span>,
-        );
-
-        if (thisNode.children.length > 1) {
-            for (let i = 1; i < thisNode.children.length; i++) {
-                elements.push(
-                    <div
-                        key={`var-${thisNode.children[i].id}`}
-                        className="notation-variation nested"
-                    >
-                        (
-                        <VariationLine
-                            node={thisNode.children[i]}
-                            data={data}
-                            onMoveClick={onMoveClick}
-                        />
-                        )
-                    </div>,
-                );
-            }
-        }
-
-        current = thisNode.children[0] || null;
-        first = false;
-    }
-
-    return <>{elements}</>;
-}
 export default function Notation({ data, update }) {
     const handleClick = (node) => {
         data.goToNode(node);
@@ -148,4 +78,74 @@ export default function Notation({ data, update }) {
             ))}
         </div>
     );
+}
+
+function VariationLine({ node, data, onMoveClick }) {
+    const elements = [];
+    let current = node;
+    let first = true;
+
+    while (current) {
+        const thisNode = current;
+        const ply = getPly(thisNode);
+        const moveNumber = Math.ceil(ply / 2);
+        const isWhite = ply % 2 === 1;
+        const showNumber = isWhite || first;
+        const isActive = data.currentNode === thisNode;
+
+        elements.push(
+            <span key={thisNode.id}>
+                {showNumber && (
+                    <span className="notation-var-number">
+                        {moveNumber}
+                        {isWhite ? "." : "..."}{" "}
+                    </span>
+                )}
+                <span
+                    className={
+                        isActive
+                            ? "notation-var-move active"
+                            : "notation-var-move"
+                    }
+                    onClick={() => onMoveClick(thisNode)}
+                >
+                    {thisNode.move.san}{" "}
+                </span>
+            </span>,
+        );
+
+        if (thisNode.children.length > 1) {
+            for (let i = 1; i < thisNode.children.length; i++) {
+                elements.push(
+                    <div
+                        key={`var-${thisNode.children[i].id}`}
+                        className="notation-variation nested"
+                    >
+                        (
+                        <VariationLine
+                            node={thisNode.children[i]}
+                            data={data}
+                            onMoveClick={onMoveClick}
+                        />
+                        )
+                    </div>,
+                );
+            }
+        }
+
+        current = thisNode.children[0] || null;
+        first = false;
+    }
+
+    return <>{elements}</>;
+}
+
+function getPly(node) {
+    let ply = 0;
+    let n = node;
+    while (n.parent) {
+        ply++;
+        n = n.parent;
+    }
+    return ply;
 }

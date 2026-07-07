@@ -1,0 +1,3 @@
+1. Make ChessDocument Load in the pgn header data upon opening
+2. Maybe Maybe subclasses for Stockfish, PGN handler, etc.
+3. Create File modal should only reference supported file types.

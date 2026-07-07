@@ -2,6 +2,9 @@ import { useState } from "react";
 import "./OptionsBar.css";
 import Modal from "./Modal";
 import PgnStuct from "../../DataClasses/PgnTracker";
+import FileNameField from "../../ReusableComponents/FileNameField";
+import SelectField from "../../ReusableComponents/SelectField";
+import TextField from "../../ReusableComponents/TextField";
 import { invoke } from "@tauri-apps/api/core";
 
 const TITLES = [
@@ -40,60 +43,6 @@ const TERMINATIONS_BY_RESULT = {
     ],
 };
 
-function Field({ label, id, children }) {
-    return (
-        <div className="input-block top-down-block">
-            <label htmlFor={id}>{label}</label>
-            {children}
-        </div>
-    );
-}
-
-function TextField({ label, id, value, onChange, type = "text" }) {
-    return (
-        <Field label={label} id={id}>
-            <input
-                type={type}
-                id={id}
-                value={value ?? ""}
-                onChange={(e) => onChange(e.target.value)}
-                {...(type === "number" ? { min: 1 } : {})}
-            />
-        </Field>
-    );
-}
-
-function SelectField({ label, id, value, onChange, options }) {
-    return (
-        <Field label={label} id={id}>
-            <select
-                id={id}
-                value={value ?? ""}
-                onChange={(e) => onChange(e.target.value)}
-            >
-                <option value="" />
-                {options.map((opt) => (
-                    <option key={opt} value={opt}>
-                        {opt}
-                    </option>
-                ))}
-            </select>
-        </Field>
-    );
-}
-function FileNameField({ data }) {
-    const handleChange = (e) => {
-        data.fileName = e.target.value;
-        data.notify();
-    };
-    return (
-        <input
-            type="text"
-            value={data.fileName ?? ""}
-            onChange={handleChange}
-        />
-    );
-}
 export default function OptionsBar({ data }) {
     const [saveOpen, setSaveOpen] = useState(false);
     const [pgn, setPgn] = useState(() => new PgnStuct());

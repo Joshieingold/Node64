@@ -1,18 +1,6 @@
 import "./Board.css";
 import { useState, useEffect, useRef } from "react";
 
-// Handing Board Flip //
-function transformXY(x, y, flipped) {
-    if (!flipped) return { x, y };
-    return { x: 7 - x, y: 7 - y };
-}
-
-function squareToXY(square) {
-    const x = "abcdefgh".indexOf(square[0]);
-    const y = 8 - Number(square[1]);
-    return { x, y };
-}
-
 export default function ChessBoard({ data, update }) {
     const [flipped, setFlipped] = useState(false); // Tracking Flipped Board
     const [drag, setDrag] = useState(null); // For Piece Drag
@@ -361,4 +349,16 @@ function InputLayer({ data, flipped, boardRef, setDrag }) {
             style={{ touchAction: "none" }}
         />
     );
+}
+
+// Handing Board Flip //
+function transformXY(x, y, flipped) {
+    if (!flipped) return { x, y };
+    return { x: 7 - x, y: 7 - y };
+}
+
+function squareToXY(square) {
+    const x = "abcdefgh".indexOf(square[0]);
+    const y = 8 - Number(square[1]);
+    return { x, y };
 }
