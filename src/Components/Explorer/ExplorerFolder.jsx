@@ -13,13 +13,12 @@ export default function ExplorerFolder({
     const handleOpenDir = () => {
         setDirOpen((prev) => !prev);
     };
-    const HandleOpenFile = (fileName) => {
-        let suffix = fileName.split(".")[1];
-        console.log("hit");
-        console.log(suffix);
+    const HandleOpenFile = (item) => {
+        let suffix = item.name.split(".")[1];
+        let path = item.path;
         switch (suffix) {
             case "pgn":
-                openAnalysisCallback();
+                openAnalysisCallback(path);
                 return;
         }
     };
@@ -62,7 +61,7 @@ export default function ExplorerFolder({
                             <div
                                 key={item.path}
                                 className="file-item"
-                                onClick={() => HandleOpenFile(item.name)}
+                                onClick={() => HandleOpenFile(item)}
                             >
                                 {item.name.split(".")[0]}
                             </div>

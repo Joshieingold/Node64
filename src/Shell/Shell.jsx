@@ -19,6 +19,17 @@ export default function Shell() {
         setTabs((prev) => [...prev, newTab]);
         setActiveTab(newTab.id);
     };
+    const LoadAnalysisTabFromFile = (pathToFile) => {
+        const newTab = {
+            id: crypto.randomUUID(),
+            type: "analysis",
+            title: "Analysis",
+            pageData: new ChessDocument(),
+        };
+        newTab.pageData.loadPgn(pathToFile);
+        setTabs((prev) => [...prev, newTab]);
+        setActiveTab(newTab.id);
+    };
     const removeTab = (tabId) => {
         setTabs((prev) => {
             const remaining = prev.filter((tab) => tab.id !== tabId);
@@ -79,7 +90,7 @@ export default function Shell() {
                         <div className="panel-control">C</div>
                         <div className="panel-control">D</div>
                     </div>
-                    <Explorer openAnalysisCallback={CreateAnalysisTab} />
+                    <Explorer openAnalysisCallback={LoadAnalysisTabFromFile} />
                 </div>
                 <div className="content">
                     <div className="tab-bar">

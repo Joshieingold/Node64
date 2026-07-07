@@ -1,10 +1,16 @@
 {
-  "$schema": "../gen/schemas/desktop-schema.json",
-  "identifier": "default",
-  "description": "Capability for the main window",
-  "windows": ["main"],
-  "permissions": [
-    "core:default",
-    "opener:default"
-  ]
+    "$schema": "../gen/schemas/desktop-schema.json",
+    "identifier": "default",
+    "description": "Capability for the main window",
+    "windows": ["main"],
+    "permissions": [
+        "fs:allow-read-text-file",
+        {
+            "identifier": "fs:scope",
+            "allow": ["$HOME/**"]
+        },
+        "dialog:allow-open",
+        "core:default",
+        "opener:default"
+    ]
 }

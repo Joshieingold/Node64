@@ -1,4 +1,5 @@
 import { Chess } from "chess.js";
+import { readTextFile } from "@tauri-apps/plugin-fs";
 import PgnStuct from "./PgnTracker";
 
 let nodeCounter = 0;
@@ -568,5 +569,103 @@ export default class ChessDocument {
     }
     getFullPgn() {
         return this.pgnHeader.toPgn(this.createPgnString());
+    }
+    async loadPgn(path) {
+        const pgnText = await readTextFile(path);
+        console.log(pgnText);
+        this.loadPgnString(pgnText);
+    }
+    loadPgnString(pgnText) {
+        console.log(pgnText);
+        const headers = {};
+        const headerRegex = /\[(\w+)\s+"([^"]*)"\]/g;
+        let m;
+        while ((m = headerRegex.exec(pgnText))) {
+            headers[m[1]] = m[2];
+        }
+        if (typeof this.pgnHeader.setHeaders === "function") {
+            this.pgnHeader.setHeaders(headers);
+        } else {
+            Object.assign(this.pgnHeader, headers);
+        }
+
+        this.root = createNode(null, null);
+        this.currentNode = this.root;
+
+        const movetext = pgnText.replace(/\[[^\]]*\]/g, "").trim();
+        this.parseMovetext(movetext);
+        console.log("Parsed root children:", this.root.children.length); // NEW
+
+        this.currentNode = this.root;
+        this.rebuildBoard();
+    }
+
+    parseMovetext(movetext) {
+        let text = movetext
+            .replace(/\{[^}]*\}/g, " ") // strip {comments}
+            .replace(/\$\d+/g, " ") // strip NAGs like $1
+            .replace(/\(/g, " ( ")
+            .replace(/\)/g, " ) ");
+        const tokens = text.split(/\s+/).filter(Boolean);
+
+        const moveNumberRe = /^\d+\.(\.\.)?$/;
+        const resultRe = /^(1-0|0-1|1\/2-1\/2|\*)$/;
+        const gluedMoveNumberRe = /^\d+\.(\.\.)?/;
+
+        let game = new Chess();
+        let currentNode = this.root;
+        let lastFenBefore = game.fen();
+        let lastParent = this.root;
+        const stack = [];
+
+        for (let rawToken of tokens) {
+            if (rawToken === "(") {
+                stack.push({ game, currentNode });
+                game = new Chess(lastFenBefore);
+                currentNode = lastParent;
+                continue;
+            }
+            if (rawToken === ")") {
+                const restored = stack.pop();
+                if (restored) {
+                    game = restored.game;
+                    currentNode = restored.currentNode;
+                }
+                continue;
+            }
+            if (moveNumberRe.test(rawToken) || resultRe.test(rawToken))
+                continue;
+
+            const token = rawToken.replace(gluedMoveNumberRe, "");
+            if (!token) continue;
+
+            lastFenBefore = game.fen();
+            lastParent = currentNode;
+
+            let moveResult = null;
+            try {
+                moveResult = game.move(token);
+            } catch (e) {
+                moveResult = null;
+            }
+            if (!moveResult) {
+                console.warn(
+                    `Skipping unparseable token: "${rawToken}" (cleaned: "${token}")`,
+                );
+                continue;
+            }
+
+            let child = currentNode.children.find(
+                (c) =>
+                    c.move.from === moveResult.from &&
+                    c.move.to === moveResult.to &&
+                    c.move.promotion === moveResult.promotion,
+            );
+            if (!child) {
+                child = createNode(moveResult, currentNode);
+                currentNode.children.push(child);
+            }
+            currentNode = child;
+        }
     }
 }
