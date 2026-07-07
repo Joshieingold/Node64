@@ -497,12 +497,6 @@ export default class ChessDocument {
 
     createPgnString() {
         const formatMoveNumber = (ply) => Math.floor((ply + 1) / 2);
-
-        // Renders the subtree hanging off `parentNode` (i.e. parentNode.children),
-        // mutating `game` along the active line. `ply` is the half-move number
-        // of the move about to be played (1 = White's move 1, 2 = Black's move 1, ...).
-        // `forceNumber` forces a "N..." marker even on Black's move (used right
-        // after a variation closes, per PGN convention).
         const renderChildren = (game, parentNode, ply, forceNumber = false) => {
             const tokens = [];
             if (
@@ -531,7 +525,6 @@ export default class ChessDocument {
             });
             tokens.push(moveResult.san);
 
-            // Alternative moves at this same point become parenthetical variations
             const hasVariations = parentNode.children.length > 1;
             for (let i = 0; i < parentNode.children.length; i++) {
                 if (i === activeIdx) continue;
@@ -554,7 +547,6 @@ export default class ChessDocument {
                 tokens.push(`(${varTokens.join(" ")})`);
             }
 
-            // Continue the main line
             tokens.push(
                 ...renderChildren(game, activeChild, ply + 1, hasVariations),
             );
