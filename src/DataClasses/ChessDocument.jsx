@@ -1,6 +1,6 @@
 import { Chess } from "chess.js";
 import { readTextFile } from "@tauri-apps/plugin-fs";
-import PgnStuct from "./PgnTracker";
+import PgnHead from "./PgnHead";
 
 let nodeCounter = 0;
 function createNode(move, parent) {
@@ -45,7 +45,7 @@ export default class ChessDocument {
         this._searchToken = 0;
 
         // PGN STUFF //
-        this.pgnHeader = new PgnStuct();
+        this.pgnHeader = new PgnHead();
         this.fileLocation = "";
         this.fileName = "";
     }

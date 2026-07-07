@@ -1,4 +1,4 @@
-export default class PgnStuct {
+export default class PgnHead {
     constructor() {
         this.whiteName = "";
         this.whiteElo = null;
@@ -21,13 +21,14 @@ export default class PgnStuct {
         this.annotator = "";
         this.gameId = "";
     }
+
     clone() {
         const copy = new PgnStuct();
         Object.assign(copy, this);
         return copy;
     }
+
     toPgn(moves = "") {
-        console.log("hit");
         const tag = (name, value) => `[${name} "${value ?? ""}"]`;
 
         const lines = [
