@@ -40,6 +40,11 @@ pub fn list_directory(path: String) -> Result<ExplorerNode, String> {
     Ok(build_tree(Path::new(&path)))
 }
 #[tauri::command]
+pub fn delete_path(path: String) -> Result<(), String> {
+    fs::remove_file(path);
+    Ok(())
+}
+#[tauri::command]
 pub fn create_file(
     destination: String,
     name: String,
