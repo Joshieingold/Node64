@@ -1,3 +1,8 @@
 1. Make ChessDocument Load in the pgn header data upon opening
 2. Maybe Maybe subclasses for Stockfish, PGN handler, etc.
 3. Create File modal should only reference supported file types.
+4. Likely Instead of drilling multiple callbacks into the Explorer there should be an object that has all the callbacks.
+
+
+LESS IMPORTANT 
+5. Rework the eval bar to not be logorithmic.

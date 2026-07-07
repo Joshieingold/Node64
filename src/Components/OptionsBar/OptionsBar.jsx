@@ -48,9 +48,6 @@ export default function OptionsBar({ data }) {
     const [pgn, setPgn] = useState(() => new PgnStuct());
     const [selectedFileType, setSelectedFileType] = useState("Analysis");
     const [fileName, setFileName] = useState("");
-
-    // Preserves the PgnStuct prototype by cloning instead of spreading
-    // into a plain object literal.
     const set = (field) => (value) =>
         setPgn((prev) => {
             const next = prev.clone();
@@ -92,8 +89,6 @@ export default function OptionsBar({ data }) {
             Annotator: pgn.annotator || undefined,
             GameId: pgn.gameId || undefined,
         };
-
-        // Strip out anything left blank so we don't write empty PGN tags.
         Object.keys(headers).forEach(
             (key) => headers[key] === undefined && delete headers[key],
         );
@@ -108,11 +103,10 @@ export default function OptionsBar({ data }) {
         };
         await invoke("create_file", {
             destination: getDest(),
-            name: data.fileName || "new Analysis",
+            name: data.fileName || "unamed_analysis",
             fileType: selectedFileType,
             pgn: data.getFullPgn(),
         });
-        // data.downloadPGN(`${pgn.whiteName || "game"}.pgn`, headers);
         closeSave();
     };
 

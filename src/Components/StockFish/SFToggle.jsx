@@ -5,7 +5,6 @@ export default function SFToggle({ data }) {
     const [doAnalysis, setDoAnalysis] = useState(false);
     const HandleAnalysis = () => {
         setDoAnalysis((prevState) => !prevState);
-        // Request stockfish json;
         if (!doAnalysis) {
             data.turnOnStockFish();
         } else {

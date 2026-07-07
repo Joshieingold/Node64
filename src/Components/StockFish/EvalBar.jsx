@@ -1,8 +1,6 @@
 import "./EvalBar.css";
 export default function EvalBar({ data, update }) {
     function evalToPercent(evalScore) {
-        // evalScore is in pawns (+0.5, -1.3, etc.)
-
         return 100 / (1 + Math.exp(-evalScore));
     }
     const evaluation = Number(data.engineInfo.evaluation);
