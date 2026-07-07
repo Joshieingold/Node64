@@ -1,6 +1,6 @@
 import "./AnalysisPage.css";
 import { useState, useEffect } from "react";
-import Notation from "../Components/Notation";
+import Notation from "../Components/Notation/Notation";
 import ChessBoard from "../Components/Board/Board";
 import SFToggle from "../Components/StockFish/SFToggle";
 import EvalBar from "../Components/StockFish/EvalBar";
