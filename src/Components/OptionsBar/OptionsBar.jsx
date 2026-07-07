@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./OptionsBar.css";
 import Modal from "./Modal";
-import PgnStuct from "../../DataClasses/PgnTracker";
+import PgnHead from "../../DataClasses/PgnHead";
 import FileNameField from "../../ReusableComponents/FileNameField";
 import SelectField from "../../ReusableComponents/SelectField";
 import TextField from "../../ReusableComponents/TextField";
@@ -45,7 +45,7 @@ const TERMINATIONS_BY_RESULT = {
 
 export default function OptionsBar({ data }) {
     const [saveOpen, setSaveOpen] = useState(false);
-    const [pgn, setPgn] = useState(() => new PgnStuct());
+    const [pgn, setPgn] = useState(() => new PgnHead());
     const [selectedFileType, setSelectedFileType] = useState("Analysis");
     const [fileName, setFileName] = useState("");
     const set = (field) => (value) =>

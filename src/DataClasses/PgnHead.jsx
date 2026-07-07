@@ -23,7 +23,7 @@ export default class PgnHead {
     }
 
     clone() {
-        const copy = new PgnStuct();
+        const copy = new PgnHead();
         Object.assign(copy, this);
         return copy;
     }

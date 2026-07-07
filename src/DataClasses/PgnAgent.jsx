@@ -1,5 +1,6 @@
 import PgnHead from "./PgnHead";
 
+// To Be implemented..
 export default class PgnAgent {
     constructor(onChange) {
         this.onChange = onChange;
