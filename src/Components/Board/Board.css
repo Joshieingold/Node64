@@ -114,3 +114,20 @@
     background-color: var(--last-move-color);
     pointer-events: none;
 }
+.board-gui {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    align-items: center;
+}
+.player-info {
+    display: flex;
+    height: 90%;
+    margin-right: 1rem;
+    justify-content: space-between;
+    flex-direction: column;
+}
+.player-stats {
+    padding: 0.2rem;
+    text-align: right;
+}

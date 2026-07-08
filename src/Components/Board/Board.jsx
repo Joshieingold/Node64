@@ -6,6 +6,11 @@ export default function ChessBoard({ data, update }) {
     const [drag, setDrag] = useState(null); // For Piece Drag
     const boardRef = useRef(null); // Maintaining board stability. No need to reload
 
+    // Loading Player Names
+    const playerData = data.getPlayerNames();
+    const whiteText = `${playerData.white.name ?? "??"} - (${playerData.white.elo ?? "??"})`;
+    const blackText = `${playerData.black.name ?? "??"} - (${playerData.black.elo ?? "??"})`;
+
     // Keybind handling //
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -98,7 +103,6 @@ export default function ChessBoard({ data, update }) {
             update();
             setDrag(null);
         };
-
         window.addEventListener("pointermove", handlePointerMove);
         window.addEventListener("pointerup", handlePointerUp);
         return () => {
@@ -106,12 +110,24 @@ export default function ChessBoard({ data, update }) {
             window.removeEventListener("pointerup", handlePointerUp);
         };
     }, [drag, flipped, data]);
+    const setPlayerData = () => {
+        let playerData = data.getPlayerNames();
+        setWhiteText(
+            `${playerData.white.name ?? "??"} - (${playerData.white.elo ?? "??"})`,
+        );
+        setBlackText(
+            `${playerData.black.name ?? "??"} - (${playerData.black.elo ?? "??"})`,
+        );
+    };
 
     return (
         <div
-            className="board-container"
+            className={`board-container`}
             style={{ userSelect: drag ? "none" : "auto" }}
         >
+            <div className="player-stats">
+                {flipped ? whiteText : blackText}
+            </div>
             <div className="rank-container">
                 <div className={`ranks ${flipped ? "flipped-rank" : ""}`}>
                     <div className="rank">8</div>
@@ -148,6 +164,9 @@ export default function ChessBoard({ data, update }) {
                     <div className="file">G</div>
                     <div className="file">H</div>
                 </div>
+            </div>
+            <div className="player-stats">
+                {flipped ? blackText : whiteText}
             </div>
         </div>
     );

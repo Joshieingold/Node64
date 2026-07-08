@@ -8,7 +8,9 @@ import OptionsBar from "../Components/OptionsBar/OptionsBar";
 
 export default function AnalysisPage({ data }) {
     const [, setVersion] = useState(0);
-    const update = () => setVersion((v) => v + 1);
+    const update = () => {
+        setVersion((v) => v + 1);
+    };
 
     useEffect(() => {
         data.onChange = update;

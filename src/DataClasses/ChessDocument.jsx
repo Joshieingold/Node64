@@ -565,7 +565,6 @@ export default class ChessDocument {
     }
     async loadPgn(path) {
         const pgnText = await readTextFile(path);
-        console.log(pgnText);
         this.loadPgnString(pgnText);
     }
     loadPgnString(pgnText) {
@@ -686,5 +685,18 @@ export default class ChessDocument {
             currentNode = child;
         }
     }
-    updateHeaders() {}
+    getPlayerNames() {
+        return {
+            black: {
+                name: this.pgnHeader.blackName || "Unknown",
+                elo: this.pgnHeader.blackElo || "?",
+                title: this.pgnHeader.blackTitle || "",
+            },
+            white: {
+                name: this.pgnHeader.whiteName || "Unknown",
+                elo: this.pgnHeader.whiteElo || "?",
+                title: this.pgnHeader.whiteTitle || "",
+            },
+        };
+    }
 }
