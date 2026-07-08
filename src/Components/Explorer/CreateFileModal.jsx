@@ -1,5 +1,3 @@
-// TO DO REF //
-// 3.
 import "./CreateFileModal.css";
 import { useState, useEffect } from "react";
 import Modal from "../OptionsBar/Modal";
@@ -88,6 +86,7 @@ function CreateFileBody({
             <div className="destination-area">
                 <label htmlFor="file-destination">Destination</label>
                 <select
+                    className="selection-box"
                     id="file-destination"
                     value={destination}
                     onChange={(e) => onDestinationChange(e.target.value)}

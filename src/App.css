@@ -50,12 +50,16 @@ div {
 }
 input {
     padding: 4px 8px;
-    border-radius: 4px;
+    background-color: var(--secondary-bg);
+    border-radius: 0.4rem;
+    color: white;
+    border: 2px solid var(--border);
 }
 select {
     appearance: none;
     -webkit-appearance: none;
-    background: var(--bg);
+    background-color: var(--secondary-bg);
+    border: 2px solid var(--border);
     color: white;
     padding: 4px 8px;
     border-radius: 4px;

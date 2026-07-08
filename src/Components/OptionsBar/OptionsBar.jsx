@@ -134,17 +134,29 @@ export default function OptionsBar({ data }) {
                 footer={
                     <>
                         <div className="file-options-container">
-                            <FileNameField data={data} />
-                            <select
-                                value={selectedFileType}
-                                onChange={(e) =>
-                                    setSelectedFileType(e.target.value)
-                                }
-                            >
-                                <option value="Analysis">Analysis</option>
-                                <option value="Database">Database</option>
-                                <option value="Repertoire">Repertoire</option>
-                            </select>
+                            <div className="input-wrapper">
+                                <label htmlFor="file-name-input">Name</label>
+                                <FileNameField
+                                    data={data}
+                                    id="file-name-input"
+                                />
+                            </div>
+                            <div className="input-wrapper">
+                                <label htmlFor="file-type-picker">Type</label>
+                                <select
+                                    id="file-type-picker"
+                                    value={selectedFileType}
+                                    onChange={(e) =>
+                                        setSelectedFileType(e.target.value)
+                                    }
+                                >
+                                    <option value="Analysis">Analysis</option>
+                                    <option value="Database">Database</option>
+                                    <option value="Repertoire">
+                                        Repertoire
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                         <div className="modal-button-container">
                             <button
