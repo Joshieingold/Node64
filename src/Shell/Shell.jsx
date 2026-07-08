@@ -4,6 +4,7 @@ import Compass from "/Compass.png";
 import Explorer from "../Components/Explorer/Explorer";
 import { useState } from "react";
 import ChessDocument from "../DataClasses/ChessDocument";
+import RepertoirePage from "../Pages/RepertoirePage/RepertoirePage";
 
 export default function Shell() {
     const [tabs, setTabs] = useState([]);
@@ -14,6 +15,16 @@ export default function Shell() {
             id: crypto.randomUUID(),
             type: "analysis",
             title: "Analysis",
+            pageData: new ChessDocument(),
+        };
+        setTabs((prev) => [...prev, newTab]);
+        setActiveTab(newTab.id);
+    };
+    const CreateRepertoireTab = () => {
+        const newTab = {
+            id: crypto.randomUUID(),
+            type: "repertoire",
+            title: "Repertoire",
             pageData: new ChessDocument(),
         };
         setTabs((prev) => [...prev, newTab]);
@@ -40,7 +51,6 @@ export default function Shell() {
 
         // Check to make sure its not already open
         if (!SwitchToOpenTab(nameWithoutExt)) {
-            console.log("HIT?!?");
             const newTab = {
                 id: crypto.randomUUID(),
                 type: "analysis",
@@ -84,6 +94,13 @@ export default function Shell() {
                         key={activeTabData.id}
                     />
                 );
+            case "repertoire":
+                return (
+                    <RepertoirePage
+                        data={activeTabData.pageData}
+                        key={activeTabData.id}
+                    ></RepertoirePage>
+                );
 
             default:
                 return null;
@@ -98,7 +115,9 @@ export default function Shell() {
                         <div className="control" onClick={CreateAnalysisTab}>
                             Analysis
                         </div>
-                        <div className="control">Train</div>
+                        <div className="control" onClick={CreateRepertoireTab}>
+                            Train
+                        </div>
                         <div className="control">Practice</div>
                         <div className="control">Openings</div>
                         <div className="control">Simulation</div>
