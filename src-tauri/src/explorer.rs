@@ -45,6 +45,11 @@ pub fn delete_path(path: String) -> Result<(), String> {
     Ok(())
 }
 #[tauri::command]
+pub fn rename_path(oldPath: String, newPath: String ) -> Result<(), String> {
+    fs::rename(oldPath, newPath);
+    Ok(())
+}
+#[tauri::command]
 pub fn create_file(
     destination: String,
     name: String,

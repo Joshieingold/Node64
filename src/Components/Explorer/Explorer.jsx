@@ -11,6 +11,10 @@ export default function Explorer({ openAnalysisCallback }) {
     const [targetFolder, setTargetFolder] = useState(null);
     const [contextMenu, setContextMenu] = useState(null); // { x, y, item }
 
+    // Rename state
+    const [renamingPath, setRenamingPath] = useState(null); // path of item currently being edited
+    const [renameValue, setRenameValue] = useState("");
+
     const folderOptions = directoryNodeTree
         ? flattenFolders(directoryNodeTree)
         : [];
@@ -44,8 +48,50 @@ export default function Explorer({ openAnalysisCallback }) {
 
     const closeContextMenu = () => setContextMenu(null);
 
-    const handleRename = async (item) => {
-        // your rename logic — e.g. open a rename modal, then invoke("rename_file", {...})
+    const beginRename = (item) => {
+        console.log("beginRename called with", item);
+        setRenamingPath(item.path);
+        setRenameValue(item.name);
+        closeContextMenu();
+    };
+    const cancelRename = () => {
+        setRenamingPath(null);
+        setRenameValue("");
+    };
+
+    const submitRename = async (item) => {
+        const trimmed = renameValue.trim();
+        // No-op if empty or unchanged
+        if (!trimmed || trimmed === item.name) {
+            cancelRename();
+            return;
+        }
+
+        const parentDir = item.path.slice(0, item.path.lastIndexOf("/"));
+        const newPath = `${parentDir}/${trimmed}`;
+
+        try {
+            await invoke("rename_path", {
+                oldPath: item.path,
+                newPath: newPath,
+            });
+            await load();
+        } catch (err) {
+            console.error("Rename failed:", err);
+            // optionally surface an error to the user here
+        } finally {
+            cancelRename();
+        }
+    };
+
+    const handleRenameKeyDown = (e, item) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            submitRename(item);
+        } else if (e.key === "Escape") {
+            e.preventDefault();
+            cancelRename();
+        }
     };
 
     const handleDelete = async (item) => {
@@ -90,7 +136,28 @@ export default function Explorer({ openAnalysisCallback }) {
                                 plusClick={handlePlusClick}
                                 openAnalysisCallback={openAnalysisCallback}
                                 onContextMenu={handleContextMenu}
+                                renamingPath={renamingPath}
+                                renameValue={renameValue}
+                                setRenameValue={setRenameValue}
+                                onRenameKeyDown={handleRenameKeyDown}
+                                onRenameBlur={cancelRename}
                             />
+                        ) : renamingPath === item.path ? (
+                            <div key={item.path} className="file-item">
+                                <input
+                                    className="rename-input"
+                                    autoFocus
+                                    value={renameValue}
+                                    onChange={(e) =>
+                                        setRenameValue(e.target.value)
+                                    }
+                                    onKeyDown={(e) =>
+                                        handleRenameKeyDown(e, item)
+                                    }
+                                    onBlur={cancelRename}
+                                    onClick={(e) => e.stopPropagation()}
+                                />
+                            </div>
                         ) : (
                             <div
                                 key={item.path}
@@ -104,7 +171,6 @@ export default function Explorer({ openAnalysisCallback }) {
                         ),
                     )}
             </div>
-
             {contextMenu && (
                 <ContextMenu
                     x={contextMenu.x}
@@ -118,7 +184,7 @@ export default function Explorer({ openAnalysisCallback }) {
                         { divider: true },
                         {
                             label: "Rename",
-                            onClick: () => handleRename(contextMenu.item),
+                            onClick: () => beginRename(contextMenu.item),
                         },
                         {
                             label: "Delete",

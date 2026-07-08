@@ -1,5 +1,6 @@
 import "./ExplorerFolder.css";
 import { useState } from "react";
+
 export default function ExplorerFolder({
     name,
     path,
@@ -8,11 +9,18 @@ export default function ExplorerFolder({
     level = 0,
     openAnalysisCallback,
     onContextMenu,
+    renamingPath,
+    renameValue,
+    setRenameValue,
+    onRenameKeyDown,
+    onRenameBlur,
 }) {
     const [dirOpen, setDirOpen] = useState(false);
+
     const handleOpenDir = () => {
         setDirOpen((prev) => !prev);
     };
+
     const HandleOpenFile = (item) => {
         let suffix = item.name.split(".")[1];
         let path = item.path;
@@ -22,12 +30,15 @@ export default function ExplorerFolder({
                 return;
         }
     };
+
+    const isRenamingThisFolder = renamingPath === path;
+
     return (
         <div className="explorer-folder">
             <div className="folder-label-wrapper">
                 <div
                     className="folder-wrapper"
-                    onClick={handleOpenDir}
+                    onClick={isRenamingThisFolder ? undefined : handleOpenDir}
                     onContextMenu={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -37,7 +48,25 @@ export default function ExplorerFolder({
                     <div className="folder-button expand">
                         {dirOpen ? "v " : "> "}
                     </div>
-                    <div className="folder-text">{name}</div>
+                    {isRenamingThisFolder ? (
+                        <input
+                            className="rename-input"
+                            autoFocus
+                            value={renameValue}
+                            onChange={(e) => setRenameValue(e.target.value)}
+                            onKeyDown={(e) =>
+                                onRenameKeyDown(e, {
+                                    path,
+                                    name,
+                                    is_directory: true,
+                                })
+                            }
+                            onBlur={onRenameBlur}
+                            onClick={(e) => e.stopPropagation()}
+                        />
+                    ) : (
+                        <div className="folder-text">{name}</div>
+                    )}
                 </div>
                 <div
                     className="folder-button new"
@@ -65,7 +94,32 @@ export default function ExplorerFolder({
                                 level={level + 1}
                                 openAnalysisCallback={openAnalysisCallback}
                                 onContextMenu={onContextMenu}
+                                renamingPath={renamingPath}
+                                renameValue={renameValue}
+                                setRenameValue={setRenameValue}
+                                onRenameKeyDown={onRenameKeyDown}
+                                onRenameBlur={onRenameBlur}
                             />
+                        ) : renamingPath === item.path ? (
+                            <div key={item.path} className="file-item">
+                                <input
+                                    className="rename-input"
+                                    autoFocus
+                                    value={renameValue}
+                                    onChange={(e) =>
+                                        setRenameValue(e.target.value)
+                                    }
+                                    onKeyDown={(e) =>
+                                        onRenameKeyDown(e, {
+                                            path: item.path,
+                                            name: item.name,
+                                            is_directory: false,
+                                        })
+                                    }
+                                    onBlur={onRenameBlur}
+                                    onClick={(e) => e.stopPropagation()}
+                                />
+                            </div>
                         ) : (
                             <div
                                 key={item.path}

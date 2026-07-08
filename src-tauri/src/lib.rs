@@ -2,6 +2,7 @@ mod explorer;
 use explorer::list_directory;
 use explorer::delete_path;
 use explorer::create_file;
+use explorer::rename_path;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -11,7 +12,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             list_directory,
             create_file,
-            delete_path
+            delete_path,
+            rename_path
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
