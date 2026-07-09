@@ -1,13 +1,13 @@
 .node-graph {
     border: 2px solid var(--border);
     /* Colors — tweak these */
-    --color-active-path: #ffffff;
-    --color-path: #ffffff;
-    --color-root: #ffffff;
-    --color-branch: #ffffff;
-    --color-default: #ffffff;
-    --color-highlight: blue;
-    --color-label-text: #000000;
+    --color-active-path: var(--highlight);
+    --color-path: var(--highlight);
+    --color-root: var(--secondary-bg);
+    --color-branch: var(--secondary-bg);
+    --color-default: var(--secondary-bg);
+    --color-highlight: var(--highlight);
+    --color-label-text: var(--fg);
 
     position: relative;
     width: 100%;
@@ -17,7 +17,8 @@
 .control-container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
+    background-color: var(--secondary-bg);
 }
 
 .zoom-controls-container {
@@ -56,7 +57,7 @@
 /* Nodes — order matters: later rules win when a node also has .selected etc. */
 .node circle {
     fill: var(--color-default);
-    stroke: transparent;
+    stroke: var(--border);
 }
 
 .node.branch circle {
