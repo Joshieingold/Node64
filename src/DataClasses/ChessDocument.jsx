@@ -1,6 +1,7 @@
 import { Chess } from "chess.js";
 import { readTextFile } from "@tauri-apps/plugin-fs";
 import PgnHead from "./PgnHead";
+import RepertoireDocument, { RepNode } from "./NodeMaker";
 
 let nodeCounter = 0;
 function createNode(move, parent) {
@@ -698,5 +699,40 @@ export default class ChessDocument {
                 title: this.pgnHeader.whiteTitle || "",
             },
         };
+    }
+    createRepertoire() {
+        const repertoire = new RepertoireDocument(
+            this.root.children.length
+                ? this.root.children[0].move.before
+                : new Chess().fen(),
+        );
+
+        const map = new Map();
+
+        const visit = (treeNode, previousRepNode = null) => {
+            let repNode = previousRepNode;
+
+            if (treeNode.move) {
+                repNode = new RepNode();
+                repNode.fen = treeNode.move.after;
+
+                repertoire.addNode(repNode);
+
+                map.set(treeNode.id, repNode);
+
+                if (previousRepNode) {
+                    repNode.last = previousRepNode;
+                    previousRepNode.next = repNode;
+                }
+            }
+
+            for (const child of treeNode.children) {
+                visit(child, repNode);
+            }
+        };
+
+        visit(this.root);
+
+        return repertoire;
     }
 }

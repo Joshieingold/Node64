@@ -5,14 +5,14 @@ import ChessBoard from "../Components/Board/Board";
 import SFToggle from "../Components/StockFish/SFToggle";
 import EvalBar from "../Components/StockFish/EvalBar";
 import OptionsBar from "../Components/OptionsBar/OptionsBar";
-import RepertoireDocument from "../DataClasses/RepertoireDocument";
-import RepertoireViewer from "../Components/RepertoireGraph/RepertoireGraph";
+import RepertoireTree from "../Components/RepertoireGraph/RepertoireGraph";
 
 export default function AnalysisPage({ data }) {
     const [, setVersion] = useState(0);
     const update = () => {
         setVersion((v) => v + 1);
     };
+    console.log(data.createRepertoire());
 
     useEffect(() => {
         data.onChange = update;
@@ -25,10 +25,7 @@ export default function AnalysisPage({ data }) {
 
     return (
         <div className="analysis-page">
-            <RepertoireViewer
-                chessDocument={data}
-                repertoire={new RepertoireDocument(data)}
-            />
+            <RepertoireTree root={data.root} />
         </div>
     );
 }
