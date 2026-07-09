@@ -1,0 +1,91 @@
+.node-graph {
+    border: 2px solid var(--border);
+    /* Colors — tweak these */
+    --color-active-path: #ffffff;
+    --color-path: #ffffff;
+    --color-root: #ffffff;
+    --color-branch: #ffffff;
+    --color-default: #ffffff;
+    --color-highlight: blue;
+    --color-label-text: #000000;
+
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.control-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.zoom-controls-container {
+    display: flex;
+    gap: 4px;
+}
+
+.zoom-btn {
+    cursor: pointer;
+    user-select: none;
+    padding: 2px 8px;
+}
+
+.graph-content {
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    touch-action: none;
+    background-color: var(--bg);
+}
+
+.graph-content.dragging {
+    cursor: grabbing;
+}
+
+/* Edges */
+.edge {
+    fill: none;
+    stroke: var(--color-path);
+}
+
+.edge.edge-active {
+    stroke: var(--color-active-path);
+}
+
+/* Nodes — order matters: later rules win when a node also has .selected etc. */
+.node circle {
+    fill: var(--color-default);
+    stroke: transparent;
+}
+
+.node.branch circle {
+    fill: var(--color-branch);
+}
+
+.node.on-path circle {
+    fill: var(--color-path);
+}
+
+.node.root circle {
+    fill: var(--color-root);
+}
+
+.node.selected circle {
+    stroke: var(--color-highlight);
+}
+
+.node text {
+    fill: var(--color-label-text);
+    pointer-events: none;
+}
+
+.node-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.fen-span {
+    opacity: 0.7;
+    font-size: 0.85em;
+}

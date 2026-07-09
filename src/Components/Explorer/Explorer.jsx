@@ -5,7 +5,10 @@ import ExplorerFolder from "./ExplorerFolder";
 import CreateFileModal from "./CreateFileModal";
 import ContextMenu from "../../ReusableComponents/ContextMenu";
 
-export default function Explorer({ openAnalysisCallback }) {
+export default function Explorer({
+    openAnalysisCallback,
+    openRepertoireCallback,
+}) {
     const [directoryNodeTree, setDirectoryNodeTree] = useState(null);
     const [newFileModalState, setNewFileModalState] = useState(false);
     const [targetFolder, setTargetFolder] = useState(null);
@@ -135,6 +138,7 @@ export default function Explorer({ openAnalysisCallback }) {
                                 level={1}
                                 plusClick={handlePlusClick}
                                 openAnalysisCallback={openAnalysisCallback}
+                                openRepertoireCallback={openRepertoireCallback}
                                 onContextMenu={handleContextMenu}
                                 renamingPath={renamingPath}
                                 renameValue={renameValue}

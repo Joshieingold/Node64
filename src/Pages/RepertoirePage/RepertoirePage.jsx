@@ -1,7 +1,7 @@
 import "./RepertoirePage.css";
 import { useState, useEffect } from "react";
-import RepertoireTree from "../../Components/RepertoireGraph/RepertoireGraph";
 import ChessBoard from "../../Components/Board/Board";
+import RepertoireGraph from "../../Components/RepertoireGraph/RepertoireGraph";
 
 export default function RepertoirePage({ data }) {
     const [, setVersion] = useState(0);
@@ -22,7 +22,9 @@ export default function RepertoirePage({ data }) {
             <div className="repertoire-board-container">
                 <ChessBoard data={data} update={update} />
             </div>
-            <RepertoireTree nodeRef={data.root} update={update} />
+            <div className="repertoire-graph-container">
+                <RepertoireGraph nodeData={data.root} update={update} />
+            </div>
         </div>
     );
 }

@@ -8,6 +8,7 @@ export default function ExplorerFolder({
     plusClick,
     level = 0,
     openAnalysisCallback,
+    openRepertoireCallback,
     onContextMenu,
     renamingPath,
     renameValue,
@@ -27,6 +28,9 @@ export default function ExplorerFolder({
         switch (suffix) {
             case "pgn":
                 openAnalysisCallback(path);
+                return;
+            case "rpgn":
+                openRepertoireCallback(path);
                 return;
         }
     };
