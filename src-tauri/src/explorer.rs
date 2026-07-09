@@ -41,12 +41,12 @@ pub fn list_directory(path: String) -> Result<ExplorerNode, String> {
 }
 #[tauri::command]
 pub fn delete_path(path: String) -> Result<(), String> {
-    fs::remove_file(path);
+    fs::remove_file(path).map_err(|e| e.to_string())?;
     Ok(())
 }
 #[tauri::command]
-pub fn rename_path(oldPath: String, newPath: String ) -> Result<(), String> {
-    fs::rename(oldPath, newPath);
+pub fn rename_path(old_path: String, new_path: String ) -> Result<(), String> {
+    fs::rename(old_path, new_path).map_err(|e| e.to_string())?;
     Ok(())
 }
 #[tauri::command]

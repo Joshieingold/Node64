@@ -52,7 +52,6 @@ export default function Explorer({
     const closeContextMenu = () => setContextMenu(null);
 
     const beginRename = (item) => {
-        console.log("beginRename called with", item);
         setRenamingPath(item.path);
         setRenameValue(item.name);
         closeContextMenu();
@@ -64,7 +63,6 @@ export default function Explorer({
 
     const submitRename = async (item) => {
         const trimmed = renameValue.trim();
-        // No-op if empty or unchanged
         if (!trimmed || trimmed === item.name) {
             cancelRename();
             return;
@@ -75,8 +73,8 @@ export default function Explorer({
 
         try {
             await invoke("rename_path", {
-                oldPath: item.path,
-                newPath: newPath,
+                old_path: item.path,
+                new_path: newPath,
             });
             await load();
         } catch (err) {
