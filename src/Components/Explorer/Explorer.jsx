@@ -73,8 +73,10 @@ export default function Explorer({
 
         try {
             await invoke("rename_path", {
-                old_path: item.path,
-                new_path: newPath,
+                // old_path: item.path, // THIS SHOULD BE LIKE THIS BUT IT PREFERS THE OLD WAY SOMEHOW
+                // new_path: newPath,
+                oldPath: item.path,
+                newPath: newPath,
             });
             await load();
         } catch (err) {
