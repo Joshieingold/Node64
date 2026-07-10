@@ -6,17 +6,16 @@ import {
     useSyncExternalStore,
 } from "react";
 import "./RepertoireGraph.css";
-
-export default function RepertoireViewer({ repertoire, chessDocument }) {
-    const nodeRadius = 30;
-
+const PADDING_X = 40;
+const getLabel = (node) => node.move?.san ?? node.id;
+const getFen = (node) =>
+    node.move?.after ?? node.move?.before ?? "(starting position)";
 export default function RepertoireGraph({ data, updateRef }) {
     // Subscribe to document mutations so this component re-renders on every move.
     const version = useSyncExternalStore(
         useCallback((callback) => data.subscribe(callback), [data]),
         () => data.version,
     );
-
     // Constants
     const nodeData = data.root;
     const NODE_R = 18;
@@ -25,7 +24,6 @@ export default function RepertoireGraph({ data, updateRef }) {
     const DEFAULT_ZOOM = (MAXIMUM_ZOOM + MINIMUM_ZOOM) / 2;
     const clamp = (vertical, low, high) =>
         Math.min(high, Math.max(low, vertical));
-
     // Layout — recompute whenever the doc mutates.
     const { nodes, edges, width } = useMemo(
         () => GetNodeLayout(nodeData, updateRef),
@@ -35,27 +33,22 @@ export default function RepertoireGraph({ data, updateRef }) {
         () => new Map(nodes.map((n) => [n.node.id, n])),
         [nodes],
     );
-
     // Selection is now derived from the document's own current position,
     // so it stays correct whether it changes via a graph click, the
     // board itself, or prev/next controls.
     const selectedNodeId = data.currentNode.id;
     const selected = nodesById.get(selectedNodeId)?.node ?? nodeData;
-
     // Positioning
     const [currentZoom, setCurrentZoom] = useState(DEFAULT_ZOOM);
     const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
-
     // State
     const [isDragging, setIsDragging] = useState(false);
     const dragRef = useRef(null);
-
     // Getters
     const getSelectedChain = useMemo(
         () => new Set(GetAncestorChain(nodesById, selectedNodeId)),
         [nodesById, selectedNodeId],
     );
-
     // Handlers
     const handleSelectNode = useCallback(
         (node) => {
@@ -105,7 +98,6 @@ export default function RepertoireGraph({ data, updateRef }) {
         dragRef.current = null;
         setIsDragging(false);
     }, []);
-
     // RENDERING
     return (
         <div className="node-graph">
@@ -160,6 +152,7 @@ export default function RepertoireGraph({ data, updateRef }) {
                                 const onPath = getSelectedChain.has(node.id);
                                 const isBranch =
                                     node.children && node.children.length > 1;
+                                const moveColor = node.move?.color; // "w" | "b" | undefined for root
                                 const nodeClass = [
                                     "node",
                                     isRoot
@@ -170,6 +163,12 @@ export default function RepertoireGraph({ data, updateRef }) {
                                             ? "branch"
                                             : "default",
                                     isSelected ? "selected" : null,
+                                    !isRoot && moveColor === "w"
+                                        ? "white-move"
+                                        : null,
+                                    !isRoot && moveColor === "b"
+                                        ? "black-move"
+                                        : null,
                                 ]
                                     .filter(Boolean)
                                     .join(" ");
@@ -210,7 +209,6 @@ export default function RepertoireGraph({ data, updateRef }) {
         </div>
     );
 }
-
 // Visits all nodes and creates properly positioned data for them.
 function GetNodeLayout(nodeData) {
     const COLUMN_WIDTH = 64;
@@ -263,7 +261,6 @@ function GetNodeLayout(nodeData) {
         height: maxY,
     };
 }
-
 function GetAncestorChain(nodesById, id) {
     let chain = [];
     let current = id;

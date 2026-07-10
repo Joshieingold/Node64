@@ -90,3 +90,30 @@
     opacity: 0.7;
     font-size: 0.85em;
 }
+.node.white-move circle {
+    fill: #f5f5f0;
+    stroke: #999;
+}
+
+.node.white-move text {
+    fill: #222;
+}
+
+.node.black-move circle {
+    fill: #3a3a3a;
+}
+
+.node.black-move text {
+    fill: #f0f0f0;
+}
+
+.node.white-move.selected circle,
+.node.black-move.selected circle {
+    stroke: #4f8cff;
+    stroke-width: 3;
+}
+
+.node.white-move.on-path circle,
+.node.black-move.on-path circle {
+    stroke-width: 2.5;
+}

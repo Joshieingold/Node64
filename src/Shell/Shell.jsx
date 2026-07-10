@@ -59,7 +59,7 @@ export default function Shell() {
             });
             newTab.pageData.fileLocation = directory;
             newTab.pageData.fileName = nameWithoutExt;
-            newTab.pageData.loadPgn(pathToFile);
+            newTab.pageData.loadPgnDatabase(pathToFile);
             setTabs((prev) => [...prev, newTab]);
             setActiveTab(newTab.id);
         }

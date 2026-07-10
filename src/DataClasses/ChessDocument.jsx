@@ -11,7 +11,35 @@ function createNode(move, parent) {
         parent,
         children: [],
         activeChildIndex: 0,
+        visits: 0, // how many imported games pass through this node
+        games: [], // headers of any game that ends exactly at this node
     };
+}
+
+// Splits a multi-game PGN database into individual game chunks by
+// finding each "[Event " tag, which always starts a new game in a
+// spec-compliant PGN file.
+function splitPgnDatabase(text) {
+    const matches = [...text.matchAll(/^\[Event\s/gm)];
+    if (matches.length === 0) return text.trim() ? [text] : [];
+    const games = [];
+    for (let i = 0; i < matches.length; i++) {
+        const start = matches[i].index;
+        const end = i + 1 < matches.length ? matches[i + 1].index : text.length;
+        const chunk = text.slice(start, end).trim();
+        if (chunk) games.push(chunk);
+    }
+    return games;
+}
+
+function parseHeaders(gameText) {
+    const headers = {};
+    const headerRegex = /\[(\w+)\s+"([^"]*)"\]/g;
+    let m;
+    while ((m = headerRegex.exec(gameText))) {
+        headers[m[1]] = m[2];
+    }
+    return headers;
 }
 
 export default class ChessDocument {
@@ -744,5 +772,124 @@ export default class ChessDocument {
         visit(this.root);
 
         return repertoire;
+    }
+
+    /////////////////////////////
+    // Multi-Game PGN Import  //
+    /////////////////////////////
+
+    // Loads a multi-game PGN database from disk and merges every game
+    // into the existing tree. Does not touch loadPgn/loadPgnString.
+    async loadPgnDatabase(path) {
+        const text = await readTextFile(path);
+        return this.importPgnDatabase(text);
+    }
+
+    // Merges every game in a multi-game PGN string into the existing
+    // tree. Shared openings/lines collapse onto the same nodes; the
+    // moment two games diverge, a new variation branch is created —
+    // this uses its own self-contained parser (mergeGameMovetext)
+    // rather than reusing parseMovetext, so single-game loading logic
+    // is completely unaffected.
+    importPgnDatabase(pgnText) {
+        const gameTexts = splitPgnDatabase(pgnText);
+        let imported = 0;
+
+        for (const gameText of gameTexts) {
+            const headers = parseHeaders(gameText);
+            const movetext = gameText.replace(/\[[^\]]*\]/g, "").trim();
+            if (!movetext) continue;
+
+            const leaf = this._mergeGameMovetext(movetext, this.root);
+            if (leaf && leaf !== this.root) {
+                leaf.games.push(headers); // remember which game(s) ended here
+            }
+            imported++;
+        }
+
+        this.currentNode = this.root;
+        this.rebuildBoard(); // also calls notify()
+        return imported;
+    }
+
+    // Self-contained variant of the movetext parser, used only by
+    // importPgnDatabase. Starts from an arbitrary node (usually root)
+    // instead of always assuming an empty tree, and reuses existing
+    // children so games sharing a line merge together automatically.
+    _mergeGameMovetext(movetext, startNode) {
+        let text = movetext
+            .replace(/\{[^}]*\}/g, " ")
+            .replace(/\$\d+/g, " ")
+            .replace(/\(/g, " ( ")
+            .replace(/\)/g, " ) ");
+        const tokens = text.split(/\s+/).filter(Boolean);
+
+        const moveNumberRe = /^\d+\.(\.\.)?$/;
+        const resultRe = /^(1-0|0-1|1\/2-1\/2|\*)$/;
+        const gluedMoveNumberRe = /^\d+\.(\.\.)?/;
+
+        let game = new Chess(startNode.move ? startNode.move.after : undefined);
+        let currentNode = startNode;
+        let lastFenBefore = game.fen();
+        let lastParent = startNode;
+        const stack = [];
+        let mainlineLeaf = startNode;
+
+        for (let rawToken of tokens) {
+            if (rawToken === "(") {
+                stack.push({ game, currentNode });
+                game = new Chess(lastFenBefore);
+                currentNode = lastParent;
+                continue;
+            }
+            if (rawToken === ")") {
+                const restored = stack.pop();
+                if (restored) {
+                    game = restored.game;
+                    currentNode = restored.currentNode;
+                }
+                continue;
+            }
+            if (moveNumberRe.test(rawToken) || resultRe.test(rawToken))
+                continue;
+
+            const token = rawToken.replace(gluedMoveNumberRe, "");
+            if (!token) continue;
+
+            lastFenBefore = game.fen();
+            lastParent = currentNode;
+
+            let moveResult = null;
+            try {
+                moveResult = game.move(token);
+            } catch (e) {
+                moveResult = null;
+            }
+            if (!moveResult) {
+                console.warn(
+                    `Skipping unparseable token: "${rawToken}" (cleaned: "${token}")`,
+                );
+                continue;
+            }
+
+            let child = currentNode.children.find(
+                (c) =>
+                    c.move.from === moveResult.from &&
+                    c.move.to === moveResult.to &&
+                    c.move.promotion === moveResult.promotion,
+            );
+            if (!child) {
+                child = createNode(moveResult, currentNode);
+                currentNode.children.push(child);
+            }
+            child.visits++;
+            currentNode = child;
+
+            if (stack.length === 0) {
+                mainlineLeaf = currentNode;
+            }
+        }
+
+        return mainlineLeaf;
     }
 }
