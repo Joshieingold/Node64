@@ -47,14 +47,13 @@
 /* Edges */
 .edge {
     fill: none;
-    stroke: var(--color-path);
+    stroke: var(--fg);
 }
 
 .edge.edge-active {
-    stroke: var(--color-active-path);
+    stroke: var(--color-highlight);
 }
 
-/* Nodes — order matters: later rules win when a node also has .selected etc. */
 .node circle {
     fill: var(--color-default);
     stroke: var(--border);
@@ -70,10 +69,6 @@
 
 .node.root circle {
     fill: var(--color-root);
-}
-
-.node.selected circle {
-    stroke: var(--color-highlight);
 }
 
 .node text {
@@ -116,4 +111,11 @@
 .node.white-move.on-path circle,
 .node.black-move.on-path circle {
     stroke-width: 2.5;
+}
+.node.selected circle {
+    stroke: var(--color-highlight);
+    fill: var(--color-highlight);
+}
+.node.selected text {
+    fill: var(--fg);
 }

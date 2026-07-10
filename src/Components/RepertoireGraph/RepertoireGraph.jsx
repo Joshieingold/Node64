@@ -3,13 +3,17 @@ import {
     useMemo,
     useCallback,
     useState,
+    useEffect,
     useSyncExternalStore,
 } from "react";
 import "./RepertoireGraph.css";
+
+const COLUMN_WIDTH = 64;
 const PADDING_X = 40;
 const getLabel = (node) => node.move?.san ?? node.id;
 const getFen = (node) =>
     node.move?.after ?? node.move?.before ?? "(starting position)";
+
 export default function RepertoireGraph({ data, updateRef }) {
     // Subscribe to document mutations so this component re-renders on every move.
     const version = useSyncExternalStore(
@@ -44,11 +48,40 @@ export default function RepertoireGraph({ data, updateRef }) {
     // State
     const [isDragging, setIsDragging] = useState(false);
     const dragRef = useRef(null);
+    const containerRef = useRef(null);
+    // Keep a live copy of zoom that centering can read without depending on it,
+    // so changing zoom manually doesn't trigger a recenter.
+    const zoomRef = useRef(currentZoom);
+    zoomRef.current = currentZoom;
     // Getters
     const getSelectedChain = useMemo(
         () => new Set(GetAncestorChain(nodesById, selectedNodeId)),
         [nodesById, selectedNodeId],
     );
+    // Center the camera on a node, given its layout coords and the current graph width.
+    const centerOnNode = useCallback((nodeX, nodeY, layoutWidth) => {
+        const container = containerRef.current;
+        if (!container) return;
+        const { clientWidth, clientHeight } = container;
+        const zoom = zoomRef.current;
+        // Mirrors the transforms applied in the SVG: outer translate(180,20) scale(zoom),
+        // then inner translate(-width/2 + PADDING_X, 0).
+        const localX = nodeX + (-layoutWidth / 2 + PADDING_X);
+        const localY = nodeY;
+        setPanPosition({
+            x: clientWidth / 2 - 180 - zoom * localX,
+            y: clientHeight / 2 - 20 - zoom * localY,
+        });
+    }, []);
+    // Whenever the selected node (or the layout it lives in) changes, pan to center it.
+    useEffect(() => {
+        const entry = nodesById.get(selectedNodeId);
+        if (entry) {
+            centerOnNode(entry.x, entry.y, width);
+        }
+        // Intentionally not depending on centerOnNode/currentZoom — we only want
+        // this to fire on selection or layout changes, not on manual zoom.
+    }, [selectedNodeId, nodesById, width]);
     // Handlers
     const handleSelectNode = useCallback(
         (node) => {
@@ -63,8 +96,13 @@ export default function RepertoireGraph({ data, updateRef }) {
     }, []);
     const resetView = useCallback(() => {
         setCurrentZoom(DEFAULT_ZOOM);
-        setPanPosition({ x: 0, y: 0 });
-    }, []);
+        const entry = nodesById.get(selectedNodeId);
+        if (entry) {
+            centerOnNode(entry.x, entry.y, width);
+        } else {
+            setPanPosition({ x: 0, y: 0 });
+        }
+    }, [nodesById, selectedNodeId, width, centerOnNode]);
     const onWheelScroll = useCallback((e) => {
         e.preventDefault();
         const zoomFactor = e.deltaY < 0 ? 1.08 : 1 / 1.08;
@@ -103,6 +141,7 @@ export default function RepertoireGraph({ data, updateRef }) {
         <div className="node-graph">
             <div className="control-container">
                 <h3>Moves: {nodes.length}</h3>
+                <h3>Lines: {(width / COLUMN_WIDTH).toFixed(0)}</h3>
                 <div className="zoom-controls-container">
                     <div className="zoom-btn" onClick={() => zoomBy(1 / 1.25)}>
                         -
@@ -116,6 +155,7 @@ export default function RepertoireGraph({ data, updateRef }) {
                 </div>
             </div>
             <div
+                ref={containerRef}
                 onWheel={onWheelScroll}
                 onPointerDown={onPointerDown}
                 onPointerMove={onPointerMove}
@@ -125,6 +165,11 @@ export default function RepertoireGraph({ data, updateRef }) {
             >
                 <svg width="100%" height="100%">
                     <g
+                        style={{
+                            transition: isDragging
+                                ? "none"
+                                : "transform 0.25s ease",
+                        }}
                         transform={`translate(${panPosition.x + 180}, ${panPosition.y + 20}) scale(${currentZoom})`}
                     >
                         <g
@@ -211,7 +256,6 @@ export default function RepertoireGraph({ data, updateRef }) {
 }
 // Visits all nodes and creates properly positioned data for them.
 function GetNodeLayout(nodeData) {
-    const COLUMN_WIDTH = 64;
     const ROW_HEIGHT = 76;
     let nodes = [];
     let edges = [];
