@@ -1,104 +1,45 @@
-import { useMemo } from "react";
+import {
+    useRef,
+    useMemo,
+    useCallback,
+    useState,
+    useSyncExternalStore,
+} from "react";
+import "./RepertoireGraph.css";
 
 export default function RepertoireViewer({ repertoire, chessDocument }) {
     const nodeRadius = 30;
 
-    const verticalGap = 130;
-    const horizontalGap = 150;
+export default function RepertoireGraph({ data, updateRef }) {
+    // Subscribe to document mutations so this component re-renders on every move.
+    const version = useSyncExternalStore(
+        useCallback((callback) => data.subscribe(callback), [data]),
+        () => data.version,
+    );
 
-    const layout = useMemo(() => {
-        const root = repertoire.nodeCollection.find(
-            (node) => node.prev.length === 0,
-        );
+    // Constants
+    const nodeData = data.root;
+    const NODE_R = 18;
+    const MINIMUM_ZOOM = 0.35;
+    const MAXIMUM_ZOOM = 2.5;
+    const DEFAULT_ZOOM = (MAXIMUM_ZOOM + MINIMUM_ZOOM) / 2;
+    const clamp = (vertical, low, high) =>
+        Math.min(high, Math.max(low, vertical));
 
-        const levels = [];
-        const depthMap = new Map();
-
-        function assignDepth(node, depth = 0) {
-            if (depthMap.has(node.id) && depthMap.get(node.id) <= depth) {
-                return;
-            }
-
-            depthMap.set(node.id, depth);
-
-            if (!levels[depth]) {
-                levels[depth] = [];
-            }
-
-            if (!levels[depth].includes(node)) {
-                levels[depth].push(node);
-            }
-
-            for (const child of node.next) {
-                assignDepth(child, depth + 1);
-            }
-        }
-
-        assignDepth(root);
-
-        const positions = new Map();
-
-        levels.forEach((level, depth) => {
-            level.forEach((node, index) => {
-                positions.set(node.id, {
-                    x: index * horizontalGap + 100,
-
-                    y: depth * verticalGap + 80,
-                });
-            });
-        });
-
-        return {
-            positions,
-
-            width:
-                Math.max(...levels.map((l) => l.length)) * horizontalGap + 200,
-
-            height: levels.length * verticalGap + 200,
-        };
-    }, [repertoire]);
-
-    function clickNode(node) {
-        if (!node.sourceNode) return;
-
-        chessDocument.goToNode(node.sourceNode);
-    }
-
-    visit(nodeRef, 0, null);
-    const positioned = new Map(nodes.map((n) => [n.node.id, n]));
-    const edgePaths = edges.map((e) => ({
-        ...e,
-        from: positioned.get(e.from),
-        to: positioned.get(e.to),
-    }));
-    const maxX = Math.max(...nodes.map((n) => n.x));
-    const maxY = Math.max(...nodes.map((n) => n.y));
-    return { nodes, edges: edgePaths, width: maxX + PAD_X * 2, height: maxY };
-}
-
-function ancestorChain(nodesById, id) {
-    const chain = [];
-    let cur = id;
-    while (cur != null) {
-        const entry = nodesById.get(cur);
-        if (!entry) break;
-        chain.push(cur);
-        cur = entry.parentId;
-    }
-    return chain;
-}
-
-const MIN_ZOOM = 0.35;
-const MAX_ZOOM = 2.5;
-const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
-
-export default function RepertoireTree({ nodeRef, update }) {
-    const { nodes, edges, width } = useMemo(() => layout(nodeRef), [nodeRef]);
+    // Layout — recompute whenever the doc mutates.
+    const { nodes, edges, width } = useMemo(
+        () => GetNodeLayout(nodeData, updateRef),
+        [nodeData, version],
+    );
     const nodesById = useMemo(
         () => new Map(nodes.map((n) => [n.node.id, n])),
         [nodes],
     );
-    const [selectedNodeId, setSelectedNodeId] = useState(nodeData.id);
+
+    // Selection is now derived from the document's own current position,
+    // so it stays correct whether it changes via a graph click, the
+    // board itself, or prev/next controls.
+    const selectedNodeId = data.currentNode.id;
     const selected = nodesById.get(selectedNodeId)?.node ?? nodeData;
 
     // Positioning
@@ -116,7 +57,12 @@ export default function RepertoireTree({ nodeRef, update }) {
     );
 
     // Handlers
-    const handleSelectNode = useCallback((id) => setSelectedNodeId(id), []);
+    const handleSelectNode = useCallback(
+        (node) => {
+            data.goToNode(node); // moves the board + triggers notify() for all subscribers
+        },
+        [data],
+    );
     const zoomBy = useCallback((zoomFactor) => {
         setCurrentZoom((z) =>
             clamp(z * zoomFactor, MINIMUM_ZOOM, MAXIMUM_ZOOM),
@@ -214,7 +160,6 @@ export default function RepertoireTree({ nodeRef, update }) {
                                 const onPath = getSelectedChain.has(node.id);
                                 const isBranch =
                                     node.children && node.children.length > 1;
-
                                 const nodeClass = [
                                     "node",
                                     isRoot
@@ -228,7 +173,6 @@ export default function RepertoireTree({ nodeRef, update }) {
                                 ]
                                     .filter(Boolean)
                                     .join(" ");
-
                                 return (
                                     <g
                                         className={nodeClass}
@@ -237,9 +181,7 @@ export default function RepertoireTree({ nodeRef, update }) {
                                         onPointerDown={(e) =>
                                             e.stopPropagation()
                                         }
-                                        onClick={() =>
-                                            handleSelectNode(node.id)
-                                        }
+                                        onClick={() => handleSelectNode(node)}
                                     >
                                         <circle r={NODE_R} strokeWidth={2} />
                                         <text
@@ -271,12 +213,11 @@ export default function RepertoireTree({ nodeRef, update }) {
 
 // Visits all nodes and creates properly positioned data for them.
 function GetNodeLayout(nodeData) {
-    const COLUMN_WIDTH = 64; // Can Modify later
-    const ROW_HEIGHT = 76; // Can Modify later
+    const COLUMN_WIDTH = 64;
+    const ROW_HEIGHT = 76;
     let nodes = [];
     let edges = [];
-    let leafCursor = 0; // x position of a node
-
+    let leafCursor = 0;
     function visitNode(node, depth, parent) {
         let x;
         if (!node.children || node.children.length === 0) {
@@ -306,19 +247,15 @@ function GetNodeLayout(nodeData) {
         }
         return x;
     }
-
     visitNode(nodeData, 0, null);
-
     let positioned = new Map(nodes.map((n) => [n.node.id, n]));
     let edgePaths = edges.map((e) => ({
         ...e,
         from: positioned.get(e.from),
         to: positioned.get(e.to),
     }));
-
     const maxX = Math.max(...nodes.map((n) => n.x));
     const maxY = Math.max(...nodes.map((n) => n.y));
-
     return {
         nodes,
         edges: edgePaths,

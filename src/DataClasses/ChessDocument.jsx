@@ -24,6 +24,11 @@ export default class ChessDocument {
         this.root = createNode(null, null);
         this.currentNode = this.root;
         this.lastMove = null;
+        this.version = 0;
+        this.listeners = new Set();
+        if (this.onChange) {
+            this.listeners.add(onChange);
+        }
 
         // STOCKFISH STUFF //
         this.stockfishOn = null;
@@ -51,9 +56,14 @@ export default class ChessDocument {
         this.fileName = "";
     }
 
+    subscribe(listener) {
+        this.listeners.add(listener);
+        return () => this.listeners.delete(listener);
+    }
     // Notifies Components to update
     notify() {
-        if (this.onChange) this.onChange();
+        this.version++;
+        for (const listener of this.listeners) listener();
     }
 
     // Walks from root down to `node`, returning the array of nodes (excluding root).

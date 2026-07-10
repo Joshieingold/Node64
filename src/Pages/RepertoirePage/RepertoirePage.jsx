@@ -23,7 +23,7 @@ export default function RepertoirePage({ data }) {
                 <ChessBoard data={data} update={update} />
             </div>
             <div className="repertoire-graph-container">
-                <RepertoireGraph nodeData={data.root} update={update} />
+                <RepertoireGraph data={data} update={update} />
             </div>
         </div>
     );
