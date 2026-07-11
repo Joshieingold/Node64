@@ -12,15 +12,27 @@ export default function Explorer({
     const [directoryNodeTree, setDirectoryNodeTree] = useState(null);
     const [newFileModalState, setNewFileModalState] = useState(false);
     const [targetFolder, setTargetFolder] = useState(null);
-    const [contextMenu, setContextMenu] = useState(null); // { x, y, item }
+    const [contextMenu, setContextMenu] = useState(null);
 
     // Rename state
-    const [renamingPath, setRenamingPath] = useState(null); // path of item currently being edited
+    const [renamingPath, setRenamingPath] = useState(null);
     const [renameValue, setRenameValue] = useState("");
+
+    // Search state
+    const [searchTerm, setSearchTerm] = useState("");
 
     const folderOptions = directoryNodeTree
         ? flattenFolders(directoryNodeTree)
         : [];
+
+    const filteredTree = !searchTerm.trim()
+        ? directoryNodeTree
+        : directoryNodeTree && {
+              ...directoryNodeTree,
+              children: directoryNodeTree.children
+                  .map((child) => filterTree(child, searchTerm))
+                  .filter(Boolean),
+          };
 
     async function load() {
         const response = await invoke("list_directory", {
@@ -73,15 +85,12 @@ export default function Explorer({
 
         try {
             await invoke("rename_path", {
-                // old_path: item.path, // THIS SHOULD BE LIKE THIS BUT IT PREFERS THE OLD WAY SOMEHOW
-                // new_path: newPath,
                 oldPath: item.path,
                 newPath: newPath,
             });
             await load();
         } catch (err) {
             console.error("Rename failed:", err);
-            // optionally surface an error to the user here
         } finally {
             cancelRename();
         }
@@ -128,11 +137,16 @@ export default function Explorer({
             </div>
             <div className="search-bar-wrapper">
                 <label htmlFor="search-directories">Search</label>
-                <input type="text" id="seach-directories" />
+                <input
+                    type="text"
+                    id="search-directories"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
             </div>
             <div className="panel-items">
-                {directoryNodeTree &&
-                    directoryNodeTree.children.map((item) =>
+                {filteredTree &&
+                    filteredTree.children.map((item) =>
                         item.is_directory ? (
                             <ExplorerFolder
                                 key={item.path}
@@ -149,6 +163,7 @@ export default function Explorer({
                                 setRenameValue={setRenameValue}
                                 onRenameKeyDown={handleRenameKeyDown}
                                 onRenameBlur={cancelRename}
+                                forceOpen={!!searchTerm.trim()}
                             />
                         ) : renamingPath === item.path ? (
                             <div key={item.path} className="file-item">
@@ -216,4 +231,24 @@ export function flattenFolders(node, list = []) {
         });
     }
     return list;
+}
+
+export function filterTree(node, term) {
+    const lowerTerm = term.toLowerCase();
+
+    if (!node.is_directory) {
+        return node.name.toLowerCase().includes(lowerTerm) ? node : null;
+    }
+
+    const filteredChildren = (node.children || [])
+        .map((child) => filterTree(child, term))
+        .filter(Boolean);
+
+    const nameMatches = node.name?.toLowerCase().includes(lowerTerm);
+
+    if (nameMatches || filteredChildren.length > 0) {
+        return { ...node, children: filteredChildren };
+    }
+
+    return null;
 }
