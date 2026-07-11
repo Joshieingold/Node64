@@ -9,6 +9,18 @@ import RepertoirePage from "../Pages/RepertoirePage/RepertoirePage";
 export default function Shell() {
     const [tabs, setTabs] = useState([]);
     const [activeTab, setActiveTab] = useState(null);
+    const [leftPanelOpen, setLeftPanelOpen] = useState(true);
+    const [currentPanelTab, setCurrentPanelTab] = useState("Explorer");
+
+    const handlePanelTabClick = (clickedPanelName) => {
+        if (clickedPanelName === currentPanelTab) {
+            setCurrentPanelTab(null);
+            setLeftPanelOpen(false);
+            return;
+        }
+        setLeftPanelOpen(true);
+        setCurrentPanelTab(clickedPanelName);
+    };
 
     const CreateAnalysisTab = () => {
         const newTab = {
@@ -20,6 +32,7 @@ export default function Shell() {
         setTabs((prev) => [...prev, newTab]);
         setActiveTab(newTab.id);
     };
+
     const CreateRepertoireTab = () => {
         const newTab = {
             id: crypto.randomUUID(),
@@ -149,17 +162,24 @@ export default function Shell() {
             <div className="main">
                 <div className="left-panel">
                     <div className="panel-controls">
-                        <div className="panel-control">
+                        <div
+                            className={`panel-control `}
+                            onClick={() => handlePanelTabClick("Explorer")}
+                        >
                             <img className="panel-img selected" src={Compass} />
                         </div>
                         <div className="panel-control">B</div>
                         <div className="panel-control">C</div>
                         <div className="panel-control">D</div>
                     </div>
-                    <Explorer
-                        openAnalysisCallback={LoadAnalysisTabFromFile}
-                        openRepertoireCallback={LoadRepertoireTabFromFile}
-                    />
+                    <div
+                        className={`left-panel-content ${currentPanelTab === "Explorer" ? "" : "hidden"}`}
+                    >
+                        <Explorer
+                            openAnalysisCallback={LoadAnalysisTabFromFile}
+                            openRepertoireCallback={LoadRepertoireTabFromFile}
+                        />
+                    </div>
                 </div>
                 <div className="content">
                     <div className="tab-bar">
