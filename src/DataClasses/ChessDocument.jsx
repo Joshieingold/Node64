@@ -16,6 +16,20 @@ function createNode(move, parent) {
     };
 }
 
+// Walks the tree and returns every root→leaf path as an array of nodes.
+function extractLines(root) {
+    const lines = [];
+    function walk(node, path) {
+        const nextPath = node.move ? [...path, node] : path;
+        if (node.children.length === 0) {
+            if (nextPath.length > 0) lines.push(nextPath);
+            return;
+        }
+        for (const child of node.children) walk(child, nextPath);
+    }
+    walk(root, []);
+    return lines;
+}
 function splitPgnDatabase(text) {
     const matches = [...text.matchAll(/^\[Event\s/gm)];
     if (matches.length === 0) return text.trim() ? [text] : [];

@@ -1,0 +1,95 @@
+/* src/Pages/TrainingPage/TrainingPage.css */
+.training-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    gap: 14px;
+    padding: 20px;
+}
+
+.training-hud {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 560px;
+}
+
+.training-banner {
+    flex: 1;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    background: #2a2a2a;
+    color: #eee;
+}
+
+.training-banner.correct {
+    background: #1f4d2e;
+    color: #7ee6a0;
+}
+
+.training-banner.wrong {
+    background: #5a1f1f;
+    color: #ff9b9b;
+}
+
+.training-banner.session-complete {
+    background: #1f3a5a;
+    color: #9bc6ff;
+}
+
+.training-stats {
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    color: #aaa;
+}
+
+.correct-count {
+    color: #7ee6a0;
+}
+
+.incorrect-count {
+    color: #ff9b9b;
+}
+
+.skip-line-btn {
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background: #1c1c1c;
+    color: #ddd;
+    cursor: pointer;
+}
+
+.skip-line-btn:hover {
+    background: #2a2a2a;
+}
+
+.training-complete-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: auto;
+    text-align: center;
+}
+
+.training-complete-screen button {
+    margin-top: 10px;
+    padding: 8px 18px;
+    border-radius: 6px;
+    border: none;
+    background: #3a6ea5;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.training-complete-screen button:hover {
+    background: #4a80b8;
+}

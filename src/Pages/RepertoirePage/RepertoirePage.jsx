@@ -5,7 +5,7 @@ import RepertoireGraph from "../../Components/RepertoireGraph/RepertoireGraph";
 import Notation from "../../Components/Notation/Notation";
 import { SaveAsButton, SaveButton } from "../../ReusableComponents/SaveButton";
 
-export default function RepertoirePage({ data }) {
+export default function RepertoirePage({ data, onReviewAllLines }) {
     const [, setVersion] = useState(0);
     const [currentPanelView, setCurrentPanelView] = useState("NodeView");
     const update = () => {
@@ -41,7 +41,12 @@ export default function RepertoirePage({ data }) {
                     >
                         ScoreSheet View
                     </div>
-                    <div className="panel-option">Memorize Lines</div>
+                    <div
+                        className="panel-option"
+                        onClick={() => onReviewAllLines({ userColor: "w" })}
+                    >
+                        Memorize Lines
+                    </div>
                 </div>
                 <div className="panel-options-wrapper">
                     <div

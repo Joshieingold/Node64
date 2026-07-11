@@ -5,6 +5,8 @@ import Explorer from "../Components/Explorer/Explorer";
 import { useState } from "react";
 import ChessDocument from "../DataClasses/ChessDocument";
 import RepertoirePage from "../Pages/RepertoirePage/RepertoirePage";
+import RepertoireTrainer from "../DataClasses/TrainerDocument";
+import TrainingPage from "../Pages/TrainingPage/TrainingPage";
 
 export default function Shell() {
     const [tabs, setTabs] = useState([]);
@@ -20,6 +22,28 @@ export default function Shell() {
         }
         setLeftPanelOpen(true);
         setCurrentPanelTab(clickedPanelName);
+    };
+
+    const CreateTrainingTab = (
+        repertoireTabData,
+        { userColor = "w", startNode = null } = {},
+    ) => {
+        const root = repertoireTabData.pageData.root;
+        const trainer = new RepertoireTrainer(root, {
+            userColor,
+            startNode: startNode ?? root,
+            onChange: () => setTabs((prev) => [...prev]),
+        });
+        trainer.startSession();
+
+        const newTab = {
+            id: crypto.randomUUID(),
+            type: "training",
+            title: `Train: ${repertoireTabData.title}`,
+            pageData: trainer,
+        };
+        setTabs((prev) => [...prev, newTab]);
+        setActiveTab(newTab.id);
     };
 
     const CreateAnalysisTab = () => {
@@ -43,6 +67,7 @@ export default function Shell() {
         setTabs((prev) => [...prev, newTab]);
         setActiveTab(newTab.id);
     };
+
     const SwitchToOpenTab = (name) => {
         if (tabs.length <= 0) {
             return false;
@@ -56,6 +81,7 @@ export default function Shell() {
         }
         return false;
     };
+
     const LoadRepertoireTabFromFile = (pathToFile) => {
         const lastSlash = pathToFile.lastIndexOf("/");
         const directory = pathToFile.slice(0, lastSlash);
@@ -77,12 +103,12 @@ export default function Shell() {
             setActiveTab(newTab.id);
         }
     };
+
     const LoadAnalysisTabFromFile = (pathToFile) => {
         const lastSlash = pathToFile.lastIndexOf("/");
         const directory = pathToFile.slice(0, lastSlash);
         const fileWithExt = pathToFile.slice(lastSlash + 1);
         const nameWithoutExt = fileWithExt.replace(/\.[^./]+$/, "");
-
         // Check to make sure its not already open
         if (!SwitchToOpenTab(nameWithoutExt)) {
             const newTab = {
@@ -100,10 +126,10 @@ export default function Shell() {
             setActiveTab(newTab.id);
         }
     };
+
     const removeTab = (tabId) => {
         setTabs((prev) => {
             const remaining = prev.filter((tab) => tab.id !== tabId);
-
             if (activeTab === tabId) {
                 if (remaining.length > 0) {
                     setActiveTab(remaining[remaining.length - 1].id);
@@ -111,15 +137,13 @@ export default function Shell() {
                     setActiveTab(null);
                 }
             }
-
             return remaining;
         });
     };
+
     const GetPage = () => {
         const activeTabData = tabs.find((tab) => tab.id === activeTab);
-
         if (!activeTabData) return null;
-
         switch (activeTabData.type) {
             case "analysis":
                 return (
@@ -132,14 +156,24 @@ export default function Shell() {
                 return (
                     <RepertoirePage
                         data={activeTabData.pageData}
+                        onReviewAllLines={(opts) =>
+                            CreateTrainingTab(activeTabData, opts)
+                        }
                         key={activeTabData.id}
                     ></RepertoirePage>
                 );
-
+            case "training":
+                return (
+                    <TrainingPage
+                        data={activeTabData.pageData}
+                        key={activeTabData.id}
+                    />
+                );
             default:
                 return null;
         }
     };
+
     return (
         <div className="shell">
             <div className="top-items">

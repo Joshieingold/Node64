@@ -1,13 +1,25 @@
 import "./Board.css";
 import { useState, useEffect, useRef } from "react";
 
-export default function ChessBoard({ data, update }) {
+export default function ChessBoard({ data, update, isTraining = false }) {
     const [flipped, setFlipped] = useState(false); // Tracking Flipped Board
     const [drag, setDrag] = useState(null); // For Piece Drag
     const boardRef = useRef(null); // Maintaining board stability. No need to reload
 
     // Loading Player Names
-    const playerData = data.getPlayerNames();
+    const playerData =
+        isTraining == true
+            ? {
+                  white: {
+                      name: "",
+                      elo: 0,
+                  },
+                  black: {
+                      name: "",
+                      elo: 0,
+                  },
+              }
+            : data.getPlayerNames();
     const whiteText = `${playerData.white.name ?? "??"} - (${playerData.white.elo ?? "??"})`;
     const blackText = `${playerData.black.name ?? "??"} - (${playerData.black.elo ?? "??"})`;
 
