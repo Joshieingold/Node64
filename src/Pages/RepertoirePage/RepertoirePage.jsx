@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import ChessBoard from "../../Components/Board/Board";
 import RepertoireGraph from "../../Components/RepertoireGraph/RepertoireGraph";
 import Notation from "../../Components/Notation/Notation";
+import { SaveAsButton, SaveButton } from "../../ReusableComponents/SaveButton";
 
 export default function RepertoirePage({ data }) {
     const [, setVersion] = useState(0);
@@ -26,7 +27,8 @@ export default function RepertoirePage({ data }) {
             </div>
             <div className="tab-panel-container">
                 <div className="panel-control-wrapper">
-                    <div className="panel-option">Save</div>
+                    <SaveAsButton data={data} />
+                    <SaveButton data={data} />
                     <div
                         className="panel-option"
                         onClick={() => setCurrentPanelView("NodeView")}
