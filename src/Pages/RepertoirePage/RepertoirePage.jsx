@@ -26,6 +26,7 @@ export default function RepertoirePage({ data }) {
             </div>
             <div className="tab-panel-container">
                 <div className="panel-control-wrapper">
+                    <div className="panel-option">Save</div>
                     <div
                         className="panel-option"
                         onClick={() => setCurrentPanelView("NodeView")}
