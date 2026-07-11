@@ -16,9 +16,6 @@ function createNode(move, parent) {
     };
 }
 
-// Splits a multi-game PGN database into individual game chunks by
-// finding each "[Event " tag, which always starts a new game in a
-// spec-compliant PGN file.
 function splitPgnDatabase(text) {
     const matches = [...text.matchAll(/^\[Event\s/gm)];
     if (matches.length === 0) return text.trim() ? [text] : [];
