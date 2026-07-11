@@ -168,9 +168,24 @@ export default function Shell() {
                         >
                             <img className="panel-img selected" src={Compass} />
                         </div>
-                        <div className="panel-control">B</div>
-                        <div className="panel-control">C</div>
-                        <div className="panel-control">D</div>
+                        <div
+                            className="panel-control"
+                            onClick={() => handlePanelTabClick("B")}
+                        >
+                            B
+                        </div>
+                        <div
+                            className="panel-control"
+                            onClick={() => handlePanelTabClick("C")}
+                        >
+                            C
+                        </div>
+                        <div
+                            className="panel-control"
+                            onClick={() => handlePanelTabClick("D")}
+                        >
+                            D
+                        </div>
                     </div>
                     <div
                         className={`left-panel-content ${currentPanelTab === "Explorer" ? "" : "hidden"}`}

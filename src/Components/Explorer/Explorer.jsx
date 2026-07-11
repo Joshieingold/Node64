@@ -126,6 +126,10 @@ export default function Explorer({
                     ⟳
                 </p>
             </div>
+            <div className="search-bar-wrapper">
+                <label htmlFor="search-directories">Search</label>
+                <input type="text" id="seach-directories" />
+            </div>
             <div className="panel-items">
                 {directoryNodeTree &&
                     directoryNodeTree.children.map((item) =>
