@@ -1,10 +1,10 @@
 .frame {
     display: flex;
     aspect-ratio: 1 / 1;
-    width: 45rem;
     user-select: none;
+    height: 100%;
+    width: 45rem;
     overflow: hidden;
-    height: 45rem;
     position: relative;
     flex-direction: column;
     padding: 1rem;

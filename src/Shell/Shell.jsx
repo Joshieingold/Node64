@@ -5,6 +5,7 @@ import Explorer from "../Components/Explorer/Explorer";
 import { useState } from "react";
 import RepertoirePage from "../Pages/RepertoirePage/RepertoirePage";
 import AnalysisDocument from "../NEW/Documents/AnalysisDocument";
+import TrainingPage from "../Pages/TrainingPage/TrainingPage";
 
 export default function Shell() {
     const [tabs, setTabs] = useState([]);
@@ -22,27 +23,27 @@ export default function Shell() {
         setCurrentPanelTab(clickedPanelName);
     };
 
-    // const CreateTrainingTab = (
-    //     repertoireTabData,
-    //     { userColor = "w", startNode = null } = {},
-    // ) => {
-    //     const root = repertoireTabData.pageData.root;
-    //     const trainer = new RepertoireTrainer(root, {
-    //         userColor,
-    //         startNode: startNode ?? root,
-    //         onChange: () => setTabs((prev) => [...prev]),
-    //     });
-    //     trainer.startSession();
-    //
-    //     const newTab = {
-    //         id: crypto.randomUUID(),
-    //         type: "training",
-    //         title: `Train: ${repertoireTabData.title}`,
-    //         pageData: trainer,
-    //     };
-    //     setTabs((prev) => [...prev, newTab]);
-    //     setActiveTab(newTab.id);
-    // };
+    const CreateTrainingTab = (
+        repertoireTabData,
+        { userColor = "w", startNode = null } = {},
+    ) => {
+        const root = repertoireTabData.pageData.root;
+        const trainer = new RepertoireTrainer(root, {
+            userColor,
+            startNode: startNode ?? root,
+            onChange: () => setTabs((prev) => [...prev]),
+        });
+        trainer.startSession();
+
+        const newTab = {
+            id: crypto.randomUUID(),
+            type: "training",
+            title: `Train: ${repertoireTabData.title}`,
+            pageData: trainer,
+        };
+        setTabs((prev) => [...prev, newTab]);
+        setActiveTab(newTab.id);
+    };
 
     const CreateAnalysisTab = () => {
         const newTab = {
@@ -160,13 +161,13 @@ export default function Shell() {
                         key={activeTabData.id}
                     ></RepertoirePage>
                 );
-            // case "training":
-            //     return (
-            //         <TrainingPage
-            //             data={activeTabData.pageData}
-            //             key={activeTabData.id}
-            //         />
-            //     );
+            case "training":
+                return (
+                    <TrainingPage
+                        data={activeTabData.pageData}
+                        key={activeTabData.id}
+                    />
+                );
             default:
                 return null;
         }

@@ -3,8 +3,8 @@
     width: 1.5rem;
     flex-direction: column;
     justify-content: space-around;
-    height: 80vh;
     display: flex;
+    height: 85%;
     overflow: hidden;
     border-radius: 1rem;
     border: 2px solid var(--border);

@@ -1,6 +1,7 @@
 // src/Pages/TrainingPage/TrainingPage.jsx
 import { useCallback, useState, useSyncExternalStore } from "react";
 import "./TrainingPage.css";
+import { AnalysisChessBoard } from "../../NEW/ChessBoard/ChessBoard";
 
 export default function TrainingPage({ data: trainer }) {
     // Drives the HUD (status text, stats, line progress).
@@ -81,5 +82,9 @@ export default function TrainingPage({ data: trainer }) {
         );
     }
 
-    return <div className="training-page"></div>;
+    return (
+        <div className="training-page">
+            <AnalysisChessBoard doc={trainer} update={update} />
+        </div>
+    );
 }

@@ -16,19 +16,23 @@
     --bad-red-transparent: rgba(255, 0, 0, 0.3);
 }
 
-/* --bubble: #2d1b4e; */
-/* --bg: #120b1f; */
-/* --secondary-bg: #1e1235; */
-/* --border: #4a2d7a; */
-/* --fg: #f2f2f2; */
-/* --highlight: #ff3ea5; */
-/* /* Chess Board Colors */
-*/
-    /* --light-sq-color: #baffc9; */
-    /* --dark-sq-color: #7b2ff7; */
-    /* --legal-move-color: rgba(255, 230, 0, 0.35); */
-    /* --last-move-color: rgba(0, 255, 200, 0.35); */
-    /* --bad-red: rgba(255, 0, 90, 0.4); */
+.tokyo-night {
+    --bubble: #24283b;
+    --bg: #1a1b26;
+    --secondary-bg: #1f2335;
+    --border: #2f3549;
+    --fg: #c0caf5;
+    --highlight: #7aa2f7;
+
+    /* Chess Board Colors */
+    --light-sq-color: #c0caf5;
+    --dark-sq-color: #5b7cb5;
+    --legal-move-color: rgba(26, 27, 38, 0.35);
+    --last-move-color: rgba(224, 175, 104, 0.45);
+
+    --bad-red: #f7768e;
+    --bad-red-transparent: rgba(247, 118, 142, 0.3);
+}
 html,
 body,
 #root {
