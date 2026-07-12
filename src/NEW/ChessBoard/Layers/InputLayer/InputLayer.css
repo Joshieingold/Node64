@@ -3,6 +3,8 @@
     inset: 0;
     width: 88%;
     height: 88%;
+    justify-self: center;
+    align-self: center;
     z-index: 100;
 }
 .input-layer {
