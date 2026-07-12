@@ -1,0 +1,29 @@
+.highlight-layer {
+    inset: 0;
+    position: absolute;
+    width: 88%;
+    height: 88%;
+    justify-self: center;
+    align-self: center;
+}
+.legal-capture::after {
+    content: "";
+    position: absolute;
+    inset: 3%;
+    border-radius: 50%;
+    border: 6px solid var(--legal-move-color);
+    box-sizing: border-box;
+}
+
+.legal-move::after {
+    content: "";
+    position: absolute;
+    width: 28%;
+    height: 28%;
+    border-radius: 50%;
+    background: var(--legal-move-color);
+
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}

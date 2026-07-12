@@ -1,6 +1,5 @@
 // src/Pages/TrainingPage/TrainingPage.jsx
 import { useCallback, useState, useSyncExternalStore } from "react";
-import ChessBoard from "../../Components/Board/Board";
 import "./TrainingPage.css";
 
 export default function TrainingPage({ data: trainer }) {
@@ -82,34 +81,5 @@ export default function TrainingPage({ data: trainer }) {
         );
     }
 
-    return (
-        <div className="training-page">
-            <div className="training-hud">
-                {renderStatusBanner()}
-                <div className="training-stats">
-                    <span>
-                        Line {trainer.stats.linesCompleted + 1} /{" "}
-                        {trainer.stats.totalLines}
-                    </span>
-                    <span className="correct-count">
-                        ✓ {trainer.stats.correct}
-                    </span>
-                    <span className="incorrect-count">
-                        ✗ {trainer.stats.incorrect}
-                    </span>
-                </div>
-                <button
-                    className="skip-line-btn"
-                    onClick={() => {
-                        trainer.skipLine();
-                        update();
-                    }}
-                >
-                    Skip Line
-                </button>
-            </div>
-
-            <ChessBoard data={trainer} update={update} isTraining={true} />
-        </div>
-    );
+    return <div className="training-page"></div>;
 }

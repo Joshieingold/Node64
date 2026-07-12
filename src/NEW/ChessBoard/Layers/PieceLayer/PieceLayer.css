@@ -1,0 +1,7 @@
+.piece-layer {
+    position: absolute;
+    width: 88%;
+    height: 88%;
+    justify-self: center;
+    align-self: center;
+}

@@ -1,0 +1,27 @@
+.analysis-board-wrapper {
+    display: flex;
+}
+.light {
+    background-color: var(--light-sq-color);
+}
+.dark {
+    background-color: var(--dark-sq-color);
+}
+.check-square {
+    position: absolute;
+    width: 12.5%;
+    height: 12.5%;
+    box-sizing: border-box;
+    filter: blur(10px);
+    background: var(--bad-red);
+    pointer-events: none;
+}
+.square,
+.selected-square,
+.legal-move,
+.legal-capture,
+.piece {
+    position: absolute;
+    width: 12.5%;
+    height: 12.5%;
+}

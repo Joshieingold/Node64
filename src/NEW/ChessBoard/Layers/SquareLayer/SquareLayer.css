@@ -1,0 +1,6 @@
+.square-layer {
+    position: absolute;
+    display: flex;
+    width: 88%;
+    height: 88%;
+}

@@ -1,0 +1,13 @@
+.input-layer {
+    position: absolute;
+    inset: 0;
+    width: 88%;
+    height: 88%;
+    z-index: 100;
+}
+.input-layer {
+    cursor: default;
+}
+.selected-square {
+    background: #6d937b;
+}

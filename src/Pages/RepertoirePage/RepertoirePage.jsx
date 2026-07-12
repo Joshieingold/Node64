@@ -1,9 +1,9 @@
 import "./RepertoirePage.css";
 import { useState, useEffect } from "react";
-import ChessBoard from "../../Components/Board/Board";
 import RepertoireGraph from "../../Components/RepertoireGraph/RepertoireGraph";
 import Notation from "../../Components/Notation/Notation";
 import { SaveAsButton, SaveButton } from "../../ReusableComponents/SaveButton";
+import { AnalysisChessBoard } from "../../NEW/ChessBoard/ChessBoard";
 
 export default function RepertoirePage({ data, onReviewAllLines }) {
     const [, setVersion] = useState(0);
@@ -23,7 +23,7 @@ export default function RepertoirePage({ data, onReviewAllLines }) {
     return (
         <div className="repertoire-page">
             <div className="repertoire-board-container">
-                <ChessBoard data={data} update={update} />
+                <AnalysisChessBoard doc={data} updateCallback={update} />
             </div>
             <div className="tab-panel-container">
                 <div className="panel-control-wrapper">

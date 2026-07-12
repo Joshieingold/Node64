@@ -1,0 +1,13 @@
+.last-move-layer {
+    justify-self: center;
+    align-self: center;
+    position: absolute;
+    width: 88%;
+    height: 88%;
+}
+.last-move-square {
+    position: absolute;
+    width: 12.5%;
+    height: 12.5%;
+    background-color: #bfd688;
+}
