@@ -3,7 +3,7 @@ export default function EvalBar({ data, update }) {
     function evalToPercent(evalScore) {
         return 100 / (1 + Math.exp(-evalScore));
     }
-    const evaluation = Number(data.engineInfo.evaluation);
+    const evaluation = Number(data.stockfishData.engineInfo.evaluation);
 
     const whitePercent = evalToPercent(isNaN(evaluation) ? 0 : evaluation);
 

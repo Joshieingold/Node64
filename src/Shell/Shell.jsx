@@ -3,10 +3,8 @@ import AnalysisPage from "../Pages/AnalysisPage";
 import Compass from "/Compass.png";
 import Explorer from "../Components/Explorer/Explorer";
 import { useState } from "react";
-import ChessDocument from "../DataClasses/ChessDocument";
 import RepertoirePage from "../Pages/RepertoirePage/RepertoirePage";
-import RepertoireTrainer from "../DataClasses/TrainerDocument";
-import TrainingPage from "../Pages/TrainingPage/TrainingPage";
+import AnalysisDocument from "../NEW/Documents/AnalysisDocument";
 
 export default function Shell() {
     const [tabs, setTabs] = useState([]);
@@ -24,34 +22,34 @@ export default function Shell() {
         setCurrentPanelTab(clickedPanelName);
     };
 
-    const CreateTrainingTab = (
-        repertoireTabData,
-        { userColor = "w", startNode = null } = {},
-    ) => {
-        const root = repertoireTabData.pageData.root;
-        const trainer = new RepertoireTrainer(root, {
-            userColor,
-            startNode: startNode ?? root,
-            onChange: () => setTabs((prev) => [...prev]),
-        });
-        trainer.startSession();
-
-        const newTab = {
-            id: crypto.randomUUID(),
-            type: "training",
-            title: `Train: ${repertoireTabData.title}`,
-            pageData: trainer,
-        };
-        setTabs((prev) => [...prev, newTab]);
-        setActiveTab(newTab.id);
-    };
+    // const CreateTrainingTab = (
+    //     repertoireTabData,
+    //     { userColor = "w", startNode = null } = {},
+    // ) => {
+    //     const root = repertoireTabData.pageData.root;
+    //     const trainer = new RepertoireTrainer(root, {
+    //         userColor,
+    //         startNode: startNode ?? root,
+    //         onChange: () => setTabs((prev) => [...prev]),
+    //     });
+    //     trainer.startSession();
+    //
+    //     const newTab = {
+    //         id: crypto.randomUUID(),
+    //         type: "training",
+    //         title: `Train: ${repertoireTabData.title}`,
+    //         pageData: trainer,
+    //     };
+    //     setTabs((prev) => [...prev, newTab]);
+    //     setActiveTab(newTab.id);
+    // };
 
     const CreateAnalysisTab = () => {
         const newTab = {
             id: crypto.randomUUID(),
             type: "analysis",
             title: "Analysis",
-            pageData: new ChessDocument(),
+            pageData: new AnalysisDocument(),
         };
         setTabs((prev) => [...prev, newTab]);
         setActiveTab(newTab.id);
@@ -62,7 +60,7 @@ export default function Shell() {
             id: crypto.randomUUID(),
             type: "repertoire",
             title: "Repertoire",
-            pageData: new ChessDocument(),
+            pageData: new AnalysisDocument(),
         };
         setTabs((prev) => [...prev, newTab]);
         setActiveTab(newTab.id);
@@ -93,7 +91,7 @@ export default function Shell() {
                 type: "repertoire",
                 title: nameWithoutExt,
             };
-            newTab.pageData = new ChessDocument(() => {
+            newTab.pageData = new AnalysisDocument(() => {
                 setTabs((prev) => [...prev]);
             });
             newTab.pageData.fileLocation = directory;
@@ -116,7 +114,7 @@ export default function Shell() {
                 type: "analysis",
                 title: nameWithoutExt,
             };
-            newTab.pageData = new ChessDocument(() => {
+            newTab.pageData = new AnalysisDocument(() => {
                 setTabs((prev) => [...prev]);
             });
             newTab.pageData.fileLocation = directory;
@@ -162,13 +160,13 @@ export default function Shell() {
                         key={activeTabData.id}
                     ></RepertoirePage>
                 );
-            case "training":
-                return (
-                    <TrainingPage
-                        data={activeTabData.pageData}
-                        key={activeTabData.id}
-                    />
-                );
+            // case "training":
+            //     return (
+            //         <TrainingPage
+            //             data={activeTabData.pageData}
+            //             key={activeTabData.id}
+            //         />
+            //     );
             default:
                 return null;
         }

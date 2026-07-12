@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "../Components/OptionsBar/OptionsBar.css";
 import Modal from "../Components/OptionsBar/Modal.jsx";
-import PgnHead from "../DataClasses/PgnHead";
+import PgnDocument from "../NEW/Documents/PgnDocument.jsx";
 import FileNameField from "./FileNameField";
 import SelectField from "./SelectField";
 import TextField from "./TextField";
@@ -44,18 +44,18 @@ const TERMINATIONS_BY_RESULT = {
 
 function useSaveManager(data) {
     const [saveOpen, setSaveOpen] = useState(false);
-    const [pgn, setPgn] = useState(() => data.pgnHeader ?? new PgnHead());
+    const [pgn, setPgn] = useState(() => data.pgnData ?? new PgnDocument());
     const [selectedFileType, setSelectedFileType] = useState(
-        () => data.fileType ?? "Analysis",
+        () => data.fileData.fileType ?? "Analysis",
     );
 
     useEffect(() => {
-        setPgn(data.pgnHeader ?? new PgnHead());
-    }, [data.pgnHeader]);
+        setPgn(data.pgnData ?? new PgnDocument());
+    }, [data.pgnData]);
 
     useEffect(() => {
-        setSelectedFileType(data.fileType ?? "Analysis");
-    }, [data.fileType]);
+        setSelectedFileType(data.fileData.fileType ?? "Analysis");
+    }, [data.fileData.fileType]);
 
     const set = (field) => (value) =>
         setPgn((prev) => {
@@ -70,7 +70,7 @@ function useSaveManager(data) {
     // fileType is optional - only pass it when you want to override
     // whatever is currently persisted on `data`.
     const performSave = async (
-        fileType = data.fileType ?? selectedFileType,
+        fileType = data.fileData.fileType ?? selectedFileType,
     ) => {
         const headers = {
             White: pgn.whiteName || "?",
@@ -104,19 +104,19 @@ function useSaveManager(data) {
             (key) => headers[key] === undefined && delete headers[key],
         );
 
-        data.pgnHeader = pgn;
-        data.fileType = fileType;
+        data.pgnData = pgn;
+        data.fileData.fileType = fileType;
 
         const getDest = () => {
-            if (data.fileLocation) {
-                return data.fileLocation;
+            if (data.fileData.fileLocation) {
+                return data.fileData.fileLocation;
             }
             return "/home/josh/Documents/repos/Node64/ChessData/Analysis/";
         };
 
         await invoke("create_file", {
             destination: getDest(),
-            name: data.fileName || "unnamed_analysis",
+            name: data.fileData.fileName || "unnamed_analysis",
             fileType,
             pgn: data.getFullPgn(),
         });
@@ -128,11 +128,11 @@ function useSaveManager(data) {
     };
 
     const handleQuickSave = async () => {
-        if (!data.fileLocation) {
+        if (!data.fileData.fileLocation) {
             openSave();
             return;
         }
-        await performSave(data.fileType ?? "Analysis");
+        await performSave(data.fileData.fileType ?? "Analysis");
     };
 
     const terminationOptions =

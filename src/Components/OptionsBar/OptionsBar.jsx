@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./OptionsBar.css";
 import Modal from "./Modal";
-import PgnHead from "../../DataClasses/PgnHead";
+import PgnDocument from "../../NEW/Documents/PgnDocument";
 import FileNameField from "../../ReusableComponents/FileNameField";
 import SelectField from "../../ReusableComponents/SelectField";
 import TextField from "../../ReusableComponents/TextField";
@@ -45,9 +45,9 @@ const TERMINATIONS_BY_RESULT = {
 
 export default function OptionsBar({ data }) {
     const [saveOpen, setSaveOpen] = useState(false);
-    const [pgn, setPgn] = useState(() => data.pgnHeader ?? new PgnHead());
+    const [pgn, setPgn] = useState(() => data.pgnData ?? new PgnDocument());
     const [selectedFileType, setSelectedFileType] = useState("Analysis");
-    const [fileName, setFileName] = useState("");
+
     const set = (field) => (value) =>
         setPgn((prev) => {
             const next = prev.clone();
@@ -58,9 +58,11 @@ export default function OptionsBar({ data }) {
     const openSave = () => {
         setSaveOpen(true);
     };
+
     useEffect(() => {
-        setPgn(data.pgnHeader ?? new PgnHead());
-    }, [data.pgnHeader]);
+        setPgn(data.pgnData ?? new PgnDocument());
+    }, [data.pgnData]);
+
     const closeSave = () => setSaveOpen(false);
 
     const handleSave = async () => {
@@ -96,17 +98,17 @@ export default function OptionsBar({ data }) {
             (key) => headers[key] === undefined && delete headers[key],
         );
 
-        data.pgnHeader = pgn;
+        data.pgnData = pgn;
 
         const getDest = () => {
-            if (data.fileLocation) {
-                return data.fileLocation;
+            if (data.fileData.fileLocation) {
+                return data.fileData.fileLocation;
             }
             return "/home/josh/Documents/repos/Node64/ChessData/Analysis/";
         };
         await invoke("create_file", {
             destination: getDest(),
-            name: data.fileName || "unnamed_analysis",
+            name: data.fileData.fileName || "unnamed_analysis",
             fileType: selectedFileType,
             pgn: data.getFullPgn(),
         });

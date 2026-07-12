@@ -1,4 +1,9 @@
-export default class PgnHead {
+/* ============================================================
+   PgnDocument — just header/tag data + serialization. No tree
+   walking here anymore (that needs chessData, which this class
+   doesn't have — it belongs on AnalysisDocument instead).
+   ============================================================ */
+export default class PgnDocument {
     constructor() {
         this.whiteName = "";
         this.whiteElo = null;
@@ -23,14 +28,17 @@ export default class PgnHead {
     }
 
     clone() {
-        const copy = new PgnHead();
+        const copy = new PgnDocument();
         Object.assign(copy, this);
         return copy;
     }
 
+    setHeaders(fields) {
+        Object.assign(this, fields);
+    }
+
     toPgn(moves = "") {
         const tag = (name, value) => `[${name} "${value ?? ""}"]`;
-
         const lines = [
             tag("Event", this.event || "?"),
             tag("Site", this.site || "?"),
@@ -39,7 +47,6 @@ export default class PgnHead {
             tag("White", this.whiteName || "?"),
             tag("Black", this.blackName || "?"),
             tag("Result", this.result || "*"),
-
             tag("WhiteElo", this.whiteElo ?? ""),
             tag("BlackElo", this.blackElo ?? ""),
             tag("WhiteTitle", this.whiteTitle),
@@ -54,13 +61,11 @@ export default class PgnHead {
             tag("Annotator", this.annotator),
             tag("GameId", this.gameId),
         ];
-
         const requiredCount = 7;
         const filtered = lines.filter((line, i) => {
             if (i < requiredCount) return true;
             return !line.endsWith('""]');
         });
-
         return `${filtered.join("\n")}\n\n${moves || "*"}\n`;
     }
 }
