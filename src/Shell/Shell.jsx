@@ -1,11 +1,11 @@
 import "./Shell.css";
 import AnalysisPage from "../Pages/AnalysisPage";
 import Compass from "/Compass.png";
-import Explorer from "../Components/Explorer/Explorer";
 import { useState } from "react";
 import RepertoirePage from "../Pages/RepertoirePage/RepertoirePage";
 import AnalysisDocument from "../NEW/Documents/AnalysisDocument";
 import TrainingPage from "../Pages/TrainingPage/TrainingPage";
+import ExplorerNew from "../NEW/Explorer/Explorer";
 
 export default function Shell() {
     const [tabs, setTabs] = useState([]);
@@ -223,9 +223,11 @@ export default function Shell() {
                     <div
                         className={`left-panel-content ${currentPanelTab === "Explorer" ? "" : "hidden"}`}
                     >
-                        <Explorer
-                            openAnalysisCallback={LoadAnalysisTabFromFile}
-                            openRepertoireCallback={LoadRepertoireTabFromFile}
+                        <ExplorerNew
+                            callbackObj={{
+                                analysis_callback: LoadAnalysisTabFromFile,
+                                repertoire_callback: LoadRepertoireTabFromFile,
+                            }}
                         />
                     </div>
                 </div>

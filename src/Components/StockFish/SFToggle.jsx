@@ -6,38 +6,37 @@ export default function SFToggle({ data }) {
     const HandleAnalysis = () => {
         setDoAnalysis((prevState) => !prevState);
         if (!doAnalysis) {
-            data.turnOnStockFish();
+            data.stockfishData.turnOnStockFish();
         } else {
-            data.turnOffStockFish();
-            console.log("dead fish");
+            data.stockfishData.turnOffStockFish();
         }
     };
     const GetEval = () => {
         if (!doAnalysis) {
             return "--";
         }
-        if (!data.engineInfo.evaluation) {
+        if (!data.stockfishData.engineInfo.evaluation) {
             return "...";
         }
-        return data.engineInfo.evaluation;
+        return data.stockfishData.engineInfo.evaluation;
     };
     const GetBestMove = () => {
         if (!doAnalysis) {
             return "--";
         }
-        if (!data.engineInfo.bestMove) {
+        if (!data.stockfishData.engineInfo.bestMove) {
             return "...";
         }
-        return data.engineInfo.bestMove;
+        return data.stockfishData.engineInfo.bestMove;
     };
     const GetDepth = () => {
         if (!doAnalysis) {
             return "Depth: 0";
         }
-        if (!data.engineInfo.depth) {
+        if (!data.stockfishData.engineInfo.depth) {
             return "Depth: 1";
         }
-        return `Depth: ${data.engineInfo.depth}`;
+        return `Depth: ${data.stockfishData.engineInfo.depth}`;
     };
     return (
         <div className="sf-toggle">

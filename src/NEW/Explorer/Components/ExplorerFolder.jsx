@@ -1,5 +1,6 @@
-import "./ExplorerFolder.css";
 import { useState } from "react";
+import "./ExplorerItems.css";
+import ExplorerFile from "./ExplorerFile";
 
 export default function ExplorerFolder({
     name,
@@ -15,8 +16,10 @@ export default function ExplorerFolder({
     setRenameValue,
     onRenameKeyDown,
     onRenameBlur,
+    forceOpen = false,
 }) {
     const [dirOpen, setDirOpen] = useState(false);
+    const isOpen = dirOpen || forceOpen;
 
     const handleOpenDir = () => {
         setDirOpen((prev) => !prev);
@@ -50,7 +53,7 @@ export default function ExplorerFolder({
                     }}
                 >
                     <div className="folder-button expand">
-                        {dirOpen ? "v " : "> "}
+                        {isOpen ? "v " : "> "}
                     </div>
                     {isRenamingThisFolder ? (
                         <input
@@ -82,7 +85,7 @@ export default function ExplorerFolder({
                     +
                 </div>
             </div>
-            {dirOpen && (
+            {isOpen && (
                 <div
                     className="folder-contents"
                     style={{ paddingLeft: `${level * 22}px` }}
@@ -97,50 +100,27 @@ export default function ExplorerFolder({
                                 plusClick={plusClick}
                                 level={level + 1}
                                 openAnalysisCallback={openAnalysisCallback}
+                                openRepertoireCallback={openRepertoireCallback}
                                 onContextMenu={onContextMenu}
                                 renamingPath={renamingPath}
                                 renameValue={renameValue}
                                 setRenameValue={setRenameValue}
                                 onRenameKeyDown={onRenameKeyDown}
                                 onRenameBlur={onRenameBlur}
+                                forceOpen={forceOpen}
                             />
-                        ) : renamingPath === item.path ? (
-                            <div key={item.path} className="file-item">
-                                <input
-                                    className="rename-input"
-                                    autoFocus
-                                    value={renameValue}
-                                    onChange={(e) =>
-                                        setRenameValue(e.target.value)
-                                    }
-                                    onKeyDown={(e) =>
-                                        onRenameKeyDown(e, {
-                                            path: item.path,
-                                            name: item.name,
-                                            is_directory: false,
-                                        })
-                                    }
-                                    onBlur={onRenameBlur}
-                                    onClick={(e) => e.stopPropagation()}
-                                />
-                            </div>
                         ) : (
-                            <div
+                            <ExplorerFile
                                 key={item.path}
-                                className="file-item"
-                                onClick={() => HandleOpenFile(item)}
-                                onContextMenu={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    onContextMenu(e, {
-                                        path: item.path,
-                                        name: item.name,
-                                        is_directory: false,
-                                    });
-                                }}
-                            >
-                                {item.name.split(".")[0]}
-                            </div>
+                                itemRef={item}
+                                fileOpenRef={HandleOpenFile}
+                                contextMenuRef={onContextMenu}
+                                isRenaming={renamingPath === item.path}
+                                renameValue={renameValue}
+                                setRenameValue={setRenameValue}
+                                onRenameKeyDown={onRenameKeyDown}
+                                onRenameBlur={onRenameBlur}
+                            />
                         ),
                     )}
                 </div>

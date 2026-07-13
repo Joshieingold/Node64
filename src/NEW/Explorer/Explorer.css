@@ -1,0 +1,42 @@
+.explorer {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    width: 100%;
+}
+.explorer-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+}
+.title {
+    font-size: 12pt;
+}
+.explorer-buttons-wrapper {
+    display: flex;
+    gap: 1rem;
+}
+.search-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s ease-in-out;
+    height: 2%;
+    margin-bottom: 1rem;
+    input {
+        height: 0.7rem;
+    }
+}
+.hidden {
+    height: 0%;
+    display: hidden;
+    input {
+        display: none;
+    }
+}
+.filetree-content {
+    display: flex;
+    flex-direction: column;
+}

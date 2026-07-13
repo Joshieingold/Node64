@@ -1,30 +1,44 @@
-import { invoke } from "@tauri-apps/api/core";
-import { useState, useEffect } from "react";
 import "./Explorer.css";
-import ExplorerFolder from "./ExplorerFolder";
-import CreateFileModal from "./CreateFileModal";
+import { useEffect, useState } from "react";
+import ExplorerButton from "./Components/ExplorerButton";
+import { invoke } from "@tauri-apps/api/core";
+import CreateFileModal from "./Components/CreateFileModal";
+import ExplorerFolder from "./Components/ExplorerFolder";
 import ContextMenu from "../../ReusableComponents/ContextMenu";
+import ExplorerFile from "./Components/ExplorerFile";
 
-export default function Explorer({
-    openAnalysisCallback,
-    openRepertoireCallback,
-}) {
+// Callback Object is {
+// analysis_callback: func,
+// repertoire_callback: func
+// }
+
+export default function ExplorerNew({ callbackObj }) {
+    // On Load
+    useEffect(() => {
+        ReloadFiles();
+    }, []);
+
+    // Create-File Modal
+    const [modalOpen, setModalOpen] = useState(false);
+    const handleCloseModal = async () => {
+        setModalOpen(false);
+        ReloadFiles();
+        setTargetFolder(null);
+    };
+
+    // File Data
     const [directoryNodeTree, setDirectoryNodeTree] = useState(null);
-    const [newFileModalState, setNewFileModalState] = useState(false);
-    const [targetFolder, setTargetFolder] = useState(null);
-    const [contextMenu, setContextMenu] = useState(null);
 
-    // Rename state
-    const [renamingPath, setRenamingPath] = useState(null);
-    const [renameValue, setRenameValue] = useState("");
+    const handleNewFileHere = (item) => {
+        const dir = item.is_directory
+            ? item.path
+            : item.path.slice(0, item.path.lastIndexOf("/"));
+        plusClick(dir);
+    };
 
-    // Search state
+    // Search Bar
+    const [searchOpen, setSearchOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
-
-    const folderOptions = directoryNodeTree
-        ? flattenFolders(directoryNodeTree)
-        : [];
-
     const filteredTree = !searchTerm.trim()
         ? directoryNodeTree
         : directoryNodeTree && {
@@ -34,34 +48,27 @@ export default function Explorer({
                   .filter(Boolean),
           };
 
-    async function load() {
-        const response = await invoke("list_directory", {
-            path: "/home/josh/Documents/repos/Node64/ChessData/",
-        });
-        setDirectoryNodeTree(response);
-    }
-
-    useEffect(() => {
-        load();
-    }, []);
-
-    const handlePlusClick = (path) => {
-        setTargetFolder(path);
-        setNewFileModalState(true);
-    };
-
-    const handleCloseModal = async () => {
-        setNewFileModalState(false);
-        load();
-        setTargetFolder(null);
-    };
+    // Context Menu
+    const [contextMenu, setContextMenu] = useState(null);
+    const [targetFolder, setTargetFolder] = useState(null);
 
     const handleContextMenu = (e, item) => {
         e.preventDefault();
         setContextMenu({ x: e.clientX, y: e.clientY, item });
     };
 
-    const closeContextMenu = () => setContextMenu(null);
+    const closeContextMenu = () => {
+        setContextMenu(null);
+    };
+
+    const handleDelete = async (item) => {
+        await invoke("delete_path", { path: item.path });
+        ReloadFiles();
+    };
+
+    // Renaming
+    const [renamingPath, setRenamingPath] = useState(null);
+    const [renameValue, setRenameValue] = useState("");
 
     const beginRename = (item) => {
         setRenamingPath(item.path);
@@ -72,7 +79,6 @@ export default function Explorer({
         setRenamingPath(null);
         setRenameValue("");
     };
-
     const submitRename = async (item) => {
         const trimmed = renameValue.trim();
         if (!trimmed || trimmed === item.name) {
@@ -88,7 +94,7 @@ export default function Explorer({
                 oldPath: item.path,
                 newPath: newPath,
             });
-            await load();
+            await ReloadFiles();
         } catch (err) {
             console.error("Rename failed:", err);
         } finally {
@@ -106,37 +112,45 @@ export default function Explorer({
         }
     };
 
-    const handleDelete = async (item) => {
-        await invoke("delete_path", { path: item.path });
-        load();
+    // Button Functions
+    const OpenCreateFile = () => {
+        setModalOpen((prev) => !prev);
+    };
+    const OpenSearch = () => {
+        setSearchOpen((prev) => !prev);
     };
 
-    const handleNewFileHere = (item) => {
-        const dir = item.is_directory
-            ? item.path
-            : item.path.slice(0, item.path.lastIndexOf("/"));
-        handlePlusClick(dir);
+    const plusClick = (path) => {
+        setTargetFolder(path);
+        setModalOpen(true);
+    };
+
+    const ReloadFiles = async () => {
+        // HARD CODED FOR NOW
+        const response = await invoke("list_directory", {
+            path: "/home/josh/Documents/repos/Node64/ChessData/",
+        });
+        setDirectoryNodeTree(response);
     };
 
     return (
         <div className="explorer">
-            {newFileModalState && (
+            <div
+                className={`create-file-modal-wrapper ${modalOpen ? "" : "hidden"}`}
+            >
                 <CreateFileModal
-                    open={newFileModalState}
-                    title="New File"
-                    defaultDestination={targetFolder}
-                    folderOptions={folderOptions}
+                    targetFolder={targetFolder}
                     onClose={handleCloseModal}
                 />
-            )}
-            <div className="panel-title">
-                <h2>Explorer</h2>
-                <p onClick={load} className="panel-button">
-                    ⟳
-                </p>
             </div>
-            <div className="search-bar-wrapper">
-                <label htmlFor="search-directories">Search</label>
+            <div className="explorer-head">
+                <div className="title">Explorer</div>
+                <div className="explorer-buttons-wrapper">
+                    <ExplorerButton content={"⌕"} clickFunction={OpenSearch} />
+                    <ExplorerButton content={"⟳"} clickFunction={ReloadFiles} />
+                </div>
+            </div>
+            <div className={`search-container ${searchOpen ? "" : "hidden"}`}>
                 <input
                     type="text"
                     id="search-directories"
@@ -144,7 +158,7 @@ export default function Explorer({
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </div>
-            <div className="panel-items">
+            <div className="filetree-content">
                 {filteredTree &&
                     filteredTree.children.map((item) =>
                         item.is_directory ? (
@@ -154,9 +168,13 @@ export default function Explorer({
                                 path={item.path}
                                 children={item.children}
                                 level={1}
-                                plusClick={handlePlusClick}
-                                openAnalysisCallback={openAnalysisCallback}
-                                openRepertoireCallback={openRepertoireCallback}
+                                plusClick={plusClick}
+                                openAnalysisCallback={
+                                    callbackObj.analysis_callback
+                                }
+                                openRepertoireCallback={
+                                    callbackObj.repertoire_callback
+                                }
                                 onContextMenu={handleContextMenu}
                                 renamingPath={renamingPath}
                                 renameValue={renameValue}
@@ -165,32 +183,18 @@ export default function Explorer({
                                 onRenameBlur={cancelRename}
                                 forceOpen={!!searchTerm.trim()}
                             />
-                        ) : renamingPath === item.path ? (
-                            <div key={item.path} className="file-item">
-                                <input
-                                    className="rename-input"
-                                    autoFocus
-                                    value={renameValue}
-                                    onChange={(e) =>
-                                        setRenameValue(e.target.value)
-                                    }
-                                    onKeyDown={(e) =>
-                                        handleRenameKeyDown(e, item)
-                                    }
-                                    onBlur={cancelRename}
-                                    onClick={(e) => e.stopPropagation()}
-                                />
-                            </div>
                         ) : (
-                            <div
+                            <ExplorerFile
                                 key={item.path}
-                                className="file-item"
-                                onContextMenu={(e) =>
-                                    handleContextMenu(e, item)
-                                }
-                            >
-                                {item.name.split(".")[0]}
-                            </div>
+                                itemRef={item}
+                                fileOpenRef={() => {}}
+                                contextMenuRef={handleContextMenu}
+                                isRenaming={renamingPath === item.path}
+                                renameValue={renameValue}
+                                setRenameValue={setRenameValue}
+                                onRenameKeyDown={handleRenameKeyDown}
+                                onRenameBlur={cancelRename}
+                            />
                         ),
                     )}
             </div>
@@ -219,18 +223,6 @@ export default function Explorer({
             )}
         </div>
     );
-}
-
-export function flattenFolders(node, list = []) {
-    if (node.children !== undefined) {
-        list.push({ path: node.path, name: node.name });
-        node.children.forEach((child) => {
-            if (child.is_directory) {
-                flattenFolders(child, list);
-            }
-        });
-    }
-    return list;
 }
 
 export function filterTree(node, term) {

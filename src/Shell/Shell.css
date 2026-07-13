@@ -115,3 +115,6 @@
 .panel-img.selected {
     filter: invert();
 }
+.left-panel-content {
+    width: 15rem;
+}
