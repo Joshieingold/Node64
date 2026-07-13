@@ -83,7 +83,7 @@ export function TrainingBoard({ doc }) {
 }
 
 // Hold Functionality Exclusive to an analysis board.
-export function AnalysisChessBoard({ doc, updateCallback }) {
+export function AnalysisChessBoard({ doc, updateCallback, onFlip = null }) {
     const [flipped, setFlipped] = useState(false);
     // KEYBINDS //
     useEffect(() => {
@@ -101,8 +101,10 @@ export function AnalysisChessBoard({ doc, updateCallback }) {
             }
             // Flip Board //
             if (key.toLowerCase() === "f") {
-                console.log("flip!");
                 setFlipped((f) => !f);
+                if (onFlip) {
+                    onFlip();
+                }
                 updateCallback();
                 return;
             }

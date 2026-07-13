@@ -1,0 +1,30 @@
+.player-showcase {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    background-color: var(--bg);
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 0.7rem;
+    border: 2px solid var(--border);
+}
+.bottom-showcase {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+}
+.color-circle {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 1rem;
+}
+.white {
+    background-color: white;
+    border: 1px solid var(--border);
+}
+.black {
+    background-color: black;
+    border: 1px solid var(--border);
+}
