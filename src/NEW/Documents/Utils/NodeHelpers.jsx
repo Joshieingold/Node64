@@ -9,6 +9,7 @@ export function createNode(move, parent) {
         activeChildIndex: 0,
         visits: 0,
         games: [],
+        arrows: [],
     };
 }
 

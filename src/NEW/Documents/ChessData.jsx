@@ -52,8 +52,6 @@ export default class ChessData {
         this.goToNode(parent.children[newIdx]);
     }
 
-    // FIX: original had `idx === -2` (should be -1) and
-    // `parent.children.splice(idx, 0)` (deleted nothing — should be `, 1`)
     deleteVariation(node) {
         const parent = node.parent;
         if (!parent) return;
@@ -238,7 +236,66 @@ export default class ChessData {
             });
         }
         this.lastMove = this.currentNode.move || null;
-        this.clearSelection(); // note: also calls _emit implicitly? No — see below
+        this.clearSelection();
+        this._emit();
+    }
+
+    /* ------------------------------------------------------------
+       Arrows — annotations that live on a specific tree node (i.e.
+       a specific position), so they follow the line they were drawn
+       on rather than being global to the board. Persisted to PGN as
+       [%cal ...] comments by AnalysisDocument.createPgnString().
+       ------------------------------------------------------------ */
+
+    addArrow(from, to, color = "G") {
+        if (!this.currentNode.arrows) this.currentNode.arrows = [];
+        const existing = this.currentNode.arrows.find(
+            (a) => a.from === from && a.to === to,
+        );
+        if (existing) {
+            existing.color = color;
+        } else {
+            this.currentNode.arrows.push({ from, to, color });
+        }
+        this._emit();
+    }
+
+    removeArrow(from, to) {
+        if (!this.currentNode.arrows) return;
+        const idx = this.currentNode.arrows.findIndex(
+            (a) => a.from === from && a.to === to,
+        );
+        if (idx === -1) return;
+        this.currentNode.arrows.splice(idx, 1);
+        this._emit();
+    }
+
+    // Draw same arrow+color again to remove it; draw same squares with a
+    // different color to recolor it; otherwise add a new arrow. This is
+    // the standard lichess/chess.com right-click-drag behavior.
+    toggleArrow(from, to, color = "G") {
+        if (!this.currentNode.arrows) this.currentNode.arrows = [];
+        const existing = this.currentNode.arrows.find(
+            (a) => a.from === from && a.to === to,
+        );
+        if (existing && existing.color === color) {
+            this.removeArrow(from, to);
+            return;
+        }
+        if (existing) {
+            existing.color = color;
+            this._emit();
+            return;
+        }
+        this.currentNode.arrows.push({ from, to, color });
+        this._emit();
+    }
+
+    clearArrows() {
+        if (!this.currentNode.arrows || this.currentNode.arrows.length === 0) {
+            return;
+        }
+        this.currentNode.arrows = [];
         this._emit();
     }
 }

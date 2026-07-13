@@ -88,7 +88,7 @@ export default function ExplorerFolder({
             {isOpen && (
                 <div
                     className="folder-contents"
-                    style={{ paddingLeft: `${level * 22}px` }}
+                    style={{ paddingLeft: `${level * 10}px` }}
                 >
                     {children.map((item) =>
                         item.is_directory ? (

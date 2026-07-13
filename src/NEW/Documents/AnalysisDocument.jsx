@@ -13,6 +13,32 @@ import { splitPgnDatabase, parseHeaders } from "./Utils/PgnParsing";
    file info. This is what Shell.jsx should instantiate for both
    Analysis and Repertoire tabs.
    ============================================================ */
+
+// Arrow annotations round-trip through PGN using the same [%cal ...]
+// comment convention lichess/ChessBase use, e.g. {[%cal Gc4f7,Re8e7]}
+// — one entry per arrow: <color><fromSquare><toSquare>.
+const ARROW_COLORS = new Set(["G", "R", "B", "Y"]);
+
+function formatArrowsComment(arrows) {
+    const spec = arrows.map((a) => `${a.color}${a.from}${a.to}`).join(",");
+    return `{[%cal ${spec}]}`;
+}
+
+function parseArrowsFromComment(commentText) {
+    const match = commentText.match(/%cal\s+([^\]]+)/);
+    if (!match) return [];
+    return match[1]
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .map((entry) => {
+            const color = ARROW_COLORS.has(entry[0]) ? entry[0] : "G";
+            const from = entry.slice(1, 3);
+            const to = entry.slice(3, 5);
+            return { from, to, color };
+        });
+}
+
 export default class AnalysisDocument extends StandardDocument {
     constructor(onChange = null) {
         super();
@@ -67,8 +93,11 @@ export default class AnalysisDocument extends StandardDocument {
             ) {
                 return tokens;
             }
-            const activeIdx = parentNode.activeChildIndex || 0;
-            const activeChild = parentNode.children[activeIdx];
+
+            // Mainline/variation split is based on fixed tree structure
+            // (index 0 = mainline), not UI navigation state. See prior fix.
+            const mainIdx = 0;
+            const mainChild = parentNode.children[mainIdx];
             const fenBeforeMove = game.fen();
             const isWhite = game.turn() === "w";
             if (isWhite) {
@@ -77,14 +106,17 @@ export default class AnalysisDocument extends StandardDocument {
                 tokens.push(`${formatMoveNumber(ply)}...`);
             }
             const moveResult = game.move({
-                from: activeChild.move.from,
-                to: activeChild.move.to,
-                promotion: activeChild.move.promotion,
+                from: mainChild.move.from,
+                to: mainChild.move.to,
+                promotion: mainChild.move.promotion,
             });
             tokens.push(moveResult.san);
+            if (mainChild.arrows && mainChild.arrows.length > 0) {
+                tokens.push(formatArrowsComment(mainChild.arrows));
+            }
             const hasVariations = parentNode.children.length > 1;
             for (let i = 0; i < parentNode.children.length; i++) {
-                if (i === activeIdx) continue;
+                if (i === mainIdx) continue;
                 const sibling = parentNode.children[i];
                 const varGame = new Chess(fenBeforeMove);
                 const varTokens = [];
@@ -98,16 +130,27 @@ export default class AnalysisDocument extends StandardDocument {
                     promotion: sibling.move.promotion,
                 });
                 varTokens.push(varMoveResult.san);
+                if (sibling.arrows && sibling.arrows.length > 0) {
+                    varTokens.push(formatArrowsComment(sibling.arrows));
+                }
                 varTokens.push(...renderChildren(varGame, sibling, ply + 1));
                 tokens.push(`(${varTokens.join(" ")})`);
             }
             tokens.push(
-                ...renderChildren(game, activeChild, ply + 1, hasVariations),
+                ...renderChildren(game, mainChild, ply + 1, hasVariations),
             );
             return tokens;
         };
         const game = new Chess();
         const tokens = renderChildren(game, this.chessData.root, 1);
+        // Arrows drawn on the starting position (root) don't follow any
+        // move token, so they're prepended as a leading comment.
+        if (
+            this.chessData.root.arrows &&
+            this.chessData.root.arrows.length > 0
+        ) {
+            tokens.unshift(formatArrowsComment(this.chessData.root.arrows));
+        }
         return tokens.join(" ");
     }
 
@@ -164,8 +207,16 @@ export default class AnalysisDocument extends StandardDocument {
     // empty tree — this is what lets multi-game PGN imports collapse
     // transpositions automatically.
     _mergeGameMovetext(movetext, startNode) {
-        let text = movetext
-            .replace(/\{[^}]*\}/g, " ")
+        // Pull comments out first and replace with a space-safe
+        // placeholder token, so [%cal ...] arrow data survives
+        // tokenization instead of being discarded along with the
+        // braces (previous behavior just stripped {…} entirely).
+        const comments = [];
+        let text = movetext.replace(/\{([^}]*)\}/g, (_, inner) => {
+            comments.push(inner);
+            return ` @@C${comments.length - 1}@@ `;
+        });
+        text = text
             .replace(/\$\d+/g, " ")
             .replace(/\(/g, " ( ")
             .replace(/\)/g, " ) ");
@@ -173,6 +224,7 @@ export default class AnalysisDocument extends StandardDocument {
         const moveNumberRe = /^\d+\.(\.\.)?$/;
         const resultRe = /^(1-0|0-1|1\/2-1\/2|\*)$/;
         const gluedMoveNumberRe = /^\d+\.(\.\.)?/;
+        const commentTokenRe = /^@@C(\d+)@@$/;
         let game = new Chess(startNode.move ? startNode.move.after : undefined);
         let currentNode = startNode;
         let lastFenBefore = game.fen();
@@ -192,6 +244,15 @@ export default class AnalysisDocument extends StandardDocument {
                 if (restored) {
                     game = restored.game;
                     currentNode = restored.currentNode;
+                }
+                continue;
+            }
+            const commentMatch = rawToken.match(commentTokenRe);
+            if (commentMatch) {
+                const commentText = comments[Number(commentMatch[1])];
+                const arrows = parseArrowsFromComment(commentText);
+                if (arrows.length > 0) {
+                    currentNode.arrows = arrows;
                 }
                 continue;
             }

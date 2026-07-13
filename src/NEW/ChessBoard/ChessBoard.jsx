@@ -7,14 +7,38 @@ import HighlightLayer from "./Layers/HighlightLayer/HighlightLayer";
 import PieceLayer from "./Layers/PieceLayer/PieceLayer";
 import InputLayer from "./Layers/InputLayer/InputLayer";
 import DragGhostLayer from "./Layers/DragGhostLayer/DragGhostLayer";
+import ArrowLayer from "./Layers/ArrowLayer/ArrowLayer";
+
+function squareFromPointer(e, rect, isFlipped) {
+    let x = Math.floor((e.clientX - rect.left) / (rect.width / 8));
+    let y = Math.floor((e.clientY - rect.top) / (rect.height / 8));
+    x = Math.max(0, Math.min(7, x));
+    y = Math.max(0, Math.min(7, y));
+    if (isFlipped) {
+        x = 7 - x;
+        y = 7 - y;
+    }
+    return "abcdefgh"[x] + (8 - y);
+}
+
+// Modifier held while starting the right-click drag picks the arrow
+// color — same convention as lichess/chess.com.
+function colorFromModifiers(e) {
+    if (e.shiftKey) return "R";
+    if (e.altKey) return "B";
+    if (e.ctrlKey || e.metaKey) return "Y";
+    return "G";
+}
+
 function Board({ doc, updateCallback, isFlipped }) {
     // Passed in data //
 
     // Variables //
     const [drag, setDrag] = useState(false);
+    const [arrowDrag, setArrowDrag] = useState(null);
     const boardRef = useRef(null); // Board squares never change
 
-    // Drag Handling
+    // Drag Handling (pieces, left-click)
     useEffect(() => {
         if (!drag) return;
 
@@ -55,6 +79,86 @@ function Board({ doc, updateCallback, isFlipped }) {
         };
     }, [drag, isFlipped, doc]);
 
+    // Arrow annotation handling (right-click drag).
+    // Attached imperatively to the board's DOM node rather than as
+    // React props on <Frame>, since Frame's source isn't available
+    // here to confirm it forwards extra props to its root element.
+    useEffect(() => {
+        const el = boardRef.current;
+        if (!el) return;
+
+        const handleContextMenu = (e) => e.preventDefault();
+
+        const handlePointerDown = (e) => {
+            if (e.button !== 2) return; // right mouse button only
+            e.preventDefault();
+            const rect = el.getBoundingClientRect();
+            const fromSquare = squareFromPointer(e, rect, isFlipped);
+            setArrowDrag({
+                rect,
+                fromSquare,
+                startX: e.clientX,
+                startY: e.clientY,
+                x: e.clientX,
+                y: e.clientY,
+                color: colorFromModifiers(e),
+            });
+        };
+
+        el.addEventListener("contextmenu", handleContextMenu);
+        el.addEventListener("pointerdown", handlePointerDown);
+        return () => {
+            el.removeEventListener("contextmenu", handleContextMenu);
+            el.removeEventListener("pointerdown", handlePointerDown);
+        };
+    }, [isFlipped]);
+
+    useEffect(() => {
+        if (!arrowDrag) return;
+
+        const handleMove = (e) => {
+            setArrowDrag((d) => (d ? { ...d, x: e.clientX, y: e.clientY } : d));
+        };
+        const handleUp = (e) => {
+            const { rect, fromSquare, color } = arrowDrag;
+            const toSquare = squareFromPointer(e, rect, isFlipped);
+
+            if (toSquare === fromSquare) {
+                // Plain right-click, no drag: clear all arrows here.
+                doc.chessData.clearArrows();
+            } else {
+                doc.chessData.toggleArrow(fromSquare, toSquare, color);
+            }
+            updateCallback();
+            setArrowDrag(null);
+        };
+
+        window.addEventListener("pointermove", handleMove);
+        window.addEventListener("pointerup", handleUp);
+        return () => {
+            window.removeEventListener("pointermove", handleMove);
+            window.removeEventListener("pointerup", handleUp);
+        };
+    }, [arrowDrag, isFlipped, doc, updateCallback]);
+
+    // Live preview of the arrow being dragged, before release.
+    let previewArrow = null;
+    if (arrowDrag && boardRef.current) {
+        const rect = arrowDrag.rect;
+        const liveToSquare = squareFromPointer(
+            { clientX: arrowDrag.x, clientY: arrowDrag.y },
+            rect,
+            isFlipped,
+        );
+        if (liveToSquare !== arrowDrag.fromSquare) {
+            previewArrow = {
+                from: arrowDrag.fromSquare,
+                to: liveToSquare,
+                color: arrowDrag.color,
+            };
+        }
+    }
+
     // RENDER //
     return (
         <Frame isFlipped={isFlipped} ref={boardRef}>
@@ -62,6 +166,11 @@ function Board({ doc, updateCallback, isFlipped }) {
             <LastMoveLayer doc={doc} flipped={isFlipped} />
             <HighlightLayer doc={doc} flipped={isFlipped} />
             <PieceLayer doc={doc} flipped={isFlipped} drag={drag} />
+            <ArrowLayer
+                doc={doc}
+                flipped={isFlipped}
+                previewArrow={previewArrow}
+            />
             <InputLayer
                 doc={doc}
                 flipped={isFlipped}
