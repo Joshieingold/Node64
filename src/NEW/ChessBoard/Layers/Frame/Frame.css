@@ -3,7 +3,6 @@
     aspect-ratio: 1 / 1;
     user-select: none;
     height: 100%;
-    width: 45rem;
     overflow: hidden;
     position: relative;
     flex-direction: column;

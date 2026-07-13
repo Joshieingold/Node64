@@ -8,7 +8,7 @@ export default function PlayerShowcase({ name = "??", elo = "??", color }) {
     }
     return (
         <div className="player-showcase">
-            <h2>{name}</h2>
+            <p className="name-text">{name}</p>
             <div className="bottom-showcase">
                 <p>Elo: {elo}</p>
                 <div className={`color-circle ${color}`}></div>

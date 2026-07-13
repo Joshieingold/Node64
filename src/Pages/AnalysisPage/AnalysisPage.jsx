@@ -15,6 +15,7 @@ export default function AnalysisPage({ data }) {
         setVersion((v) => v + 1);
     };
     const onFlip = () => {
+        console.log("flipflop?");
         setFlipped((prev) => !prev);
     };
 
@@ -54,27 +55,30 @@ export default function AnalysisPage({ data }) {
     return (
         <div className="analysis-page">
             <div className="content-container">
-                <div
-                    className={`player-info ${flipped === true ? "reverse" : ""}`}
-                >
-                    <PlayerShowcase
-                        name={data.pgnData.blackName}
-                        elo={data.pgnData.blackElo}
-                        color={"black"}
-                    />
-                    <PlayerShowcase
-                        name={data.pgnData.whiteName}
-                        elo={data.pgnData.whiteElo}
-                        color={"white"}
-                    />
-                </div>
-                <div className="board-wrapper">
-                    <AnalysisChessBoard
-                        doc={data}
-                        updateCallback={update}
-                        onFlip={onFlip}
-                    />
-                    <EvalBar data={data} update={update} />
+                <div className="main-content">
+                    <div
+                        className={`player-info ${flipped === true ? "reverse" : ""}`}
+                    >
+                        <PlayerShowcase
+                            name={data.pgnData.blackName}
+                            elo={data.pgnData.blackElo}
+                            color={"black"}
+                        />
+                        <div className="board-wrapper">
+                            <AnalysisChessBoard
+                                doc={data}
+                                updateCallback={update}
+                                onFlip={onFlip}
+                                inWidth={40}
+                            />
+                            <EvalBar data={data} update={update} />
+                        </div>
+                        <PlayerShowcase
+                            name={data.pgnData.whiteName}
+                            elo={data.pgnData.whiteElo}
+                            color={"white"}
+                        />
+                    </div>
                 </div>
                 <div className="right-content-container">
                     <SFToggle data={data} update={update} />

@@ -30,7 +30,7 @@ function colorFromModifiers(e) {
     return "G";
 }
 
-function Board({ doc, updateCallback, isFlipped }) {
+function Board({ doc, updateCallback, isFlipped, inWidth }) {
     // Passed in data //
 
     // Variables //
@@ -161,7 +161,7 @@ function Board({ doc, updateCallback, isFlipped }) {
 
     // RENDER //
     return (
-        <Frame isFlipped={isFlipped} ref={boardRef}>
+        <Frame isFlipped={isFlipped} ref={boardRef} width={inWidth}>
             <SquareLayer isFlipped={isFlipped} />
             <LastMoveLayer doc={doc} flipped={isFlipped} />
             <HighlightLayer doc={doc} flipped={isFlipped} />
@@ -192,7 +192,12 @@ export function TrainingBoard({ doc }) {
 }
 
 // Hold Functionality Exclusive to an analysis board.
-export function AnalysisChessBoard({ doc, updateCallback, onFlip = null }) {
+export function AnalysisChessBoard({
+    doc,
+    updateCallback,
+    onFlip = null,
+    inWidth,
+}) {
     const [flipped, setFlipped] = useState(false);
     // KEYBINDS //
     useEffect(() => {
@@ -254,7 +259,7 @@ export function AnalysisChessBoard({ doc, updateCallback, onFlip = null }) {
                     break;
             }
         };
-        window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("keydown", handleKeyDown, inWidth);
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [doc]);
 
@@ -265,6 +270,7 @@ export function AnalysisChessBoard({ doc, updateCallback, onFlip = null }) {
                 doc={doc}
                 isFlipped={flipped}
                 updateCallback={updateCallback}
+                inWidth={inWidth}
             />
         </div>
     );

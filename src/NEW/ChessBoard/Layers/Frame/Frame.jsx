@@ -1,9 +1,9 @@
 import "./Frame.css";
-export default function Frame({ isFlipped, children, ref }) {
+export default function Frame({ isFlipped, children, ref, width = 45 }) {
     const FILES = "ABCDEFGH";
     const RANKS = "87654321";
     return (
-        <div className="frame" ref={ref}>
+        <div className="frame" style={{ width: `${width}rem` }} ref={ref}>
             <div className="spacer-file" />
             <div className="inside-frame">
                 <div

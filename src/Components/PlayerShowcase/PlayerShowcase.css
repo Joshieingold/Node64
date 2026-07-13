@@ -1,18 +1,34 @@
 .player-showcase {
     display: flex;
-    width: 100%;
+    width: 10rem;
+    height: 3rem;
     flex-direction: column;
     background-color: var(--bg);
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
     border-radius: 0.7rem;
-    border: 2px solid var(--border);
+    padding: 0.4rem;
+}
+.player-showcase:first-child {
+    margin-right: 45%;
+}
+.player-showcase:last-child {
+    margin-left: 45%;
+}
+.name-text {
+    display: flex;
+    padding: 0;
+    margin: 0;
+    height: 50%;
+    width: 100%;
 }
 .bottom-showcase {
     display: flex;
     flex-direction: row;
     width: 100%;
-    justify-content: space-around;
+    height: 50%;
+    text-align: center;
+    justify-content: space-between;
     align-items: center;
 }
 .color-circle {
