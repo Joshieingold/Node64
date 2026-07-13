@@ -18,7 +18,7 @@
     align-items: center;
     gap: 1rem;
     height: 100%;
-    width: 100%;
+    width: 70%;
 }
 .right-content-container {
     height: 100%;
@@ -32,7 +32,7 @@
     min-height: 0;
 }
 
-.tab-panel-container {
+.analysis-tab-panel-container {
     display: flex;
     flex: 1;
     min-height: 0;

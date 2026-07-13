@@ -54,8 +54,8 @@ export default function AnalysisPage({ data }) {
                     <EvalBar data={data} update={update} />
                 </div>
                 <div className="right-content-container">
-                    <SFToggle data={data} />
-                    <div className="tab-panel-container">
+                    <SFToggle data={data} update={update} />
+                    <div className="analysis-tab-panel-container">
                         <TabPanel
                             tabs={tabs}
                             extraControls={

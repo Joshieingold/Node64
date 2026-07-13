@@ -11,7 +11,7 @@ export default function EvalBar({ data, update }) {
 
     return (
         <div
-            className={`eval-bar ${data.engineStatus == "Offline" ? "hidden" : ""}`}
+            className={`eval-bar ${data.stockfishData.engineStatus == "Offline" ? "hidden" : ""}`}
         >
             <div
                 className="black-eval"
