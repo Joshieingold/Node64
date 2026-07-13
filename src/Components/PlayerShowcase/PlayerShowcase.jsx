@@ -1,5 +1,11 @@
 import "./PlayerShowcase.css";
 export default function PlayerShowcase({ name = "??", elo = "??", color }) {
+    if (name == "") {
+        name = "??";
+    }
+    if (elo == null) {
+        elo = "??";
+    }
     return (
         <div className="player-showcase">
             <h2>{name}</h2>
