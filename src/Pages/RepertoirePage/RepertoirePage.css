@@ -1,48 +1,19 @@
 .repertoire-page {
     display: flex;
-    height: 100%;
+    width: 100%;
+    height: 55rem;
+    align-items: center;
     justify-content: space-between;
 }
 .tab-panel-container {
     display: flex;
-    width: 35%;
-    background-color: pink;
+    height: 100%;
     flex-direction: column;
 }
 .repertoire-board-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 65%;
-}
-.panel-control-wrapper {
-    display: flex;
-    justify-content: space-evenly;
-    background-color: var(--bg);
-    border: 2px solid var(--border);
-}
-.panel-option,
-.option {
-    display: flex;
-    padding: 1rem;
-    cursor: pointer;
-    border-bottom: 1px solid transparent;
-    transition: 0.2s ease-in-out;
-}
-.panel-option:hover,
-.option:hover {
-    border-bottom: 1px solid var(--highlight);
-    background-color: var(--secondary-bg);
-}
-.panel-view {
-    display: flex;
-    width: 100%;
-}
-.panel-view.hidden {
-    display: none;
-}
-.panel-options-wrapper {
-    display: flex;
     height: 100%;
     width: 100%;
 }

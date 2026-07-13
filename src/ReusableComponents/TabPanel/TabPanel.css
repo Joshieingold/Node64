@@ -1,0 +1,40 @@
+.tab-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 30rem;
+}
+.tab-panel-controls {
+    display: flex;
+    background-color: var(--bg);
+    height: 5%;
+    border: 2px solid var(--border);
+    justify-content: space-evenly;
+}
+.panel-option,
+.option {
+    display: flex;
+    padding: 0.5rem;
+    cursor: pointer;
+    align-items: center;
+    border-bottom: 1px solid transparent;
+    transition: 0.2s ease-in-out;
+}
+.panel-option:hover,
+.option:hover {
+    border-bottom: 1px solid var(--highlight);
+    background-color: var(--secondary-bg);
+}
+.panel-view {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+.panel-view.hidden {
+    display: none;
+}
+.tab-panel-content {
+    display: flex;
+    height: 95%;
+    width: 100%;
+}

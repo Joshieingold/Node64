@@ -1,5 +1,5 @@
 import "./Shell.css";
-import AnalysisPage from "../Pages/AnalysisPage";
+import AnalysisPage from "../Pages/AnalysisPage/AnalysisPage";
 import Compass from "/Compass.png";
 import { useState } from "react";
 import RepertoirePage from "../Pages/RepertoirePage/RepertoirePage";
