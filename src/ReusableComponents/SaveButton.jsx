@@ -19,6 +19,7 @@ const TITLES = [
     "WFM",
     "WCM",
 ];
+
 const TERMINATIONS_BY_RESULT = {
     "1-0": ["Checkmate", "Resignation", "Timeout / Forfeit", "Abortion"],
     "0-1": ["Checkmate", "Resignation", "Timeout / Forfeit", "Abortion"],
@@ -40,6 +41,14 @@ const TERMINATIONS_BY_RESULT = {
         "Threefold Repetition",
         "50 Move Rule",
     ],
+};
+
+// Maps the file-type select to the folder it should be saved in.
+// These are the only three destinations the user can pick from.
+const DEST_BY_TYPE = {
+    Analysis: "/home/josh/Documents/repos/Node64/ChessData/Analysis/",
+    Database: "/home/josh/Documents/repos/Node64/ChessData/Database/",
+    Repertoire: "/home/josh/Documents/repos/Node64/ChessData/Repertoire/",
 };
 
 function useSaveManager(data) {
@@ -66,6 +75,16 @@ function useSaveManager(data) {
 
     const openSave = () => setSaveOpen(true);
     const closeSave = () => setSaveOpen(false);
+
+    // Resolves the destination folder from the file type.
+    // Falls back to an explicit fileLocation if one was ever set directly,
+    // otherwise maps the type -> its fixed folder.
+    const getDest = (type) => {
+        if (data.fileData.fileLocation) {
+            return data.fileData.fileLocation;
+        }
+        return DEST_BY_TYPE[type] ?? DEST_BY_TYPE.Analysis;
+    };
 
     // fileType is optional - only pass it when you want to override
     // whatever is currently persisted on `data`.
@@ -107,15 +126,8 @@ function useSaveManager(data) {
         data.pgnData = pgn;
         data.fileData.fileType = fileType;
 
-        const getDest = () => {
-            if (data.fileData.fileLocation) {
-                return data.fileData.fileLocation;
-            }
-            return "/home/josh/Documents/repos/Node64/ChessData/Analysis/";
-        };
-
         await invoke("create_file", {
-            destination: getDest(),
+            destination: getDest(fileType),
             name: data.fileData.fileName || "unnamed_analysis",
             fileType,
             pgn: data.getFullPgn(),
@@ -128,7 +140,7 @@ function useSaveManager(data) {
     };
 
     const handleQuickSave = async () => {
-        if (!data.fileData.fileLocation) {
+        if (!data.fileData.fileLocation && !data.fileData.fileType) {
             openSave();
             return;
         }
@@ -355,7 +367,6 @@ function SaveModal({
 
 export function SaveButton({ data }) {
     const manager = useSaveManager(data);
-
     return (
         <>
             <div className="option save" onClick={manager.handleQuickSave}>
@@ -368,7 +379,6 @@ export function SaveButton({ data }) {
 
 export function SaveAsButton({ data }) {
     const manager = useSaveManager(data);
-
     return (
         <>
             <div className="option save-as" onClick={manager.openSave}>

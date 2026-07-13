@@ -61,8 +61,13 @@ export default function Shell() {
             id: crypto.randomUUID(),
             type: "repertoire",
             title: "Repertoire",
-            pageData: new AnalysisDocument(),
         };
+        newTab.pageData = new AnalysisDocument(() => {
+            setTabs((prev) => [...prev, newTab]);
+        });
+        newTab.pageData.fileLocation =
+            "/home/josh/Documents/repos/Node64/ChessData/Repertoires/";
+        newTab.pageData.fileName = "New_Repertoire";
         setTabs((prev) => [...prev, newTab]);
         setActiveTab(newTab.id);
     };
@@ -95,8 +100,8 @@ export default function Shell() {
             newTab.pageData = new AnalysisDocument(() => {
                 setTabs((prev) => [...prev]);
             });
-            newTab.pageData.fileLocation = directory;
-            newTab.pageData.fileName = nameWithoutExt;
+            newTab.pageData.fileData.fileLocation = directory;
+            newTab.pageData.fileData.fileName = nameWithoutExt;
             newTab.pageData.loadPgnDatabase(pathToFile);
             setTabs((prev) => [...prev, newTab]);
             setActiveTab(newTab.id);
@@ -118,8 +123,8 @@ export default function Shell() {
             newTab.pageData = new AnalysisDocument(() => {
                 setTabs((prev) => [...prev]);
             });
-            newTab.pageData.fileLocation = directory;
-            newTab.pageData.fileName = nameWithoutExt;
+            newTab.pageData.fileData.fileLocation = directory;
+            newTab.pageData.fileData.fileName = nameWithoutExt;
             newTab.pageData.loadPgn(pathToFile);
             setTabs((prev) => [...prev, newTab]);
             setActiveTab(newTab.id);
