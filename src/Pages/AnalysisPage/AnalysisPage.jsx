@@ -18,7 +18,6 @@ export default function AnalysisPage({ data }) {
         console.log("flipflop?");
         setFlipped((prev) => !prev);
     };
-
     useEffect(() => {
         data.onChange = update;
         return () => {
@@ -26,7 +25,7 @@ export default function AnalysisPage({ data }) {
                 data.onChange = null;
             }
         };
-    });
+    }, [data, update]);
 
     const tabs = [
         {
