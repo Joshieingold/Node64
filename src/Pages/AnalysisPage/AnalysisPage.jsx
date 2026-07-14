@@ -69,7 +69,6 @@ export default function AnalysisPage({ data }) {
                                 onFlip={onFlip}
                                 inWidth={40}
                             />
-                            <EvalBar data={data} update={update} />
                         </div>
                         <PlayerShowcase
                             name={data.pgnData.whiteName}
@@ -77,6 +76,7 @@ export default function AnalysisPage({ data }) {
                             color={"white"}
                         />
                     </div>
+                    <EvalBar data={data} update={update} />
                 </div>
                 <div className="right-content-container">
                     <SFToggle data={data} update={update} />

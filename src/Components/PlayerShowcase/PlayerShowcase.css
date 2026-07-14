@@ -1,7 +1,6 @@
 .player-showcase {
     display: flex;
     width: 10rem;
-    height: 3rem;
     flex-direction: column;
     background-color: var(--bg);
     justify-content: center;
@@ -10,10 +9,10 @@
     padding: 0.4rem;
 }
 .player-showcase:first-child {
-    margin-right: 45%;
+    margin-right: 75%;
 }
 .player-showcase:last-child {
-    margin-left: 45%;
+    margin-left: 75%;
 }
 .name-text {
     display: flex;
