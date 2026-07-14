@@ -1,7 +1,7 @@
 // src/Pages/TrainingPage/TrainingPage.jsx
 import { useCallback, useState, useSyncExternalStore } from "react";
 import "./TrainingPage.css";
-import { AnalysisChessBoard } from "../../NEW/ChessBoard/ChessBoard";
+import { AnalysisChessBoard } from "../../Components/ChessBoard/ChessBoard";
 
 export default function TrainingPage({ data: trainer }) {
     // Drives the HUD (status text, stats, line progress).

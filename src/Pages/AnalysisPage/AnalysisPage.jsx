@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Notation from "../../Components/Notation/Notation";
 import EvalBar from "../../Components/StockFish/EvalBar";
 import { SaveButton } from "../../ReusableComponents/SaveButton";
-import { AnalysisChessBoard } from "../../NEW/ChessBoard/ChessBoard.jsx";
+import { AnalysisChessBoard } from "../../Components/ChessBoard/ChessBoard.jsx";
 import TabPanel from "../../ReusableComponents/TabPanel/TabPanel";
 import SFToggle from "../../Components/StockFish/SFToggle.jsx";
 import PlayerShowcase from "../../Components/PlayerShowcase/PlayerShowcase.jsx";
@@ -15,7 +15,6 @@ export default function AnalysisPage({ data }) {
         setVersion((v) => v + 1);
     };
     const onFlip = () => {
-        console.log("flipflop?");
         setFlipped((prev) => !prev);
     };
     useEffect(() => {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "../Components/OptionsBar/OptionsBar.css";
 import Modal from "../Components/OptionsBar/Modal.jsx";
-import PgnDocument from "../NEW/Documents/PgnDocument.jsx";
+import PgnDocument from "../Documents/PgnDocument.jsx";
 import FileNameField from "./FileNameField";
 import SelectField from "./SelectField";
 import TextField from "./TextField";

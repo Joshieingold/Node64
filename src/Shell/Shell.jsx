@@ -3,9 +3,9 @@ import AnalysisPage from "../Pages/AnalysisPage/AnalysisPage";
 import Compass from "/Compass.png";
 import { useState } from "react";
 import RepertoirePage from "../Pages/RepertoirePage/RepertoirePage";
-import AnalysisDocument from "../NEW/Documents/AnalysisDocument";
+import AnalysisDocument from "../Documents/AnalysisDocument";
 import TrainingPage from "../Pages/TrainingPage/TrainingPage";
-import ExplorerNew from "../NEW/Explorer/Explorer";
+import ExplorerNew from "../Components/Explorer/Explorer";
 
 export default function Shell() {
     const [tabs, setTabs] = useState([]);

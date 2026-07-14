@@ -21,8 +21,6 @@ function squareFromPointer(e, rect, isFlipped) {
     return "abcdefgh"[x] + (8 - y);
 }
 
-// Modifier held while starting the right-click drag picks the arrow
-// color — same convention as lichess/chess.com.
 function colorFromModifiers(e) {
     if (e.shiftKey) return "R";
     if (e.altKey) return "B";
@@ -79,10 +77,6 @@ function Board({ doc, updateCallback, isFlipped, inWidth }) {
         };
     }, [drag, isFlipped, doc]);
 
-    // Arrow annotation handling (right-click drag).
-    // Attached imperatively to the board's DOM node rather than as
-    // React props on <Frame>, since Frame's source isn't available
-    // here to confirm it forwards extra props to its root element.
     useEffect(() => {
         const el = boardRef.current;
         if (!el) return;

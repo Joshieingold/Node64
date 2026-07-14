@@ -12,7 +12,7 @@ import ExplorerFile from "./Components/ExplorerFile";
 // repertoire_callback: func
 // }
 
-export default function ExplorerNew({ callbackObj }) {
+export default function Explorer({ callbackObj }) {
     // On Load
     useEffect(() => {
         ReloadFiles();

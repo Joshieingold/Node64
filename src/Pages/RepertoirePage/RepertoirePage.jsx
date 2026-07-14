@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import RepertoireGraph from "../../Components/RepertoireGraph/RepertoireGraph";
 import Notation from "../../Components/Notation/Notation";
 import { SaveAsButton, SaveButton } from "../../ReusableComponents/SaveButton";
-import { AnalysisChessBoard } from "../../NEW/ChessBoard/ChessBoard";
 import TabPanel from "../../ReusableComponents/TabPanel/TabPanel";
+import { AnalysisChessBoard } from "../../Components/ChessBoard/ChessBoard";
 
 export default function RepertoirePage({ data, onReviewAllLines }) {
     const [, setVersion] = useState(0);
