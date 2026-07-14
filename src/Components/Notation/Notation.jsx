@@ -1,7 +1,29 @@
 import "./Notation.css";
+import ContextMenu from "../../ReusableComponents/ContextMenu";
+import { useState } from "react";
 export default function Notation({ data, update }) {
     const handleClick = (node) => {
         data.goToNode(node);
+        update();
+    };
+    const [contextMenu, setContextMenu] = useState(null);
+    const [targetNode, setTargetNode] = useState(null);
+
+    const handleContextMenu = (e, item) => {
+        e.preventDefault();
+        setContextMenu({ x: e.clientX, y: e.clientY, item });
+    };
+    const closeContextMenu = () => {
+        setContextMenu(null);
+    };
+    const handleMakeMainLine = (node) => {
+        // Request to make data main line.
+        console.log("I want to make", node, "the main line!");
+        update();
+    };
+    const handleDeleteBranch = (node) => {
+        console.log("I want to delete", node);
+        // request to delete branch in data.
         update();
     };
 
@@ -16,6 +38,23 @@ export default function Notation({ data, update }) {
 
     return (
         <div className="notation">
+            {contextMenu && (
+                <ContextMenu
+                    x={contextMenu.x}
+                    y={contextMenu.y}
+                    onClose={closeContextMenu}
+                    items={[
+                        {
+                            label: "Delete from here",
+                            onClick: () => handleDeleteBranch(contextMenu.item),
+                        },
+                        {
+                            label: "Make main line",
+                            onClick: () => handleMakeMainLine(contextMenu.item),
+                        },
+                    ]}
+                />
+            )}
             {rows.map((row, idx) => (
                 <div key={row.white.id} className="notation-row-block">
                     <div className="notation-row">
@@ -27,6 +66,9 @@ export default function Notation({ data, update }) {
                                     : "notation-move"
                             }
                             onClick={() => handleClick(row.white)}
+                            onContextMenu={(e) =>
+                                handleContextMenu(e, row.white)
+                            }
                         >
                             {row.white.move.san}
                         </span>
@@ -37,6 +79,9 @@ export default function Notation({ data, update }) {
                                     : "notation-move"
                             }
                             onClick={() => row.black && handleClick(row.black)}
+                            onContextMenu={(e) =>
+                                handleContextMenu(e, row.black)
+                            }
                         >
                             {row.black?.move.san}
                         </span>
@@ -52,6 +97,7 @@ export default function Notation({ data, update }) {
                                 <VariationLine
                                     node={v}
                                     data={data}
+                                    onContextMenu={handleContextMenu}
                                     onMoveClick={handleClick}
                                 />
                                 )
@@ -70,6 +116,7 @@ export default function Notation({ data, update }) {
                                     node={v}
                                     data={data}
                                     onMoveClick={handleClick}
+                                    onContextMenu={handleContextMenu}
                                 />
                                 )
                             </div>
@@ -80,7 +127,7 @@ export default function Notation({ data, update }) {
     );
 }
 
-function VariationLine({ node, data, onMoveClick }) {
+function VariationLine({ node, data, onMoveClick, onContextMenu }) {
     const elements = [];
     let current = node;
     let first = true;
@@ -108,6 +155,7 @@ function VariationLine({ node, data, onMoveClick }) {
                             : "notation-var-move"
                     }
                     onClick={() => onMoveClick(thisNode)}
+                    onContextMenu={(e) => onContextMenu(e, thisNode)}
                 >
                     {thisNode.move.san}{" "}
                 </span>
@@ -126,6 +174,7 @@ function VariationLine({ node, data, onMoveClick }) {
                             node={thisNode.children[i]}
                             data={data}
                             onMoveClick={onMoveClick}
+                            onContextMenu={onContextMenu}
                         />
                         )
                     </div>,
