@@ -7,6 +7,7 @@ import {
     useSyncExternalStore,
 } from "react";
 import "./RepertoireGraph.css";
+import ContextMenu from "../../ReusableComponents/ContextMenu";
 
 const COLUMN_WIDTH = 64;
 const PADDING_X = 40;
@@ -20,6 +21,25 @@ export default function RepertoireGraph({ data, updateRef }) {
         useCallback((callback) => data.subscribe(callback), [data]),
         () => data.version,
     );
+    // Handles the context menu
+    const [contextMenu, setContextMenu] = useState(null);
+
+    const handleContextMenu = (e, item) => {
+        e.preventDefault();
+        setContextMenu({ x: e.clientX, y: e.clientY, item });
+    };
+    const handleMakeMainLine = (node) => {
+        data.chessData.promoteVariation(node);
+        updateRef();
+    };
+    const handleDeleteBranch = (node) => {
+        data.chessData.deleteVariation(node);
+        updateRef();
+    };
+    const closeContextMenu = () => {
+        setContextMenu(null);
+    };
+
     // Constants
     const nodeData = data.root;
     const NODE_R = 18;
@@ -37,9 +57,6 @@ export default function RepertoireGraph({ data, updateRef }) {
         () => new Map(nodes.map((n) => [n.node.id, n])),
         [nodes],
     );
-    // Selection is now derived from the document's own current position,
-    // so it stays correct whether it changes via a graph click, the
-    // board itself, or prev/next controls.
     const selectedNodeId = data.currentNode.id;
     const selected = nodesById.get(selectedNodeId)?.node ?? nodeData;
     // Positioning
@@ -139,6 +156,23 @@ export default function RepertoireGraph({ data, updateRef }) {
     // RENDERING
     return (
         <div className="node-graph">
+            {contextMenu && (
+                <ContextMenu
+                    x={contextMenu.x}
+                    y={contextMenu.y}
+                    onClose={closeContextMenu}
+                    items={[
+                        {
+                            label: "Delete from here",
+                            onClick: () => handleDeleteBranch(contextMenu.item),
+                        },
+                        {
+                            label: "Promote Variation",
+                            onClick: () => handleMakeMainLine(contextMenu.item),
+                        },
+                    ]}
+                />
+            )}
             <div className="control-container">
                 <h3>Moves: {nodes.length}</h3>
                 <h3>Lines: {(width / COLUMN_WIDTH).toFixed(0)}</h3>
@@ -224,6 +258,9 @@ export default function RepertoireGraph({ data, updateRef }) {
                                         transform={`translate(${x}, ${y})`}
                                         onPointerDown={(e) =>
                                             e.stopPropagation()
+                                        }
+                                        onContextMenu={(e) =>
+                                            handleContextMenu(e, node)
                                         }
                                         onClick={() => handleSelectNode(node)}
                                     >

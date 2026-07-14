@@ -214,7 +214,7 @@ export default class AnalysisDocument extends StandardDocument {
 
         for (let rawToken of tokens) {
             if (rawToken === "(") {
-                stack.push({ game, currentNode });
+                stack.push({ game, currentNode, lastFenBefore, lastParent });
                 game = new Chess(lastFenBefore);
                 currentNode = lastParent;
                 continue;
@@ -224,6 +224,8 @@ export default class AnalysisDocument extends StandardDocument {
                 if (restored) {
                     game = restored.game;
                     currentNode = restored.currentNode;
+                    lastFenBefore = restored.lastFenBefore;
+                    lastParent = restored.lastParent;
                 }
                 continue;
             }
