@@ -4,6 +4,7 @@
     position: absolute;
     width: 88%;
     height: 88%;
+    inset: 0;
 }
 .last-move-square {
     position: absolute;

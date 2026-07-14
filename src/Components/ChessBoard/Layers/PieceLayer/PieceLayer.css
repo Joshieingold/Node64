@@ -3,5 +3,6 @@
     width: 88%;
     height: 88%;
     justify-self: center;
+    inset: 0;
     align-self: center;
 }

@@ -2,5 +2,8 @@
     position: absolute;
     display: flex;
     width: 88%;
+    inset: 0;
+    justify-self: center;
+    align-self: center;
     height: 88%;
 }
