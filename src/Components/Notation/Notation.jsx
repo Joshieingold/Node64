@@ -18,12 +18,12 @@ export default function Notation({ data, update }) {
     };
     const handleMakeMainLine = (node) => {
         // Request to make data main line.
-        console.log("I want to make", node, "the main line!");
+        data.chessData.promoteVariation(node);
         update();
     };
     const handleDeleteBranch = (node) => {
-        console.log("I want to delete", node);
         // request to delete branch in data.
+        data.chessData.deleteVariation(node);
         update();
     };
 
@@ -49,7 +49,7 @@ export default function Notation({ data, update }) {
                             onClick: () => handleDeleteBranch(contextMenu.item),
                         },
                         {
-                            label: "Make main line",
+                            label: "Promote Variation",
                             onClick: () => handleMakeMainLine(contextMenu.item),
                         },
                     ]}

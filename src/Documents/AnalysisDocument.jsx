@@ -7,37 +7,17 @@ import StockFishDocument from "./StockfishDocument";
 import { RepertoireDocument } from "./RepertoireDocument";
 import { createNode } from "./Utils/NodeHelpers";
 import { splitPgnDatabase, parseHeaders } from "./Utils/PgnParsing";
+import {
+    formatArrowsComment,
+    parseArrowsFromComment,
+} from "./Utils/ArrowHelpers";
 /* ============================================================
    AnalysisDocument — the real tab document. Combines the board
    (via StandardDocument→ChessData), the engine, PGN headers, and
    file info. This is what Shell.jsx should instantiate for both
    Analysis and Repertoire tabs.
    ============================================================ */
-
-// Arrow annotations round-trip through PGN using the same [%cal ...]
-// comment convention lichess/ChessBase use, e.g. {[%cal Gc4f7,Re8e7]}
-// — one entry per arrow: <color><fromSquare><toSquare>.
 const ARROW_COLORS = new Set(["G", "R", "B", "Y"]);
-
-function formatArrowsComment(arrows) {
-    const spec = arrows.map((a) => `${a.color}${a.from}${a.to}`).join(",");
-    return `{[%cal ${spec}]}`;
-}
-
-function parseArrowsFromComment(commentText) {
-    const match = commentText.match(/%cal\s+([^\]]+)/);
-    if (!match) return [];
-    return match[1]
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean)
-        .map((entry) => {
-            const color = ARROW_COLORS.has(entry[0]) ? entry[0] : "G";
-            const from = entry.slice(1, 3);
-            const to = entry.slice(3, 5);
-            return { from, to, color };
-        });
-}
 
 export default class AnalysisDocument extends StandardDocument {
     constructor(onChange = null) {
