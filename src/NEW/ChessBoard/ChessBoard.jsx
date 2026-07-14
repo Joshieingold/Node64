@@ -200,20 +200,6 @@ export function AnalysisChessBoard({
 }) {
     const [flipped, setFlipped] = useState(false);
     // KEYBINDS //
-
-    useEffect(() => {
-        const id = Math.random().toString(36).slice(2, 8);
-        console.log("MOUNT keydown listener", id);
-        const handleKeyDown = (event) => {
-            console.log("fired", id);
-            // ...
-        };
-        window.addEventListener("keydown", handleKeyDown);
-        return () => {
-            console.log("UNMOUNT keydown listener", id);
-            window.removeEventListener("keydown", handleKeyDown);
-        };
-    }, [doc, updateCallback, onFlip]);
     useEffect(() => {
         const handleKeyDown = (event) => {
             // Get Keys
@@ -273,7 +259,7 @@ export function AnalysisChessBoard({
                     break;
             }
         };
-        window.addEventListener("keydown", handleKeyDown, inWidth);
+        window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [doc]);
 

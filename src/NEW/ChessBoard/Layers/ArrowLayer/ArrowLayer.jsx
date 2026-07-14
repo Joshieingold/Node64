@@ -1,9 +1,5 @@
 import "./ArrowLayer.css";
 
-/* NOTE: this assumes an 800x800 viewBox, 100 units/square, matching
-   the convention your other SVG layers (SquareLayer, PieceLayer) use.
-   If your Frame/SquareLayer use a different viewBox, change VB below
-   to match — the geometry math is otherwise independent of pixel size. */
 const VB = 800;
 const SQUARE = VB / 8;
 
