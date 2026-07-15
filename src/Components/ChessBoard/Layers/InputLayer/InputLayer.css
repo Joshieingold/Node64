@@ -8,7 +8,7 @@
     z-index: 100;
 }
 .input-layer {
-    cursor: default;
+    cursor: pointer;
 }
 .selected-square {
     background: #6d937b;
