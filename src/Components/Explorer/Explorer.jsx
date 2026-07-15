@@ -2,7 +2,6 @@ import "./Explorer.css";
 import { useEffect, useState } from "react";
 import ExplorerButton from "./Components/ExplorerButton";
 import { invoke } from "@tauri-apps/api/core";
-import CreateFileModal from "./Components/CreateFileModal";
 import ExplorerFolder from "./Components/ExplorerFolder";
 import ContextMenu from "../../ReusableComponents/ContextMenu";
 import ExplorerFile from "./Components/ExplorerFile";
@@ -17,14 +16,6 @@ export default function Explorer({ callbackObj }) {
     useEffect(() => {
         ReloadFiles();
     }, []);
-
-    // Create-File Modal
-    const [modalOpen, setModalOpen] = useState(false);
-    const handleCloseModal = async () => {
-        setModalOpen(false);
-        ReloadFiles();
-        setTargetFolder(null);
-    };
 
     // File Data
     const [directoryNodeTree, setDirectoryNodeTree] = useState(null);
@@ -50,7 +41,6 @@ export default function Explorer({ callbackObj }) {
 
     // Context Menu
     const [contextMenu, setContextMenu] = useState(null);
-    const [targetFolder, setTargetFolder] = useState(null);
 
     const handleContextMenu = (e, item) => {
         e.preventDefault();
@@ -112,17 +102,57 @@ export default function Explorer({ callbackObj }) {
         }
     };
 
-    // Button Functions
-    const OpenCreateFile = () => {
-        setModalOpen((prev) => !prev);
-    };
-    const OpenSearch = () => {
-        setSearchOpen((prev) => !prev);
-    };
+    // Creating files
+    const [creatingPath, setCreatingPath] = useState(null); // folder path being created in
+    const [createValue, setCreateValue] = useState("");
 
     const plusClick = (path) => {
-        setTargetFolder(path);
-        setModalOpen(true);
+        setCreatingPath(path);
+        setCreateValue("");
+    };
+
+    const cancelCreate = () => {
+        setCreatingPath(null);
+        setCreateValue("");
+    };
+
+    const submitCreate = async () => {
+        const trimmed = createValue.trim();
+        if (!trimmed) {
+            cancelCreate();
+            return;
+        }
+        const fileName = trimmed.split(".")[0];
+        const fileExtension = trimmed.split(".")[1];
+
+        try {
+            await invoke("create_file", {
+                destination: creatingPath,
+                name: fileName,
+                fileType: fileExtension,
+                pgn: "",
+            });
+            await ReloadFiles();
+        } catch (err) {
+            console.error("Create failed:", err);
+        } finally {
+            cancelCreate();
+        }
+    };
+
+    const handleCreateKeyDown = (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            submitCreate();
+        } else if (e.key === "Escape") {
+            e.preventDefault();
+            cancelCreate();
+        }
+    };
+
+    // Button Functions
+    const OpenSearch = () => {
+        setSearchOpen((prev) => !prev);
     };
 
     const ReloadFiles = async () => {
@@ -135,14 +165,6 @@ export default function Explorer({ callbackObj }) {
 
     return (
         <div className="explorer">
-            <div
-                className={`create-file-modal-wrapper ${modalOpen ? "" : "hidden"}`}
-            >
-                <CreateFileModal
-                    targetFolder={targetFolder}
-                    onClose={handleCloseModal}
-                />
-            </div>
             <div className="explorer-head">
                 <div className="title">Explorer</div>
                 <div className="explorer-buttons-wrapper">
@@ -181,6 +203,11 @@ export default function Explorer({ callbackObj }) {
                                 setRenameValue={setRenameValue}
                                 onRenameKeyDown={handleRenameKeyDown}
                                 onRenameBlur={cancelRename}
+                                creatingPath={creatingPath}
+                                createValue={createValue}
+                                setCreateValue={setCreateValue}
+                                onCreateKeyDown={handleCreateKeyDown}
+                                onCreateBlur={submitCreate}
                                 forceOpen={!!searchTerm.trim()}
                             />
                         ) : (

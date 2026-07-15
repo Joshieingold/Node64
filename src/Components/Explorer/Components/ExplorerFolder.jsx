@@ -16,10 +16,16 @@ export default function ExplorerFolder({
     setRenameValue,
     onRenameKeyDown,
     onRenameBlur,
+    creatingPath,
+    createValue,
+    setCreateValue,
+    onCreateKeyDown,
+    onCreateBlur,
     forceOpen = false,
 }) {
     const [dirOpen, setDirOpen] = useState(false);
-    const isOpen = dirOpen || forceOpen;
+    const isCreatingHere = creatingPath === path;
+    const isOpen = dirOpen || forceOpen || isCreatingHere;
 
     const handleOpenDir = () => {
         setDirOpen((prev) => !prev);
@@ -90,6 +96,19 @@ export default function ExplorerFolder({
                     className="folder-contents"
                     style={{ paddingLeft: `${level * 10}px` }}
                 >
+                    {isCreatingHere && (
+                        <div className="explorer-file">
+                            <input
+                                className="rename-input"
+                                autoFocus
+                                value={createValue}
+                                onChange={(e) => setCreateValue(e.target.value)}
+                                onKeyDown={onCreateKeyDown}
+                                onBlur={onCreateBlur}
+                                onClick={(e) => e.stopPropagation()}
+                            />
+                        </div>
+                    )}
                     {children.map((item) =>
                         item.is_directory ? (
                             <ExplorerFolder
@@ -107,6 +126,11 @@ export default function ExplorerFolder({
                                 setRenameValue={setRenameValue}
                                 onRenameKeyDown={onRenameKeyDown}
                                 onRenameBlur={onRenameBlur}
+                                creatingPath={creatingPath}
+                                createValue={createValue}
+                                setCreateValue={setCreateValue}
+                                onCreateKeyDown={onCreateKeyDown}
+                                onCreateBlur={onCreateBlur}
                                 forceOpen={forceOpen}
                             />
                         ) : (
