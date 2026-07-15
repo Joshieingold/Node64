@@ -65,6 +65,9 @@ function Board({ doc, updateCallback, isFlipped, inWidth }) {
                 doc.movePiece(drag.square, targetSquare);
             } else if (!drag.isDraggablePiece) {
                 doc.handleSquareClick(targetSquare);
+                // This is a fine place to add this but also not the best
+                // logic should really be to check if theres a piece there.
+                // doc.chessData.clearArrows();
             }
             updateCallback();
             setDrag(null);
