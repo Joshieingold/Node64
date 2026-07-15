@@ -50,7 +50,9 @@ export default function Shell() {
             id: crypto.randomUUID(),
             type: "analysis",
             title: "Analysis",
-            pageData: new AnalysisDocument(),
+            pageData: new AnalysisDocument(() => {
+                setTabs((prev) => [...prev]);
+            }),
         };
         setTabs((prev) => [...prev, newTab]);
         setActiveTab(newTab.id);
@@ -63,7 +65,7 @@ export default function Shell() {
             title: "Repertoire",
         };
         newTab.pageData = new AnalysisDocument(() => {
-            setTabs((prev) => [...prev, newTab]);
+            setTabs((prev) => [...prev]);
         });
         newTab.pageData.fileLocation =
             "/home/josh/Documents/repos/Node64/ChessData/Repertoires/";
@@ -188,7 +190,7 @@ export default function Shell() {
                             Analysis
                         </div>
                         <div className="control" onClick={CreateRepertoireTab}>
-                            Train
+                            Repertoire
                         </div>
                         <div className="control">Practice</div>
                         <div className="control">Openings</div>
