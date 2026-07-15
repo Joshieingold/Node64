@@ -1,4 +1,3 @@
-// src/Pages/TrainingPage/TrainingPage.jsx
 import { useCallback, useState, useSyncExternalStore } from "react";
 import "./TrainingPage.css";
 import { AnalysisChessBoard } from "../../Components/ChessBoard/ChessBoard";
@@ -9,12 +8,10 @@ export default function TrainingPage({ data: trainer }) {
         useCallback((cb) => trainer.subscribe(cb), [trainer]),
         () => trainer.version,
     );
-
     // ChessBoard expects an explicit `update` callback it can call after
     // pointer/keyboard actions, separate from the subscribe mechanism above.
     const [, setTick] = useState(0);
     const update = useCallback(() => setTick((t) => t + 1), []);
-
     const [colorChoice, setColorChoice] = useState(trainer.userColor);
 
     const renderStatusBanner = () => {
@@ -84,7 +81,8 @@ export default function TrainingPage({ data: trainer }) {
 
     return (
         <div className="training-page">
-            <AnalysisChessBoard doc={trainer} update={update} />
+            {renderStatusBanner()}
+            <AnalysisChessBoard doc={trainer} updateCallback={update} />
         </div>
     );
 }

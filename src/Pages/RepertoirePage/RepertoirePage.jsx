@@ -14,20 +14,20 @@ export default function RepertoirePage({ data, onReviewAllLines }) {
     const tabs = [
         {
             key: "NodeView",
-            label: "Node View",
+            label: "Tree",
             content: <RepertoireGraph data={data} update={update} />,
         },
         {
             key: "ScoreSheet",
-            label: "ScoreSheet View",
+            label: "ScoreSheet",
             content: <Notation data={data} update={update} />,
         },
     ];
     const actions = [
         {
             key: "memorize",
-            label: "Memorize Lines",
-            onClick: () => onReviewAllLines({ userColor: "w" }),
+            label: "Learn",
+            onClick: () => onReviewAllLines({ userColor: data.orientation }),
         },
     ];
 
@@ -39,10 +39,21 @@ export default function RepertoirePage({ data, onReviewAllLines }) {
             }
         };
     });
+    const onFlip = () => {
+        if (data.orientation === "b") {
+            data.orientation = "w";
+        } else {
+            data.orientation = "b";
+        }
+    };
     return (
         <div className="repertoire-page">
             <div className="repertoire-board-container">
-                <AnalysisChessBoard doc={data} updateCallback={update} />
+                <AnalysisChessBoard
+                    onFlip={onFlip}
+                    doc={data}
+                    updateCallback={update}
+                />
             </div>
             <div className="tab-panel-container">
                 <TabPanel

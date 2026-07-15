@@ -4,7 +4,7 @@ import StandardDocument from "./StandardDocument";
 import PgnDocument from "./PgnDocument";
 import FileDocument from "./FileDocument";
 import StockFishDocument from "./StockfishDocument";
-import { RepertoireDocument } from "./RepertoireDocument";
+import RepertoireTrainer from "./RepertoireTrainer";
 import { createNode } from "./Utils/NodeHelpers";
 import { splitPgnDatabase, parseHeaders } from "./Utils/PgnParsing";
 import {
@@ -30,6 +30,7 @@ export default class AnalysisDocument extends StandardDocument {
             () => this.notify(),
             () => this._getCurrentFen(),
         );
+        this.Orientation = "w";
 
         // Re-wire chessData's onChange so every move both notifies
         // React AND (if the engine is on) feeds it the new position.
@@ -302,7 +303,7 @@ export default class AnalysisDocument extends StandardDocument {
     // Converts the tab's tree into a graph-based RepertoireDocument
     // (transpositions merged) — used for training / export.
     createRepertoire() {
-        const repertoire = new RepertoireDocument();
+        const repertoire = new RepertoireTrainer();
         repertoire.importChessDocument(this);
         return repertoire;
     }

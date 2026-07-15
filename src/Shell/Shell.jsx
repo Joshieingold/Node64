@@ -5,6 +5,7 @@ import { useState } from "react";
 import RepertoirePage from "../Pages/RepertoirePage/RepertoirePage";
 import AnalysisDocument from "../Documents/AnalysisDocument";
 import TrainingPage from "../Pages/TrainingPage/TrainingPage";
+import RepertoireTrainer from "../Documents/RepertoireTrainer";
 import ExplorerNew from "../Components/Explorer/Explorer";
 
 export default function Shell() {
