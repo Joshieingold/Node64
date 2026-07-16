@@ -22,6 +22,7 @@ export default function OpeningExplorer({ gameData, databaseData, update }) {
     }, [currentFen, databaseData?.currentDatabase]);
 
     const handleClickMove = async (san) => {
+        update();
         if (!gameData || !currentFen || !databaseData) return;
         // StandardDocument only exposes movePiece(from, to) -- not a
         // SAN-based method -- so resolve the SAN against a scratch chess.js

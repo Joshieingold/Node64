@@ -43,9 +43,15 @@ export default class AnalysisDocument extends StandardDocument {
     }
 
     _getCurrentFen() {
-        return this.chessData.currentNode.move
-            ? this.chessData.currentNode.move.after
-            : this.chessData.game.fen();
+        if (this.chessData.currentNode.move) {
+            let result = this.chessData.currentNode.move.after;
+            console.log(1, result);
+            return result;
+        } else {
+            let result = this.chessData.game.fen();
+            console.log(2, result);
+            return result;
+        }
     }
 
     getPlayerNames() {
