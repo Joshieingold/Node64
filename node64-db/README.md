@@ -151,6 +151,18 @@ const stats = await invoke("n64_search_stats", { filters: { eco: "B90" } });
   `position_id`, which is exactly the "frequency / score / rating" view
   the spec describes -- it falls out of the same indexing used for
   position search.
+- **ECO codes and opening names are derived automatically, not just copied
+  from the PGN.** Many PGN sources omit `[ECO]`/`[Opening]` tags entirely.
+  `eco.rs` bundles the ~3,800-line "5 volumes" ECO classification from the
+  lichess.org `chess-openings` project (MIT licensed,
+  https://github.com/lichess-org/chess-openings, data in `data/eco_openings.tsv`),
+  replays each reference line with the same chess engine used for import,
+  and indexes the results by Zobrist hash -- the same position identity
+  used everywhere else. On import, if the PGN already has `ECO`/`Opening`
+  tags those are used as-is; otherwise the importer classifies the game
+  from the deepest position it reaches that matches a known line. This
+  runs for free off positions the importer is computing anyway, so it
+  doesn't require replaying the game a second time.
 - **Nothing here stores engine output, repertoire trees, or annotations.**
   That's intentional -- those stay in `.pgn` / `.n64rep` documents on disk,
   per the "no engine data / no repertoires" sections of the spec. If you

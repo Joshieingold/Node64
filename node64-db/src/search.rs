@@ -26,7 +26,7 @@ pub fn search_games(conn: &Connection, filters: &SearchFilters) -> Result<Search
         .map_err(|e| e.to_string())?;
 
     let sql = format!(
-        "SELECT g.id, g.uuid, g.white, g.black, g.result, g.date, g.event, g.eco,
+        "SELECT g.id, g.uuid, g.white, g.black, g.result, g.date, g.event, g.eco, g.opening_name,
                 g.white_elo, g.black_elo, g.ply_count
          FROM games g
          {where_clause}
@@ -46,9 +46,10 @@ pub fn search_games(conn: &Connection, filters: &SearchFilters) -> Result<Search
                 date: row.get(5)?,
                 event: row.get(6)?,
                 eco: row.get(7)?,
-                white_elo: row.get(8)?,
-                black_elo: row.get(9)?,
-                ply_count: row.get(10)?,
+                opening_name: row.get(8)?,
+                white_elo: row.get(9)?,
+                black_elo: row.get(10)?,
+                ply_count: row.get(11)?,
             })
         })
         .map_err(|e| e.to_string())?

@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS games (
     round        TEXT,
     result       TEXT,       -- "1-0" | "0-1" | "1/2-1/2" | "*"
     eco          TEXT,
+    opening_name TEXT,
     white_elo    INTEGER,
     black_elo    INTEGER,
 

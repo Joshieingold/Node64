@@ -99,7 +99,7 @@ pub fn n64_search_stats(filters: SearchFilters, state: State<DbState>) -> Result
 pub fn n64_get_game(game_id: i64, state: State<DbState>) -> Result<GameRecord, String> {
     state.with_conn(|conn| {
         conn.query_row(
-            "SELECT id, uuid, white, black, event, site, date, round, result, eco,
+            "SELECT id, uuid, white, black, event, site, date, round, result, eco, opening_name,
                     white_elo, black_elo, start_fen, is_chess960, ply_count, pgn, source, imported_at
              FROM games WHERE id = ?1",
             rusqlite::params![game_id],
@@ -115,14 +115,15 @@ pub fn n64_get_game(game_id: i64, state: State<DbState>) -> Result<GameRecord, S
                     round: row.get(7)?,
                     result: row.get(8)?,
                     eco: row.get(9)?,
-                    white_elo: row.get(10)?,
-                    black_elo: row.get(11)?,
-                    start_fen: row.get(12)?,
-                    is_chess960: row.get::<_, i64>(13)? != 0,
-                    ply_count: row.get(14)?,
-                    pgn: row.get(15)?,
-                    source: row.get(16)?,
-                    imported_at: row.get(17)?,
+                    opening_name: row.get(10)?,
+                    white_elo: row.get(11)?,
+                    black_elo: row.get(12)?,
+                    start_fen: row.get(13)?,
+                    is_chess960: row.get::<_, i64>(14)? != 0,
+                    ply_count: row.get(15)?,
+                    pgn: row.get(16)?,
+                    source: row.get(17)?,
+                    imported_at: row.get(18)?,
                 })
             },
         )

@@ -1,6 +1,7 @@
 pub mod chess;
 pub mod commands;
 pub mod db;
+pub mod eco;
 pub mod explorer;
 pub mod import;
 pub mod models;

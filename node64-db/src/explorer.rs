@@ -136,7 +136,8 @@ pub fn representative_games(conn: &Connection, fen: &str, limit: i64) -> Result<
 
     let mut stmt = conn
         .prepare(
-            "SELECT g.id, g.uuid, g.white, g.black, g.result, g.date, g.event, g.eco, g.white_elo, g.black_elo, g.ply_count
+            "SELECT g.id, g.uuid, g.white, g.black, g.result, g.date, g.event, g.eco, g.opening_name,
+                    g.white_elo, g.black_elo, g.ply_count
              FROM games g
              JOIN game_positions gp ON gp.game_id = g.id
              JOIN positions p ON p.id = gp.position_id
@@ -157,9 +158,10 @@ pub fn representative_games(conn: &Connection, fen: &str, limit: i64) -> Result<
                 date: row.get(5)?,
                 event: row.get(6)?,
                 eco: row.get(7)?,
-                white_elo: row.get(8)?,
-                black_elo: row.get(9)?,
-                ply_count: row.get(10)?,
+                opening_name: row.get(8)?,
+                white_elo: row.get(9)?,
+                black_elo: row.get(10)?,
+                ply_count: row.get(11)?,
             })
         })
         .map_err(|e| e.to_string())?

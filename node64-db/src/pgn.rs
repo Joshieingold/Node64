@@ -89,7 +89,7 @@ fn parse_tag_line(line: &str) -> Option<(String, String)> {
 
 /// Extract ordered SAN move tokens from movetext, stripping comments,
 /// variations, NAGs, move numbers, and the final result token.
-fn tokenize_movetext(movetext: &str) -> Vec<String> {
+pub(crate) fn tokenize_movetext(movetext: &str) -> Vec<String> {
     let mut sans = Vec::new();
     let chars: Vec<char> = movetext.chars().collect();
     let mut i = 0;

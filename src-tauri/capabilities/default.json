@@ -9,6 +9,8 @@
             "identifier": "fs:scope",
             "allow": ["$HOME/**"]
         },
+        "fs:allow-write-text-file",
+        { "identifier": "fs:scope-temp", "allow": [{ "path": "$TEMP/**" }] },
         "dialog:allow-open",
         "core:default",
         "opener:default"

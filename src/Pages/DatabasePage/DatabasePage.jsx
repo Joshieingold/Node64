@@ -121,6 +121,7 @@ export default function DatabasePage({ data, onOpenGameInAnalysis }) {
                             <th onClick={() => data.sortBy("date")}>Date{sortArrow("date")}</th>
                             <th>Event</th>
                             <th>ECO</th>
+                            <th>Opening</th>
                             <th onClick={() => data.sortBy("elo")}>Rating{sortArrow("elo")}</th>
                             <th>Length</th>
                         </tr>
@@ -134,6 +135,7 @@ export default function DatabasePage({ data, onOpenGameInAnalysis }) {
                                 <td>{g.date || ""}</td>
                                 <td className="db-cell-truncate">{g.event || ""}</td>
                                 <td>{g.eco || ""}</td>
+                                <td className="db-cell-truncate">{g.openingName || ""}</td>
                                 <td>
                                     {g.whiteElo || "?"}/{g.blackElo || "?"}
                                 </td>
@@ -142,7 +144,7 @@ export default function DatabasePage({ data, onOpenGameInAnalysis }) {
                         ))}
                         {data.results.games.length === 0 && (
                             <tr>
-                                <td colSpan={8} className="db-empty-row">
+                                <td colSpan={9} className="db-empty-row">
                                     {data.currentDatabase ? "No games match these filters." : "Open a database to browse games."}
                                 </td>
                             </tr>
@@ -385,6 +387,7 @@ export default function DatabasePage({ data, onOpenGameInAnalysis }) {
                             <div className="db-game-panel-meta">
                                 {data.selectedGame.event} {data.selectedGame.date && `\u00b7 ${data.selectedGame.date}`}
                                 {data.selectedGame.eco && ` \u00b7 ${data.selectedGame.eco}`}
+                                {data.selectedGame.openingName && ` \u00b7 ${data.selectedGame.openingName}`}
                             </div>
                             <pre className="db-game-pgn">{data.selectedGame.pgn}</pre>
                             <div className="db-game-panel-actions">

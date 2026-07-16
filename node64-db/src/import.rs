@@ -86,7 +86,10 @@ fn import_one_game(conn: &Connection, parsed: &ParsedGame, source: &str) -> Resu
 
     // 4. Replay moves, indexing every position along the way.
     let mut position_ids: Vec<(i64, i64, Option<String>)> = Vec::new(); // (ply, position_id, move_san)
+    let mut position_hashes: Vec<u64> = Vec::new(); // parallel list, ply-ordered, for ECO classification
+    let start_hash = hash_board(&board);
     let start_position_id = ensure_position(conn, &board)?;
+    position_hashes.push(start_hash);
 
     let mut sans_played = Vec::with_capacity(parsed.sans.len());
     let mut current_ply: i64 = 0;
@@ -103,17 +106,33 @@ fn import_one_game(conn: &Connection, parsed: &ParsedGame, source: &str) -> Resu
         board = board.apply(&mv);
         current_ply += 1;
         last_position_id = ensure_position(conn, &board)?;
+        position_hashes.push(hash_board(&board));
     }
     // final position, no move played from it
     position_ids.push((current_ply, last_position_id, None));
+
+    // 4b. ECO / opening name: prefer whatever the PGN already declares,
+    // otherwise classify from the positions we just replayed. This is why
+    // classification happens after replay instead of before -- it reuses
+    // the exact same hashes rather than replaying the game a second time.
+    let (eco, opening_name) = match (parsed.tag("ECO"), parsed.tag("Opening")) {
+        (Some(eco), Some(name)) => (Some(eco.to_string()), Some(name.to_string())),
+        (eco_tag, name_tag) => {
+            let classified = crate::eco::classify(&position_hashes);
+            (
+                eco_tag.map(|s| s.to_string()).or_else(|| classified.as_ref().map(|c| c.0.clone())),
+                name_tag.map(|s| s.to_string()).or_else(|| classified.as_ref().map(|c| c.1.clone())),
+            )
+        }
+    };
 
     // 5. Insert the game row.
     let now = chrono::Utc::now().to_rfc3339();
     conn.execute(
         "INSERT INTO games
-            (uuid, white, black, event, site, date, round, result, eco,
+            (uuid, white, black, event, site, date, round, result, eco, opening_name,
              white_elo, black_elo, start_fen, is_chess960, ply_count, pgn, source, imported_at)
-         VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17)",
+         VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18)",
         params![
             uuid,
             parsed.tag("White"),
@@ -123,7 +142,8 @@ fn import_one_game(conn: &Connection, parsed: &ParsedGame, source: &str) -> Resu
             parsed.tag("Date"),
             parsed.tag("Round"),
             parsed.tag("Result"),
-            parsed.tag("ECO"),
+            eco,
+            opening_name,
             parsed.tag("WhiteElo").and_then(|s| s.parse::<i64>().ok()),
             parsed.tag("BlackElo").and_then(|s| s.parse::<i64>().ok()),
             start_fen,

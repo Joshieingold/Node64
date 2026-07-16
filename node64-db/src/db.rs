@@ -32,6 +32,7 @@ impl DbState {
         conn.pragma_update(None, "foreign_keys", "ON").map_err(|e| e.to_string())?;
         conn.pragma_update(None, "journal_mode", "WAL").map_err(|e| e.to_string())?;
         conn.execute_batch(SCHEMA_SQL).map_err(|e| e.to_string())?;
+        run_migrations(&conn)?;
 
         let mut guard = self.inner.lock().map_err(|_| "db lock poisoned".to_string())?;
         *guard = Some(OpenDb { conn, path: path.to_path_buf() });
@@ -55,6 +56,15 @@ impl DbState {
         let db = guard.as_ref().ok_or_else(|| "no database is currently open".to_string())?;
         f(&db.conn)
     }
+}
+
+/// Schema additions after the initial release need an explicit migration,
+/// since `CREATE TABLE IF NOT EXISTS` in schema.sql won't add columns to a
+/// table that already exists. Each ALTER is best-effort: SQLite has no
+/// `ADD COLUMN IF NOT EXISTS`, so we just ignore "duplicate column" errors.
+fn run_migrations(conn: &Connection) -> Result<(), String> {
+    let _ = conn.execute("ALTER TABLE games ADD COLUMN opening_name TEXT", []);
+    Ok(())
 }
 
 /// Create a brand-new, empty database file at `path`. Fails if it already exists.

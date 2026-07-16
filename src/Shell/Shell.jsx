@@ -92,22 +92,22 @@ export default function Shell() {
         setActiveTab(newTab.id);
     };
     // Opens a game's PGN (pulled from a database) as a new Analysis tab.
-    // Requires AnalysisDocument to expose a way to load from a raw PGN
-    // string rather than a file path -- add a `loadPgnText(pgnString)`
-    // method alongside the existing `loadPgn(path)` if it doesn't have
-    // one yet; it should do the same parsing/board-setup work loadPgn
-    // does, just from a string instead of reading a file first.
-    const OpenGameInAnalysis = (pgnText, title) => {
+    // AnalysisDocument only knows how to load from a file path (loadPgn),
+    // not from a raw string, so we write the PGN to a temp file and reuse
+    // that exact same working code path instead of duplicating its parsing
+    // logic here.
+    const OpenGameInAnalysis = async (pgnText, title) => {
+        const { writeTextFile } = await import("@tauri-apps/plugin-fs");
+        const { tempDir, join } = await import("@tauri-apps/api/path");
+
+        const fileName = `node64-db-game-${crypto.randomUUID()}.pgn`;
+        const dir = await tempDir();
+        const fullPath = await join(dir, fileName);
+        await writeTextFile(fullPath, pgnText);
+
         const newTab = CreateAnalysisTab();
         newTab.title = title || "Analysis";
-        if (typeof newTab.pageData.loadPgnText === "function") {
-            newTab.pageData.loadPgnText(pgnText);
-        } else {
-            console.warn(
-                "AnalysisDocument.loadPgnText(pgnString) is not implemented yet; " +
-                    "opened a blank Analysis tab instead.",
-            );
-        }
+        newTab.pageData.loadPgn(fullPath);
         setTabs((prev) => [...prev]);
     };
     const SwitchToOpenTab = (name) => {
