@@ -1,0 +1,17 @@
+[package]
+name = "node64_db"
+version = "0.1.0"
+edition = "2021"
+description = "Node64: a searchable SQLite-backed chess game database for Tauri apps"
+
+[dependencies]
+rusqlite = { version = "0.31", features = ["bundled"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = { version = "0.4", features = ["serde"] }
+once_cell = "1"
+thiserror = "1"
+
+# Only needed if you expose commands directly from this crate (recommended).
+# Match this to whatever tauri version your app uses.
+tauri = { version = "2", features = [] }

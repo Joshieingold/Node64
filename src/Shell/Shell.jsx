@@ -1,19 +1,23 @@
 import "./Shell.css";
 import AnalysisPage from "../Pages/AnalysisPage/AnalysisPage";
 import Compass from "/Compass.png";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import RepertoirePage from "../Pages/RepertoirePage/RepertoirePage";
 import AnalysisDocument from "../Documents/AnalysisDocument";
 import TrainingPage from "../Pages/TrainingPage/TrainingPage";
 import RepertoireTrainer from "../Documents/RepertoireTrainer";
 import ExplorerNew from "../Components/Explorer/Explorer";
-
+import DatabasePage from "../Pages/DatabasePage/DatabasePage";
+import DatabaseDocument from "../Documents/DatabaseDocument";
 export default function Shell() {
     const [tabs, setTabs] = useState([]);
     const [activeTab, setActiveTab] = useState(null);
     const [leftPanelOpen, setLeftPanelOpen] = useState(true);
     const [currentPanelTab, setCurrentPanelTab] = useState("Explorer");
-
+    // Node64 only ever has one database open at a time, so the Database
+    // tab reuses a single persistent DatabaseDocument instance rather than
+    // minting a fresh one every time the tab is opened/closed.
+    const databaseDocRef = useRef(null);
     const handlePanelTabClick = (clickedPanelName) => {
         if (clickedPanelName === currentPanelTab) {
             setCurrentPanelTab(null);
@@ -23,7 +27,6 @@ export default function Shell() {
         setLeftPanelOpen(true);
         setCurrentPanelTab(clickedPanelName);
     };
-
     const CreateTrainingTab = (
         repertoireTabData,
         { userColor = "w", startNode = null } = {},
@@ -35,7 +38,6 @@ export default function Shell() {
             onChange: () => setTabs((prev) => [...prev]),
         });
         trainer.startSession();
-
         const newTab = {
             id: crypto.randomUUID(),
             type: "training",
@@ -45,7 +47,6 @@ export default function Shell() {
         setTabs((prev) => [...prev, newTab]);
         setActiveTab(newTab.id);
     };
-
     const CreateAnalysisTab = () => {
         const newTab = {
             id: crypto.randomUUID(),
@@ -57,8 +58,8 @@ export default function Shell() {
         };
         setTabs((prev) => [...prev, newTab]);
         setActiveTab(newTab.id);
+        return newTab;
     };
-
     const CreateRepertoireTab = () => {
         const newTab = {
             id: crypto.randomUUID(),
@@ -74,7 +75,41 @@ export default function Shell() {
         setTabs((prev) => [...prev, newTab]);
         setActiveTab(newTab.id);
     };
-
+    const CreateDatabaseTab = () => {
+        if (SwitchToOpenTab("Database")) return;
+        if (!databaseDocRef.current) {
+            databaseDocRef.current = new DatabaseDocument(() => {
+                setTabs((prev) => [...prev]);
+            });
+        }
+        const newTab = {
+            id: crypto.randomUUID(),
+            type: "database",
+            title: "Database",
+            pageData: databaseDocRef.current,
+        };
+        setTabs((prev) => [...prev, newTab]);
+        setActiveTab(newTab.id);
+    };
+    // Opens a game's PGN (pulled from a database) as a new Analysis tab.
+    // Requires AnalysisDocument to expose a way to load from a raw PGN
+    // string rather than a file path -- add a `loadPgnText(pgnString)`
+    // method alongside the existing `loadPgn(path)` if it doesn't have
+    // one yet; it should do the same parsing/board-setup work loadPgn
+    // does, just from a string instead of reading a file first.
+    const OpenGameInAnalysis = (pgnText, title) => {
+        const newTab = CreateAnalysisTab();
+        newTab.title = title || "Analysis";
+        if (typeof newTab.pageData.loadPgnText === "function") {
+            newTab.pageData.loadPgnText(pgnText);
+        } else {
+            console.warn(
+                "AnalysisDocument.loadPgnText(pgnString) is not implemented yet; " +
+                    "opened a blank Analysis tab instead.",
+            );
+        }
+        setTabs((prev) => [...prev]);
+    };
     const SwitchToOpenTab = (name) => {
         if (tabs.length <= 0) {
             return false;
@@ -88,7 +123,6 @@ export default function Shell() {
         }
         return false;
     };
-
     const LoadRepertoireTabFromFile = (pathToFile) => {
         const lastSlash = pathToFile.lastIndexOf("/");
         const directory = pathToFile.slice(0, lastSlash);
@@ -110,7 +144,6 @@ export default function Shell() {
             setActiveTab(newTab.id);
         }
     };
-
     const LoadAnalysisTabFromFile = (pathToFile) => {
         const lastSlash = pathToFile.lastIndexOf("/");
         const directory = pathToFile.slice(0, lastSlash);
@@ -133,7 +166,6 @@ export default function Shell() {
             setActiveTab(newTab.id);
         }
     };
-
     const removeTab = (tabId) => {
         setTabs((prev) => {
             const remaining = prev.filter((tab) => tab.id !== tabId);
@@ -147,7 +179,6 @@ export default function Shell() {
             return remaining;
         });
     };
-
     const GetPage = () => {
         const activeTabData = tabs.find((tab) => tab.id === activeTab);
         if (!activeTabData) return null;
@@ -176,11 +207,18 @@ export default function Shell() {
                         key={activeTabData.id}
                     />
                 );
+            case "database":
+                return (
+                    <DatabasePage
+                        data={activeTabData.pageData}
+                        onOpenGameInAnalysis={OpenGameInAnalysis}
+                        key={activeTabData.id}
+                    />
+                );
             default:
                 return null;
         }
     };
-
     return (
         <div className="shell">
             <div className="top-items">
@@ -192,6 +230,9 @@ export default function Shell() {
                         </div>
                         <div className="control" onClick={CreateRepertoireTab}>
                             Repertoire
+                        </div>
+                        <div className="control" onClick={CreateDatabaseTab}>
+                            Database
                         </div>
                         <div className="control">Practice</div>
                         <div className="control">Openings</div>
