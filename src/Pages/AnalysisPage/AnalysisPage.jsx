@@ -7,8 +7,8 @@ import { AnalysisChessBoard } from "../../Components/ChessBoard/ChessBoard.jsx";
 import TabPanel from "../../ReusableComponents/TabPanel/TabPanel";
 import SFToggle from "../../Components/StockFish/SFToggle.jsx";
 import PlayerShowcase from "../../Components/PlayerShowcase/PlayerShowcase.jsx";
-
-export default function AnalysisPage({ data }) {
+import OpeningExplorer from "../../Components/OpeningExplorer/OpeningExplorer.jsx";
+export default function AnalysisPage({ data, databaseRef }) {
     const [, setVersion] = useState(0);
     const [flipped, setFlipped] = useState(false);
     const update = () => {
@@ -25,12 +25,22 @@ export default function AnalysisPage({ data }) {
             }
         };
     }, [data, update]);
-
     const tabs = [
         {
             key: "ScoreSheet",
             label: "ScoreSheet",
             content: <Notation data={data} update={update} />,
+        },
+        {
+            key: "OpeningExplorer",
+            label: "Opening Explorer",
+            content: (
+                <OpeningExplorer
+                    gameData={data}
+                    databaseData={databaseRef?.current}
+                    update={update}
+                />
+            ),
         },
     ];
     const actions = [
@@ -49,7 +59,6 @@ export default function AnalysisPage({ data }) {
             },
         },
     ];
-
     return (
         <div className="analysis-page">
             <div className="content-container">

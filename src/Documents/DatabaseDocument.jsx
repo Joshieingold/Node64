@@ -139,7 +139,8 @@ export default class DatabaseDocument {
                 oldName,
                 newName: newName.trim(),
             });
-            if (this.currentDatabase === oldName) this.currentDatabase = newName.trim();
+            if (this.currentDatabase === oldName)
+                this.currentDatabase = newName.trim();
         } catch (e) {
             this.error = String(e);
         }
@@ -174,10 +175,17 @@ export default class DatabaseDocument {
         this.importProgress = { done: 0, total: paths.length };
         this.notify();
 
-        const combined = { imported: 0, skippedDuplicates: 0, failed: 0, errors: [] };
+        const combined = {
+            imported: 0,
+            skippedDuplicates: 0,
+            failed: 0,
+            errors: [],
+        };
         for (const filePath of paths) {
             try {
-                const summary = await invoke("n64_import_pgn_file", { filePath });
+                const summary = await invoke("n64_import_pgn_file", {
+                    filePath,
+                });
                 combined.imported += summary.imported;
                 combined.skippedDuplicates += summary.skippedDuplicates;
                 combined.failed += summary.failed;
@@ -186,7 +194,10 @@ export default class DatabaseDocument {
                 combined.failed += 1;
                 combined.errors.push(`${filePath}: ${String(e)}`);
             }
-            this.importProgress = { done: this.importProgress.done + 1, total: paths.length };
+            this.importProgress = {
+                done: this.importProgress.done + 1,
+                total: paths.length,
+            };
             this.notify();
         }
 
@@ -208,7 +219,10 @@ export default class DatabaseDocument {
         this.loading = true;
         this.notify();
         try {
-            this.importSummary = await invoke("n64_import_pgn_text", { pgnText, source });
+            this.importSummary = await invoke("n64_import_pgn_text", {
+                pgnText,
+                source,
+            });
             this.error = null;
             await this.search();
         } catch (e) {
@@ -246,7 +260,9 @@ export default class DatabaseDocument {
         this.loading = true;
         this.notify();
         try {
-            this.results = await invoke("n64_search_games", { filters: payload });
+            this.results = await invoke("n64_search_games", {
+                filters: payload,
+            });
             this.stats = await invoke("n64_search_stats", { filters: payload });
             this.error = null;
         } catch (e) {
@@ -262,7 +278,10 @@ export default class DatabaseDocument {
     }
 
     async prevPage() {
-        this.filters.offset = Math.max(0, this.filters.offset - this.filters.limit);
+        this.filters.offset = Math.max(
+            0,
+            this.filters.offset - this.filters.limit,
+        );
         await this.search(false);
     }
 
@@ -281,6 +300,20 @@ export default class DatabaseDocument {
             this.explorer = moveSequence
                 ? await invoke("n64_explorer_by_moves", { moveSequence })
                 : await invoke("n64_explorer_by_fen", { fen: null });
+            this.error = null;
+        } catch (e) {
+            this.error = String(e);
+        }
+        this.notify();
+    }
+
+    /** Loads the explorer for an exact FEN, e.g. the live game board's
+     * current position. Preferred over loadExplorer() when you already
+     * have a FEN handy, since it doesn't require replaying/tracking a
+     * move-sequence string in parallel. */
+    async loadExplorerByFen(fen) {
+        try {
+            this.explorer = await invoke("n64_explorer_by_fen", { fen });
             this.error = null;
         } catch (e) {
             this.error = String(e);

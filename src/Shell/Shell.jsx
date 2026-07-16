@@ -14,9 +14,6 @@ export default function Shell() {
     const [activeTab, setActiveTab] = useState(null);
     const [leftPanelOpen, setLeftPanelOpen] = useState(true);
     const [currentPanelTab, setCurrentPanelTab] = useState("Explorer");
-    // Node64 only ever has one database open at a time, so the Database
-    // tab reuses a single persistent DatabaseDocument instance rather than
-    // minting a fresh one every time the tab is opened/closed.
     const databaseDocRef = useRef(null);
     const handlePanelTabClick = (clickedPanelName) => {
         if (clickedPanelName === currentPanelTab) {
@@ -55,6 +52,7 @@ export default function Shell() {
             pageData: new AnalysisDocument(() => {
                 setTabs((prev) => [...prev]);
             }),
+            databaseRef: databaseDocRef,
         };
         setTabs((prev) => [...prev, newTab]);
         setActiveTab(newTab.id);
@@ -188,6 +186,7 @@ export default function Shell() {
                     <AnalysisPage
                         data={activeTabData.pageData}
                         key={activeTabData.id}
+                        databaseRef={activeTabData.databaseRef}
                     />
                 );
             case "repertoire":
