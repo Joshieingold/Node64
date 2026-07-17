@@ -121,18 +121,16 @@ export default class ChessData {
         this.currentNode = this.root;
         this.rebuildBoard();
     }
-
     movePiece(from, to) {
         const piece = this.getPiece(from);
-        if (!piece) return;
+        if (!piece) return false;
         const legal = this.getLegalMoves(from).map((m) => m.to);
         if (!legal.includes(to)) {
             this.clearSelection();
-            this._emit();
-            return;
+            return false;
         }
         const result = this.game.move({ from, to });
-        if (!result) return;
+        if (!result) return false;
         let child = this.currentNode.children.find(
             (c) =>
                 c.move.from === result.from &&
@@ -149,6 +147,7 @@ export default class ChessData {
         this.lastMove = result;
         this.clearSelection();
         this._emit();
+        return true;
     }
 
     undo() {
@@ -174,6 +173,7 @@ export default class ChessData {
     clearSelection() {
         this.selectedSquare = null;
         this.legalMoves = [];
+        this._emit();
     }
 
     selectSquare(square) {

@@ -10,13 +10,13 @@
     --light-sq-color: #d0d9e0;
     --dark-sq-color: #5185b5;
     --legal-move-color: rgba(0, 0, 0, 0.35);
-    --last-move-color: rgba(255, 215, 0, 0.35);
+    --last-move-color: rgba(255, 215, 0, 0.85);
 
     --bad-red: rgba(255, 0, 0);
     --bad-red-transparent: rgba(255, 0, 0, 0.3);
 }
 
-.tokyo {
+* {
     --bubble: #24283b;
     --bg: #1a1b26;
     --secondary-bg: #1f2335;
@@ -28,7 +28,7 @@
     --light-sq-color: #c0caf5;
     --dark-sq-color: #5b7cb5;
     --legal-move-color: rgba(26, 27, 38, 0.35);
-    --last-move-color: rgba(224, 175, 104, 0.45);
+    --last-move-color: rgba(224, 175, 104, 0.85);
 
     --bad-red: #f7768e;
     --bad-red-transparent: rgba(247, 118, 142, 0.3);

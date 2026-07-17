@@ -8,3 +8,25 @@
 .full-hidden {
     display: none;
 }
+
+.tab-page {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+/* TEMP */
+/* Analysis Page Things */
+.analysis-board-location {
+    width: 80%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.tab-panel-location {
+    background-color: var(--secondary-bg);
+    border-left: 1px solid var(--border);
+    width: 20%;
+    height: 100%;
+}

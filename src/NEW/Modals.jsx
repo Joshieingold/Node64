@@ -1,3 +1,5 @@
+import AnalysisDocument from "../Documents/AnalysisDocument";
+
 export class Tab {
     constructor() {
         this.id = crypto.randomUUID();
@@ -5,6 +7,7 @@ export class Tab {
         this.tabData = null;
         this.tabType = null;
         this.databaseRef = null;
+        this.chessDocument = new AnalysisDocument();
     }
     createDefault(type) {
         this.title = `New ${type}`;
@@ -21,5 +24,19 @@ export class Tab {
                 console.log("Default Case: Creating null tab");
                 break;
         }
+    }
+    requestOpeningExplorer() {
+        return;
+    }
+    tryMove(from, to) {
+        if (this.chessDocument.movePiece(from, to)) {
+            console.log("doo I need update");
+        }
+        if (this.databaseRef == null) {
+            console.log("No Database found");
+            return;
+        }
+        this.requestOpeningExplorer();
+        console.log("Asking opening explorer");
     }
 }
