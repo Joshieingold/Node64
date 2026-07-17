@@ -16,7 +16,7 @@ const getFen = (node) =>
     node.move?.after ?? node.move?.before ?? "(starting position)";
 
 export default function RepertoireGraph({ data, updateRef }) {
-    // Subscribe to document mutations so this component re-renders on every move.
+    // Subscribe to document changes
     const version = useSyncExternalStore(
         useCallback((callback) => data.subscribe(callback), [data]),
         () => data.version,
@@ -90,19 +90,17 @@ export default function RepertoireGraph({ data, updateRef }) {
             y: clientHeight / 2 - 20 - zoom * localY,
         });
     }, []);
-    // Whenever the selected node (or the layout it lives in) changes, pan to center it.
+    // Whenever the selected node changes center it.
     useEffect(() => {
         const entry = nodesById.get(selectedNodeId);
         if (entry) {
             centerOnNode(entry.x, entry.y, width);
         }
-        // Intentionally not depending on centerOnNode/currentZoom — we only want
-        // this to fire on selection or layout changes, not on manual zoom.
     }, [selectedNodeId, nodesById, width]);
     // Handlers
     const handleSelectNode = useCallback(
         (node) => {
-            data.goToNode(node); // moves the board + triggers notify() for all subscribers
+            data.goToNode(node);
         },
         [data],
     );

@@ -11,13 +11,6 @@ import {
     formatArrowsComment,
     parseArrowsFromComment,
 } from "./Utils/ArrowHelpers";
-/* ============================================================
-   AnalysisDocument — the real tab document. Combines the board
-   (via StandardDocument→ChessData), the engine, PGN headers, and
-   file info. This is what Shell.jsx should instantiate for both
-   Analysis and Repertoire tabs.
-   ============================================================ */
-const ARROW_COLORS = new Set(["G", "R", "B", "Y"]);
 
 export default class AnalysisDocument extends StandardDocument {
     constructor(onChange = null) {
@@ -32,8 +25,6 @@ export default class AnalysisDocument extends StandardDocument {
         );
         this.Orientation = "w";
 
-        // Re-wire chessData's onChange so every move both notifies
-        // React AND (if the engine is on) feeds it the new position.
         this.chessData.onChange = () => {
             this.notify();
             if (this.stockfishData.stockfish) {
@@ -75,8 +66,6 @@ export default class AnalysisDocument extends StandardDocument {
                 return tokens;
             }
 
-            // Mainline/variation split is based on fixed tree structure
-            // (index 0 = mainline), not UI navigation state. See prior fix.
             const mainIdx = 0;
             const mainChild = parentNode.children[mainIdx];
             const fenBeforeMove = game.fen();
@@ -124,8 +113,6 @@ export default class AnalysisDocument extends StandardDocument {
         };
         const game = new Chess();
         const tokens = renderChildren(game, this.chessData.root, 1);
-        // Arrows drawn on the starting position (root) don't follow any
-        // move token, so they're prepended as a leading comment.
         if (
             this.chessData.root.arrows &&
             this.chessData.root.arrows.length > 0
@@ -182,16 +169,7 @@ export default class AnalysisDocument extends StandardDocument {
         this.chessData.rebuildBoard();
     }
 
-    // Shared parser used by both single-game and multi-game loads.
-    // Starts at an arbitrary node (root, usually) and merges shared
-    // lines onto existing children instead of always assuming an
-    // empty tree — this is what lets multi-game PGN imports collapse
-    // transpositions automatically.
     _mergeGameMovetext(movetext, startNode) {
-        // Pull comments out first and replace with a space-safe
-        // placeholder token, so [%cal ...] arrow data survives
-        // tokenization instead of being discarded along with the
-        // braces (previous behavior just stripped {…} entirely).
         const comments = [];
         let text = movetext.replace(/\{([^}]*)\}/g, (_, inner) => {
             comments.push(inner);
@@ -301,7 +279,6 @@ export default class AnalysisDocument extends StandardDocument {
     }
 
     // Converts the tab's tree into a graph-based RepertoireDocument
-    // (transpositions merged) — used for training / export.
     createRepertoire() {
         const repertoire = new RepertoireTrainer();
         repertoire.importChessDocument(this);

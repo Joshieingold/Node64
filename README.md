@@ -1,7 +1,17 @@
-# Tauri + React
+# Node64
 
-This template should help get you started developing with Tauri and React in Vite.
+An Open source chess database software that aims to be the go to offline chess tool.
 
-## Recommended IDE Setup
+Currently taking a break from the project as I'm a little burned out on it.
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+## Features
+
+- Working Chess Logic
+- Complete Branching notation and repertoire building
+- Training tab for memorizing openings
+- Multiple tabs allowing for viewing of multiple games and openings
+- Stockfish integration
+
+## To Be Implemented
+
+- Working databases

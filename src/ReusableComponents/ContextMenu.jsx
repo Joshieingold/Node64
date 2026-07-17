@@ -13,7 +13,6 @@ export default function ContextMenu({ x, y, items, onClose }) {
         const handleEscape = (e) => {
             if (e.key === "Escape") onClose();
         };
-        // capture phase so it fires before other click handlers
         document.addEventListener("mousedown", handleClickOutside, true);
         document.addEventListener("keydown", handleEscape);
         window.addEventListener("scroll", onClose, true);

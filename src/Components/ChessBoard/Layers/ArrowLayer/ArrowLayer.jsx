@@ -11,8 +11,8 @@ const ARROW_COLOR_MAP = {
 };
 
 function squareToXY(square, flipped) {
-    const file = square.charCodeAt(0) - "a".charCodeAt(0); // 0-7 (a-h)
-    const rank = 8 - Number(square[1]); // 0-7, 0 = rank 8 (top row)
+    const file = square.charCodeAt(0) - "a".charCodeAt(0);
+    const rank = 8 - Number(square[1]);
     const col = flipped ? 7 - file : file;
     const row = flipped ? 7 - rank : rank;
     return { x: col * SQUARE + SQUARE / 2, y: row * SQUARE + SQUARE / 2 };
@@ -51,9 +51,6 @@ export default function ArrowLayer({ doc, flipped, previewArrow = null }) {
                 const from = squareToXY(arrow.from, flipped);
                 const to = squareToXY(arrow.to, flipped);
                 const color = ARROW_COLOR_MAP[arrow.color] || ARROW_COLOR_MAP.G;
-
-                // Shorten the line so the arrowhead doesn't disappear
-                // underneath the destination piece.
                 const dx = to.x - from.x;
                 const dy = to.y - from.y;
                 const len = Math.hypot(dx, dy) || 1;

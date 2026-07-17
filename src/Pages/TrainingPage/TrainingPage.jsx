@@ -2,14 +2,12 @@ import { useCallback, useState, useSyncExternalStore } from "react";
 import "./TrainingPage.css";
 import { AnalysisChessBoard } from "../../Components/ChessBoard/ChessBoard";
 
+// MAKE ME LESS UGLY SOME DAY
 export default function TrainingPage({ data: trainer }) {
-    // Drives the HUD (status text, stats, line progress).
     useSyncExternalStore(
         useCallback((cb) => trainer.subscribe(cb), [trainer]),
         () => trainer.version,
     );
-    // ChessBoard expects an explicit `update` callback it can call after
-    // pointer/keyboard actions, separate from the subscribe mechanism above.
     const [, setTick] = useState(0);
     const update = useCallback(() => setTick((t) => t + 1), []);
     const [colorChoice, setColorChoice] = useState(trainer.userColor);

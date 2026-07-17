@@ -1,14 +1,8 @@
 import { Chess } from "chess.js";
-/* ============================================================
-   StockFishDocument — engine wrapper. No longer reaches into
-   `this.currentNode`/`this.game` (those never existed on this
-   class — bug from before). Instead its owner pushes a FEN in
-   via updateStockfish(fen) whenever the position changes.
-   ============================================================ */
 export default class StockFishDocument {
     constructor(onChange, getFen) {
         this.onChange = onChange;
-        this.getFen = getFen; // () => current fen, used right after engine loads
+        this.getFen = getFen;
         this.stockfish = null;
         this.engineStatus = "Offline";
         this.engineInfo = {
@@ -31,7 +25,7 @@ export default class StockFishDocument {
     }
 
     _emit() {
-        if (this.onChange) this.onChange(); // FIX: was calling undefined `notify()`
+        if (this.onChange) this.onChange();
     }
 
     turnOnStockFish() {
@@ -99,7 +93,6 @@ export default class StockFishDocument {
         this._emit();
     }
 
-    // Owner calls this whenever the board position changes.
     updateStockfish(fen) {
         if (!this.stockfish) return;
         this.currentFen = fen;

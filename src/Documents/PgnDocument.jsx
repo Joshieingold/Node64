@@ -1,8 +1,3 @@
-/* ============================================================
-   PgnDocument — just header/tag data + serialization. No tree
-   walking here anymore (that needs chessData, which this class
-   doesn't have — it belongs on AnalysisDocument instead).
-   ============================================================ */
 export default class PgnDocument {
     constructor() {
         this.whiteName = "";

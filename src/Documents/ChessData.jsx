@@ -1,10 +1,3 @@
-/* ============================================================
-   ChessData — pure board/tree state. No notify(), no stockfish,
-   no pgn. Just the game tree and the live chess.js instance.
-   Calls this.onChange() (if set) after every mutation so its
-   owner can react (re-render, update the engine, etc).
-   ============================================================ */
-
 import { Chess } from "chess.js";
 import { createNode } from "./Utils/NodeHelpers";
 
@@ -239,14 +232,6 @@ export default class ChessData {
         this.clearSelection();
         this._emit();
     }
-
-    /* ------------------------------------------------------------
-       Arrows — annotations that live on a specific tree node (i.e.
-       a specific position), so they follow the line they were drawn
-       on rather than being global to the board. Persisted to PGN as
-       [%cal ...] comments by AnalysisDocument.createPgnString().
-       ------------------------------------------------------------ */
-
     addArrow(from, to, color = "G") {
         if (!this.currentNode.arrows) this.currentNode.arrows = [];
         const existing = this.currentNode.arrows.find(
@@ -270,9 +255,6 @@ export default class ChessData {
         this._emit();
     }
 
-    // Draw same arrow+color again to remove it; draw same squares with a
-    // different color to recolor it; otherwise add a new arrow. This is
-    // the standard lichess/chess.com right-click-drag behavior.
     toggleArrow(from, to, color = "G") {
         if (!this.currentNode.arrows) this.currentNode.arrows = [];
         const existing = this.currentNode.arrows.find(

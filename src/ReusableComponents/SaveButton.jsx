@@ -43,8 +43,6 @@ const TERMINATIONS_BY_RESULT = {
     ],
 };
 
-// Maps the file-type select to the folder it should be saved in.
-// These are the only three destinations the user can pick from.
 const DEST_BY_TYPE = {
     Analysis: "/home/josh/Documents/repos/Node64/ChessData/Analysis/",
     Database: "/home/josh/Documents/repos/Node64/ChessData/Database/",
@@ -76,9 +74,6 @@ function useSaveManager(data) {
     const openSave = () => setSaveOpen(true);
     const closeSave = () => setSaveOpen(false);
 
-    // Resolves the destination folder from the file type.
-    // Falls back to an explicit fileLocation if one was ever set directly,
-    // otherwise maps the type -> its fixed folder.
     const getDest = (type) => {
         if (data.fileData.fileLocation) {
             return data.fileData.fileLocation;
@@ -86,8 +81,6 @@ function useSaveManager(data) {
         return DEST_BY_TYPE[type] ?? DEST_BY_TYPE.Analysis;
     };
 
-    // fileType is optional - only pass it when you want to override
-    // whatever is currently persisted on `data`.
     const performSave = async (
         fileType = data.fileData.fileType ?? selectedFileType,
     ) => {

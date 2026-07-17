@@ -1,13 +1,5 @@
 import StandardDocument from "./StandardDocument";
 
-/* ============================================================
-   RepertoireTrainer — drills lines from a repertoire's tree.
-   Does NOT touch the real repertoire tree. It owns its own
-   ChessData (inherited from StandardDocument) which it grows
-   move-by-move as the user answers correctly; `answerNode` is
-   a read-only pointer into the real repertoire tree used only
-   to look up "what's the right move here".
-   ============================================================ */
 export default class RepertoireTrainer extends StandardDocument {
     constructor(
         repertoireRoot,
@@ -20,7 +12,7 @@ export default class RepertoireTrainer extends StandardDocument {
         this.trainStartNode = startNode ?? repertoireRoot;
         this.userColor = userColor;
 
-        this.status = "idle"; // idle | awaiting-user | correct | wrong-move | line-complete | session-complete
+        this.status = "idle";
         this.stats = {
             correct: 0,
             incorrect: 0,
@@ -28,7 +20,7 @@ export default class RepertoireTrainer extends StandardDocument {
             totalLines: 0,
         };
 
-        this.lines = []; // array of node-arrays, each a full startNode->leaf path
+        this.lines = [];
         this.currentLine = null;
         this.currentLineIndex = 0;
         this.lineMoveIndex = 0;
@@ -37,8 +29,6 @@ export default class RepertoireTrainer extends StandardDocument {
         this._advanceTimer = null;
         this._wrongMoveTimer = null;
     }
-
-    /* ---- Session setup ---- */
 
     startSession() {
         this.lines = [];
@@ -54,8 +44,7 @@ export default class RepertoireTrainer extends StandardDocument {
         this._startLine();
     }
 
-    // Walks the real repertoire tree collecting every startNode->leaf
-    // path as an array of nodes. Read-only; never mutates the tree.
+    // Gets the lines from the repertoire tree
     _collectLines(node, path) {
         if (node.children.length === 0) {
             if (path.length > 0) this.lines.push(path);
@@ -90,10 +79,6 @@ export default class RepertoireTrainer extends StandardDocument {
         this.chessData.currentNode = this.chessData.root;
         this.answerNode = this.trainStartNode;
 
-        // If training doesn't start at the repertoire root (e.g. "review
-        // from here"), pre-play the moves from root down to startNode so
-        // the board opens at the right position. These don't count toward
-        // stats — they're context, not something the user answered.
         for (const node of this._pathToStart()) {
             this._playAnswerMove(node);
         }
@@ -112,16 +97,10 @@ export default class RepertoireTrainer extends StandardDocument {
         return path;
     }
 
-    // Applies a repertoire-tree node's move onto our private chessData
-    // tree without going through movePiece's legality/tree-append checks
-    // (we already know it's a legal, book move — it came from the tree).
     _playAnswerMove(node) {
         const { from, to } = node.move;
         this.chessData.movePiece(from, to);
     }
-
-    /* ---- Turn flow ---- */
-
     _maybePlayOpponentMove() {
         const nextAnswer = this.currentLine[this.lineMoveIndex];
         if (!nextAnswer) {
@@ -158,8 +137,6 @@ export default class RepertoireTrainer extends StandardDocument {
         }, 1200);
     }
 
-    /* ---- User input (called directly by Board.jsx) ---- */
-
     movePiece(from, to) {
         if (this.status !== "awaiting-user") return;
         if (this.chessData.game.turn() !== this.userColor) return;
@@ -181,9 +158,6 @@ export default class RepertoireTrainer extends StandardDocument {
             this.chessData.clearSelection();
             this.notify();
 
-            // Flash "wrong" briefly, then unlock so the user can retry —
-            // without this, the awaiting-user guard above locks the board
-            // forever after the first mistake.
             clearTimeout(this._wrongMoveTimer);
             this._wrongMoveTimer = setTimeout(() => {
                 this.status = "awaiting-user";

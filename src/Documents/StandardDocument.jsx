@@ -1,11 +1,4 @@
 import ChessData from "./ChessData";
-/* ============================================================
-   StandardDocument — the base every "board tab" document extends.
-   Owns notify()/subscribe() AND delegates the whole ChessBoard-
-   facing interface down to an internal ChessData instance, so
-   `data={someStandardDocumentSubclass}` just works with your
-   existing Board.jsx unchanged.
-   ============================================================ */
 export default class StandardDocument {
     constructor() {
         this.chessData = new ChessData(() => this.notify());
@@ -23,7 +16,6 @@ export default class StandardDocument {
         for (const listener of this.listeners) listener();
     }
 
-    // ---- Flat pass-through properties ChessBoard.jsx reads directly ----
     get game() {
         return this.chessData.game;
     }
@@ -43,7 +35,6 @@ export default class StandardDocument {
         return this.chessData.currentNode;
     }
 
-    // ---- Delegated methods ----
     handleSquareClick(square) {
         this.chessData.handleSquareClick(square);
     }
@@ -111,7 +102,6 @@ export default class StandardDocument {
         this.chessData.rebuildBoard();
     }
 
-    // Overridden by subclasses that actually have player data (PGN).
     getPlayerNames() {
         return {
             white: { name: "?", elo: "?", title: "" },
