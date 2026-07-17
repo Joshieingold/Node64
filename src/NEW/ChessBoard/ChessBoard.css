@@ -9,11 +9,12 @@
 .chess-frame {
     position: absolute;
     z-index: 1;
+    border: 1px solid var(--border);
     aspect-ratio: 1/1;
     flex-direction: column;
     display: flex;
     border-radius: 1rem;
-    background-color: var(--secondary-bg);
+    background-color: var(--bg);
 }
 .spacer {
     display: flex;

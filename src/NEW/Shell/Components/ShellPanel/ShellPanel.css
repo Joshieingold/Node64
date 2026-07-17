@@ -10,7 +10,7 @@
     min-width: 3rem;
     height: 100%;
     align-items: center;
-    background-color: var(--secondary-bg);
+    background-color: var(--bg);
     border-right: 1px solid var(--border);
 }
 
@@ -31,7 +31,7 @@
 }
 
 .panel-switch:hover {
-    background-color: var(--bg);
+    background-color: var(--secondary-bg);
 }
 
 .panel-switch:hover .panel-logo {
@@ -61,7 +61,7 @@
 
     overflow: hidden;
 
-    background-color: var(--secondary-bg);
+    background-color: var(--bg);
     border-right: 1px solid var(--border);
 
     transition:
