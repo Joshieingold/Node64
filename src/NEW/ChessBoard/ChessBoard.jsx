@@ -23,6 +23,7 @@ export default function ChessBoard({ tabDocument, inWidth = 700 }) {
                 legalMoves={tabDocument.chessDocument.legalMoves}
                 selectedSquare={tabDocument.chessDocument.selectedSquare}
                 lastMove={tabDocument.chessDocument.lastMove}
+                checkedSquare={tabDocument.chessDocument.getCheckedKingSquare()}
             />
             <Frame inWidth={inWidth} />
             {dragInfo && (
@@ -219,7 +220,13 @@ function DragGhost({ piece, x, y, size }) {
     );
 }
 
-function BoardBackground({ inWidth, legalMoves, selectedSquare, lastMove }) {
+function BoardBackground({
+    inWidth,
+    legalMoves,
+    selectedSquare,
+    lastMove,
+    checkedSquare,
+}) {
     const boardDimensions = Math.max(inWidth - 45, 0);
     const squareDimensions = boardDimensions / 8;
 
@@ -234,8 +241,9 @@ function BoardBackground({ inWidth, legalMoves, selectedSquare, lastMove }) {
                 "square",
                 (x + y) % 2 === 0 ? "light" : "dark",
                 legalMoves.includes(square) ? "legal-move" : "",
-                selectedSquare === square ? "selected-square" : "",
                 isLastMove ? "last-move" : "",
+                selectedSquare === square ? "selected-square" : "",
+                checkedSquare === square ? "in-check" : "",
             ]
                 .filter(Boolean)
                 .join(" ");

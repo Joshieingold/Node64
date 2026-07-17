@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import ChessBoard from "../../../ChessBoard/ChessBoard";
 import "./TabContent.css";
+import PlayerShowcase from "../../../PlayerShowcase/PlayerShowcase";
 export default function TabContent({ activeTabRef }) {
     const chooseTabLayout = (tabType) => {
         switch (tabType) {
@@ -37,13 +38,25 @@ function AnalysisPage({ activeTabRef }) {
     }, []);
     return (
         <div className="tab-page analysis-page">
-            <div className="analysis-board-location" ref={elementRef}>
-                <ChessBoard
-                    tabDocument={activeTabRef}
-                    inWidth={
-                        Math.min(dimensions.height, dimensions.width) - 150
-                    }
-                />
+            <div className="analysis-page-main-content">
+                <PlayerShowcase
+                    inWidth={Math.min(dimensions.height, dimensions.width)}
+                    name={"Josh"}
+                    elo={"1900"}
+                    color={"black"}
+                ></PlayerShowcase>
+                <div className="analysis-board-location" ref={elementRef}>
+                    <ChessBoard
+                        tabDocument={activeTabRef}
+                        inWidth={Math.min(dimensions.height, dimensions.width)}
+                    />
+                </div>
+                <PlayerShowcase
+                    inWidth={Math.min(dimensions.height, dimensions.width)}
+                    name={"Edilyn"}
+                    elo={"950"}
+                    color={"white"}
+                ></PlayerShowcase>
             </div>
             <div className="tab-panel-location"></div>
         </div>
