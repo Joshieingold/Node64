@@ -73,3 +73,8 @@
     width: 0;
     border-right-color: transparent;
 }
+.tab-data-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}

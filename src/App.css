@@ -16,7 +16,7 @@
     --bad-red-transparent: rgba(255, 0, 0, 0.3);
 }
 
-* {
+.tokyo {
     --bubble: #24283b;
     --bg: #1a1b26;
     --secondary-bg: #1f2335;
@@ -41,6 +41,10 @@ body,
     width: 100vw;
     margin: 0;
     box-sizing: border-box;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 body {
