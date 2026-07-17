@@ -1,18 +1,23 @@
-import { NavBar } from "../Navbar/NavBar";
+import { NavBar } from "./Components/Navbar/NavBar";
+// PNGS
 import Compass from "/Compass.png";
-import ShellPanel from "../ShellPanel/ShellPanel";
+import DbLogo from "/Database.png";
+// COMPONENETS
+import ShellPanel from "./Components/ShellPanel/ShellPanel";
 import "./Shell.css";
-import TabBar from "../TabBar/TabBar";
+import TabBar from "./Components/TabBar/TabBar";
 import { useState } from "react";
 import { Tab } from "../Modals";
-import TabContent from "../TabContent/TabContent";
+import TabContent from "./Components/TabContent/TabContent";
 export default function NewShell() {
     // TAB MANAGEMENT //
     const [activeTab, setActiveTab] = useState(null);
+    const [databaseConnection, setDatabaseConnection] = useState(null);
     let [tabs, setTabs] = useState([]);
     const createBlankTab = (type) => {
         let newTab = new Tab();
         newTab.createDefault(type);
+        newTab.databaseRef = databaseConnection;
         setActiveTab(newTab);
         setTabs((prev) => [...prev, newTab]);
     };
@@ -54,6 +59,7 @@ export default function NewShell() {
             id: 1,
             logo: Compass,
         },
+        { id: 2, logo: DbLogo },
     ];
     return (
         <div className="shell">

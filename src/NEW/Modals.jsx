@@ -4,6 +4,7 @@ export class Tab {
         this.title = "";
         this.tabData = null;
         this.tabType = null;
+        this.databaseRef = null;
     }
     createDefault(type) {
         this.title = `New ${type}`;
