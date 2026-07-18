@@ -9,6 +9,7 @@ export default class StockFishDocument {
     constructor(onChange, getFen) {
         this.onChange = onChange;
         this.getFen = getFen; // () => current fen, used right after engine loads
+        this.enabled = false;
         this.stockfish = null;
         this.engineStatus = "Offline";
         this.engineInfo = {
@@ -36,6 +37,7 @@ export default class StockFishDocument {
 
     turnOnStockFish() {
         if (this.stockfish) return;
+        this.enabled = true;
         this.engineStatus = "Loading";
         this._emit();
         this.stockfish = new Worker("/stockfish/stockfish.js");
@@ -89,6 +91,7 @@ export default class StockFishDocument {
         clearTimeout(this.updateTimer);
         this.stockfish.terminate();
         this.stockfish = null;
+        this.enabled = false;
         this.engineStatus = "Offline";
         this.engineInfo = {
             depth: 0,

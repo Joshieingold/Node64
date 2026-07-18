@@ -35,7 +35,7 @@
     --bad-red: #f7768e;
     --bad-red-transparent: rgba(247, 118, 142, 0.3);
 }
-.real-squares {
+* {
     --picture-light-sq: url("../public/light-square.png");
     --picture-dark-sq: url("../public/dark-square.png");
 }

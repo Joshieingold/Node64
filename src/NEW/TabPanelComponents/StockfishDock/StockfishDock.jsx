@@ -1,51 +1,43 @@
 import "./StockfishDock.css";
-import { useState } from "react";
+
 export default function StockfishDock({ activeTabRef }) {
-    const [switchState, setSwitchState] = useState(false);
+    const stockfishData = activeTabRef.chessDocument.stockfishData;
+    const switchState = stockfishData.enabled;
+
     const handleSwitch = () => {
-        setSwitchState((prev) => !prev);
         if (!switchState) {
-            activeTabRef.chessDocument.stockfishData.turnOnStockFish();
+            stockfishData.turnOnStockFish();
         } else {
-            activeTabRef.chessDocument.stockfishData.turnOffStockFish();
+            stockfishData.turnOffStockFish();
         }
     };
+
     const getEval = () => {
-        if (!switchState) {
-            return "--";
-        }
-        if (!activeTabRef.chessDocument.stockfishData.engineInfo.evaluation) {
-            return "...";
-        }
-        return activeTabRef.chessDocument.stockfishData.engineInfo.evaluation;
+        if (!switchState) return "--";
+        if (!stockfishData.engineInfo.evaluation) return "...";
+        return stockfishData.engineInfo.evaluation;
     };
+
     const getBestMove = () => {
-        if (!switchState) {
-            return "--";
-        }
-        if (!activeTabRef.chessDocument.stockfishData.engineInfo.bestMove) {
-            return "...";
-        }
-        return activeTabRef.chessDocument.stockfishData.engineInfo.bestMove;
+        if (!switchState) return "--";
+        if (!stockfishData.engineInfo.bestMove) return "...";
+        return stockfishData.engineInfo.bestMove;
     };
+
     const getDepth = () => {
-        if (!switchState) {
-            return "Depth: 0";
-        }
-        if (!activeTabRef.chessDocument.stockfishData.engineInfo.depth) {
-            return "Depth: 1";
-        }
-        return `Depth: ${activeTabRef.chessDocument.stockfishData.engineInfo.depth}`;
+        if (!switchState) return "Depth: 0";
+        if (!stockfishData.engineInfo.depth) return "Depth: 1";
+        return `Depth: ${stockfishData.engineInfo.depth}`;
     };
-    const getBestLine = () => {
-        return "BEST LINE WILL GO HERE SOMETIME";
-    };
+
+    const getBestLine = () => "BEST LINE WILL GO HERE SOMETIME";
+
     return (
         <div className="stockfish-dock">
             <div className="top-container">
                 <div
                     className={`switch-button-wrapper ${switchState ? "wrapper-active" : ""}`}
-                    onClick={() => handleSwitch()}
+                    onClick={handleSwitch}
                 >
                     <div
                         className={`circle ${switchState ? "circle-on" : "circle-off"}`}
