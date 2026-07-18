@@ -18,9 +18,16 @@
 
 /* TEMP */
 /* Analysis Page Things */
-.analysis-page-main-content {
+.chess-board-components {
     display: flex;
     width: 80%;
+    height: 100%;
+    justify-content: center;
+    gap: 1rem;
+}
+.analysis-page-main-content {
+    display: flex;
+    width: 50%;
     flex-direction: column;
     justify-content: center;
     align-items: center;

@@ -25,6 +25,7 @@
     justify-content: center;
     height: 25%;
     border-top: 1px solid var(--border);
+    overflow-x: scroll;
 }
 .switch-button-wrapper {
     display: flex;
@@ -54,4 +55,18 @@
 }
 .wrapper-active {
     background-color: darkgreen;
+}
+.evaluation-text {
+    font-size: 12pt;
+    width: 14%;
+    text-align: center;
+}
+.best-move-text {
+    font-size: 14pt;
+    text-align: center;
+    width: 20%;
+}
+.depth-text {
+    width: 25%;
+    text-align: center;
 }

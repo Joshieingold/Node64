@@ -22,7 +22,7 @@ export default class StockFishDocument {
             moveTime: 3000,
             useMoveTime: false,
             threads: 4,
-            hashMB: 64,
+            hashMB: 128,
         };
         this.updateTimer = null;
         this.searchToken = 0;

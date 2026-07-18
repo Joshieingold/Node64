@@ -1,41 +1,41 @@
 import "./StockfishDock.css";
 import { useState } from "react";
-export default function StockfishDock({ stockfishManager }) {
+export default function StockfishDock({ activeTabRef }) {
     const [switchState, setSwitchState] = useState(false);
     const handleSwitch = () => {
         setSwitchState((prev) => !prev);
         if (!switchState) {
-            stockfishManager.turnOnStockFish();
+            activeTabRef.chessDocument.stockfishData.turnOnStockFish();
         } else {
-            stockfishManager.turnOffStockFish();
+            activeTabRef.chessDocument.stockfishData.turnOffStockFish();
         }
     };
     const getEval = () => {
         if (!switchState) {
             return "--";
         }
-        if (!stockfishManager.engineInfo.evaluation) {
+        if (!activeTabRef.chessDocument.stockfishData.engineInfo.evaluation) {
             return "...";
         }
-        return stockfishManager.engineInfo.evaluation;
+        return activeTabRef.chessDocument.stockfishData.engineInfo.evaluation;
     };
     const getBestMove = () => {
         if (!switchState) {
             return "--";
         }
-        if (!stockfishManager.engineInfo.bestMove) {
+        if (!activeTabRef.chessDocument.stockfishData.engineInfo.bestMove) {
             return "...";
         }
-        return stockfishManager.engineInfo.bestMove;
+        return activeTabRef.chessDocument.stockfishData.engineInfo.bestMove;
     };
     const getDepth = () => {
         if (!switchState) {
             return "Depth: 0";
         }
-        if (!stockfishManager.engineInfo.depth) {
+        if (!activeTabRef.chessDocument.stockfishData.engineInfo.depth) {
             return "Depth: 1";
         }
-        return `Depth: ${stockfishManager.engineInfo.depth}`;
+        return `Depth: ${activeTabRef.chessDocument.stockfishData.engineInfo.depth}`;
     };
     const getBestLine = () => {
         return "BEST LINE WILL GO HERE SOMETIME";
@@ -52,8 +52,8 @@ export default function StockfishDock({ stockfishManager }) {
                     />
                 </div>
                 <div className="evaluation-text">{getEval()}</div>
-                <div className="best-move">{getBestMove()}</div>
-                <div className="depth">{getDepth()}</div>
+                <div className="best-move-text">{getBestMove()}</div>
+                <div className="depth-text">{getDepth()}</div>
             </div>
             <div className="top-line-container">{getBestLine()}</div>
         </div>

@@ -1,8 +1,9 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import ChessBoard from "../../../ChessBoard/ChessBoard";
 import "./TabContent.css";
 import PlayerShowcase from "../../../PlayerShowcase/PlayerShowcase";
 import StockfishDock from "../../../TabPanelComponents/StockfishDock/StockfishDock";
+import EvalBar from "../../../EvalBar/EvalBar";
 export default function TabContent({ activeTabRef }) {
     const chooseTabLayout = (tabType) => {
         switch (tabType) {
@@ -25,6 +26,13 @@ export default function TabContent({ activeTabRef }) {
 function AnalysisPage({ activeTabRef }) {
     // For measuring the component for the board
     const elementRef = useRef(null);
+    const [, forceUpdate] = useState(0);
+    useEffect(() => {
+        if (!activeTabRef) return;
+        return activeTabRef.chessDocument.subscribe(() => {
+            forceUpdate((v) => v + 1);
+        });
+    }, [activeTabRef]);
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
     useLayoutEffect(() => {
         if (!elementRef.current) return;
@@ -39,38 +47,45 @@ function AnalysisPage({ activeTabRef }) {
     }, []);
     return (
         <div className="tab-page analysis-page">
-            <div className="analysis-page-main-content">
-                <PlayerShowcase
-                    inWidth={Math.min(dimensions.height, dimensions.width)}
-                    name={"Josh"}
-                    elo={"1900"}
-                    color={"black"}
-                ></PlayerShowcase>
-                <div className="analysis-board-location" ref={elementRef}>
-                    <ChessBoard
-                        tabDocument={activeTabRef}
+            <div className="chess-board-components">
+                <div className="analysis-page-main-content">
+                    <PlayerShowcase
                         inWidth={Math.min(dimensions.height, dimensions.width)}
-                    />
+                        name={"Josh"}
+                        elo={"1900"}
+                        color={"black"}
+                    ></PlayerShowcase>
+                    <div className="analysis-board-location" ref={elementRef}>
+                        <ChessBoard
+                            tabDocument={activeTabRef}
+                            inWidth={Math.min(
+                                dimensions.height,
+                                dimensions.width,
+                            )}
+                        />
+                    </div>
+                    <PlayerShowcase
+                        inWidth={Math.min(dimensions.height, dimensions.width)}
+                        name={"Edilyn"}
+                        elo={"950"}
+                        color={"white"}
+                    ></PlayerShowcase>
                 </div>
-                <PlayerShowcase
-                    inWidth={Math.min(dimensions.height, dimensions.width)}
-                    name={"Edilyn"}
-                    elo={"950"}
-                    color={"white"}
-                ></PlayerShowcase>
+                <EvalBar
+                    inHeight={Math.min(dimensions.height, dimensions.width)}
+                    stockfishDoc={activeTabRef.chessDocument.stockfishData}
+                />
             </div>
             <div className="tab-panel-location">
-                <TabPanel
-                    stockfishManager={activeTabRef.chessDocument.stockfishData}
-                />
+                <TabPanel activeTabRef={activeTabRef} />
             </div>
         </div>
     );
 }
-function TabPanel({ stockfishManager }) {
+function TabPanel({ activeTabRef }) {
     return (
         <div className="tab-panel">
-            <StockfishDock stockfishManager={stockfishManager} />
+            <StockfishDock activeTabRef={activeTabRef} />
         </div>
     );
 }
