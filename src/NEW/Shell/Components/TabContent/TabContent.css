@@ -31,11 +31,11 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 1rem;
 }
 .analysis-board-location {
     width: 100%;
-    height: 80%;
+    height: 70%;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;

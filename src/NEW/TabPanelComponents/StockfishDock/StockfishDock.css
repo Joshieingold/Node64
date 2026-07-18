@@ -29,8 +29,8 @@
 }
 .switch-button-wrapper {
     display: flex;
-    width: 3rem;
-    height: 1.5rem;
+    width: 2rem;
+    height: 0.7rem;
     background-color: var(--secondary-bg);
     border: 1px solid var(--border);
     transition: 0.2s ease-in-out;
@@ -45,7 +45,7 @@
     background-color: white;
     box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
     border-radius: 50%;
-    height: 100%;
+    aspect-ratio: 1/1;
     width: 50%;
     transition: 0.2s ease-in-out;
 }
