@@ -1,4 +1,4 @@
-* {
+.dark {
     --bubble: #313131;
     --bg: #181818;
     --secondary-bg: #1f1f1f;
@@ -12,6 +12,7 @@
     --legal-move-color: rgba(0, 0, 0, 0.35);
     --last-move-color: rgba(255, 215, 0, 0.85);
 
+    --good-green: green;
     --bad-red: rgba(255, 0, 0);
     --bad-red-transparent: rgba(255, 0, 0, 0.3);
 }
@@ -30,8 +31,13 @@
     --legal-move-color: rgba(26, 27, 38, 0.35);
     --last-move-color: rgba(224, 175, 104, 0.85);
 
+    --good-green: green;
     --bad-red: #f7768e;
     --bad-red-transparent: rgba(247, 118, 142, 0.3);
+}
+.real-squares {
+    --picture-light-sq: url("../public/light-square.png");
+    --picture-dark-sq: url("../public/dark-square.png");
 }
 html,
 body,

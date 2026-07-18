@@ -61,9 +61,11 @@
 }
 .square.dark {
     background-color: var(--dark-sq-color);
+    background-image: var(--picture-dark-sq);
 }
 .square.light {
     background-color: var(--light-sq-color);
+    background-image: var(--picture-light-sq);
 }
 .legal-move {
     box-shadow: inset 0 0 0 9999px rgba(0, 0, 0, 0.05);
@@ -96,12 +98,15 @@
 }
 .last-move {
     background-color: var(--last-move-color) !important;
+    background-blend-mode: overlay;
 }
 .selected-square {
     background-color: var(--last-move-color) !important;
+    background-blend-mode: overlay;
 }
 .in-check {
     box-shadow: inset 0 0 25px 16px var(--bad-red) !important;
+    background-blend-mode: overlay;
 }
 
 /* CHESS PIECES  */
