@@ -1,6 +1,6 @@
 .stockfish-dock {
     display: flex;
-    height: 5rem;
+    height: 10%;
     width: 100%;
     justify-content: flex-start;
     background-color: var(--bg);

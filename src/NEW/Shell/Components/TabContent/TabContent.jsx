@@ -2,9 +2,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import ChessBoard from "../../../ChessBoard/ChessBoard";
 import "./TabContent.css";
 import PlayerShowcase from "../../../PlayerShowcase/PlayerShowcase";
-import StockfishDock from "../../../TabPanelComponents/StockfishDock/StockfishDock";
 import EvalBar from "../../../EvalBar/EvalBar";
-import NotationPanel from "../../../TabPanelComponents/NotationPanel/NotationPanel";
+import TabPanel from "../../../TabPanel/TabPanel";
 export default function TabContent({ activeTabRef }) {
     const chooseTabLayout = (tabType) => {
         switch (tabType) {
@@ -80,14 +79,6 @@ function AnalysisPage({ activeTabRef }) {
             <div className="tab-panel-location">
                 <TabPanel activeTabRef={activeTabRef} />
             </div>
-        </div>
-    );
-}
-function TabPanel({ activeTabRef }) {
-    return (
-        <div className="tab-panel">
-            <StockfishDock activeTabRef={activeTabRef} />
-            <NotationPanel />
         </div>
     );
 }
