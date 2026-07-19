@@ -30,7 +30,16 @@ export default function StockfishDock({ activeTabRef }) {
         return `Depth: ${stockfishData.engineInfo.depth}`;
     };
 
-    const getBestLine = () => "BEST LINE WILL GO HERE SOMETIME";
+    const getBestLine = () => {
+        if (!switchState) return "";
+        if (!stockfishData.engineInfo.pv)
+            return <div className="move-text">Loading</div>;
+        return stockfishData.engineInfo.pv.map((line) => (
+            <div className="move-text">{line}</div>
+        ));
+
+        // stockfishData.engineInfo.pv.join(" ");
+    };
 
     return (
         <div className="stockfish-dock">

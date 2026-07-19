@@ -4,6 +4,7 @@ import "./TabContent.css";
 import PlayerShowcase from "../../../PlayerShowcase/PlayerShowcase";
 import StockfishDock from "../../../TabPanelComponents/StockfishDock/StockfishDock";
 import EvalBar from "../../../EvalBar/EvalBar";
+import NotationPanel from "../../../TabPanelComponents/NotationPanel/NotationPanel";
 export default function TabContent({ activeTabRef }) {
     const chooseTabLayout = (tabType) => {
         switch (tabType) {
@@ -86,6 +87,7 @@ function TabPanel({ activeTabRef }) {
     return (
         <div className="tab-panel">
             <StockfishDock activeTabRef={activeTabRef} />
+            <NotationPanel />
         </div>
     );
 }

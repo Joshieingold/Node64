@@ -6,6 +6,7 @@
     background-color: var(--bg);
     align-items: center;
     border-bottom: 1px solid var(--border);
+    overflow: hidden;
     flex-direction: column;
 }
 .top-container {
@@ -22,10 +23,10 @@
     width: 100%;
     align-items: center;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     height: 25%;
+    overflow: hidden;
     border-top: 1px solid var(--border);
-    overflow-x: scroll;
 }
 .switch-button-wrapper {
     display: flex;
@@ -69,4 +70,12 @@
 .depth-text {
     width: 25%;
     text-align: center;
+}
+.move-text {
+    justify-content: center;
+    text-align: center;
+    width: fit-content;
+    height: 100%;
+    align-items: center;
+    margin-left: 10px;
 }

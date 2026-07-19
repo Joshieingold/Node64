@@ -19,10 +19,10 @@ export default class StockFishDocument {
             pv: [],
         };
         this.engineOptions = {
-            depth: 20,
+            depth: 75,
             moveTime: 3000,
             useMoveTime: false,
-            threads: 4,
+            threads: 7,
             hashMB: 128,
         };
         this.updateTimer = null;
