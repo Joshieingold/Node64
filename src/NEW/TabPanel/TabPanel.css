@@ -22,6 +22,7 @@
     cursor: pointer;
     transition: 0.2s ease-in-out;
     min-width: 4rem;
+    font-size: 16pt;
 }
 .panel-button:hover {
     border-bottom: 1px solid var(--highlight);

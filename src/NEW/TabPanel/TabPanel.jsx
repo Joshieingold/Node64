@@ -14,7 +14,7 @@ export default function TabPanel({ activeTabRef }) {
         {
             label: "🗈",
             type: "panelContent",
-            component: <NotationPanel />,
+            component: <NotationPanel tabDoc={activeTabRef} />,
         },
         {
             label: "🛈",
@@ -68,7 +68,7 @@ export default function TabPanel({ activeTabRef }) {
                     className="pop-over-button"
                     onClick={() => setHidden((prev) => !prev)}
                 >
-                    E
+                    🕮
                 </div>
             </div>
         </div>

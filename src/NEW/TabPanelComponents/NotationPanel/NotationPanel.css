@@ -1,0 +1,67 @@
+.notation-panel {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    background-color: var(--bg);
+    flex-direction: column;
+    overflow-y: scroll;
+}
+.notation-row {
+    display: flex;
+    text-align: left;
+    font-size: 12pt;
+}
+.notation-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--secondary-bg);
+    width: 10%;
+    padding: 0.2rem;
+    text-align: center;
+    border-right: 1px solid var(--border);
+}
+.notation-move {
+    width: 40%;
+    border: 1px solid var(--border);
+    padding: 0.5rem;
+    cursor: pointer;
+}
+.notation-move:hover {
+    background-color: var(--secondary-bg);
+}
+.notation-move.active {
+    background-color: var(--highlight);
+}
+.notation-variation {
+    font-style: italic;
+    opacity: 0.75;
+    margin: 0 2px;
+}
+.notation-row-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.notation-var-number {
+    color: var(--fg);
+    font-size: 0.85em;
+}
+
+.notation-var-move {
+    cursor: pointer;
+    padding: 0 3px;
+    border-radius: 2px;
+}
+
+.notation-var-move:hover {
+    background-color: var(--secondary-bg);
+}
+
+.notation-var-move.active {
+    background-color: #3381ca;
+}
+
+.notation-variation.nested {
+    margin-left: 1.2em;
+}
