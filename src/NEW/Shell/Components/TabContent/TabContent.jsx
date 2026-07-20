@@ -1,9 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import ChessBoard from "../../../ChessBoard/ChessBoard";
 import "./TabContent.css";
-import PlayerShowcase from "../../../PlayerShowcase/PlayerShowcase";
-import EvalBar from "../../../EvalBar/EvalBar";
-import TabPanel from "../../../TabPanel/TabPanel";
+import PlayerShowcase from "../../../ChessBoard/Components/PlayerShowcase/PlayerShowcase";
+import EvalBar from "../../../ChessBoard/Components/EvalBar/EvalBar";
+import TabPanel from "../../../Pages/Components/TabPanel/TabPanel";
 export default function TabContent({ activeTabRef }) {
     const chooseTabLayout = (tabType) => {
         switch (tabType) {

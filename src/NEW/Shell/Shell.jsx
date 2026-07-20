@@ -7,9 +7,9 @@ import ShellPanel from "./Components/ShellPanel/ShellPanel";
 import "./Shell.css";
 import TabBar from "./Components/TabBar/TabBar";
 import { useState } from "react";
-import { Tab } from "../Modals";
+import { Tab } from "../Documents/TabManager.jsx";
 import TabContent from "./Components/TabContent/TabContent";
-import Explorer from "../Explorer/Explorer";
+import Explorer from "./Components/ShellPanel/Componenets/Explorer/Explorer";
 export default function NewShell() {
     // TAB MANAGEMENT //
     const [activeTab, setActiveTab] = useState(null);

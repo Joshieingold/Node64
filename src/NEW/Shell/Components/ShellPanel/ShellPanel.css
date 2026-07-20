@@ -1,80 +1,53 @@
 .shell-panel {
     display: flex;
+    background-color: var(--bg);
+    width: fit-content;
     height: 100%;
-    overflow: hidden;
 }
 .panel-switch-container {
     display: flex;
     flex-direction: column;
     width: 3rem;
-    min-width: 3rem;
-    height: 100%;
-    align-items: center;
-    background-color: var(--bg);
+    gap: 0.6rem;
     border-right: 1px solid var(--border);
 }
-
 .panel-switch {
     display: flex;
+    margin-top: 1rem;
+    width: 3rem;
     justify-content: center;
     align-items: center;
-
-    width: 100%;
-    aspect-ratio: 1 / 1;
-
+    border-right: 1px solid var(--border);
     cursor: pointer;
-    user-select: none;
-
-    transition:
-        background-color 0.2s ease,
-        filter 0.2s ease;
+    transition: 0.2s ease-in-out;
 }
-
+.panel-logo {
+    display: flex;
+    width: 80%;
+    height: 90%;
+    transition: 0.2s ease-in-out;
+}
 .panel-switch:hover {
-    background-color: var(--secondary-bg);
+    border-right: 1px solid var(--highlight);
+    .panel-logo {
+        filter: invert();
+    }
 }
-
-.panel-switch:hover .panel-logo {
-    filter: invert();
+.panel-switch.selected-switch {
+    border-right: 1px solid var(--highlight);
 }
-
-.selected-switch {
-    background-color: var(--bg);
-}
-
 .selected-logo {
     filter: invert();
 }
-
-.panel-logo {
-    width: 2rem;
-    height: 2rem;
-    object-fit: contain;
-    pointer-events: none;
-    transition: filter 0.2s ease;
-}
-
 .shell-panel-content {
+    display: flex;
     width: 15rem;
     min-width: 0;
-    height: 100%;
-
     overflow: hidden;
-
     background-color: var(--bg);
+    transition: 0.2s ease-in-out;
     border-right: 1px solid var(--border);
-
-    transition:
-        width 0.2s ease,
-        border-color 0.2s ease;
 }
-
 .hidden-width {
     width: 0;
-    border-right-color: transparent;
-}
-.tab-data-wrapper {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
 }
