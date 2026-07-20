@@ -1,14 +1,73 @@
-import { useReducer, useRef, useState, useCallback } from "react";
+import { useReducer, useRef, useState, useCallback, useEffect } from "react";
 import "./ChessBoard.css";
 
-export default function ChessBoard({ tabDocument, inWidth = 700 }) {
+export default function ChessBoard({
+    tabDocument,
+    inWidth = 700,
+    onFlip = null,
+}) {
     const [, bump] = useReducer((c) => c + 1, 0);
     const notify = useCallback(() => bump(), []);
     const [dragInfo, setDragInfo] = useState(null);
+    const [flipped, setFlipped] = useState(false);
 
     const boardDimensions = Math.max(inWidth - 45, 0);
     const squareDimensions = boardDimensions / 8;
 
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            // Get Keys
+            const key = event.key;
+            const isMod = event.ctrlKey || event.metaKey;
+
+            // Undo Move //
+            if (key.toLowerCase() === "z" && isMod) {
+                event.preventDefault();
+                tabDocument.chessDocument.chessData.undo();
+                return;
+            }
+            // Flip Board //
+            if (key.toLowerCase() === "f") {
+                setFlipped((f) => !f);
+                if (onFlip) {
+                    onFlip();
+                }
+                return;
+            }
+            switch (key) {
+                // Go back a move //
+                case "ArrowLeft":
+                    tabDocument.chessDocument.chessData.previousMove();
+                    break;
+                // Go forward a move //
+                case "ArrowRight":
+                    tabDocument.chessDocument.chessData.nextMove();
+                    break;
+                // Cycle Variations //
+                case "ArrowUp":
+                    event.preventDefault();
+                    tabDocument.chessDocument.chessData.cycleVariation(-1);
+                    break;
+                // Cycle Variations //
+                case "ArrowDown":
+                    event.preventDefault();
+                    tabDocument.chessDocument.chessData.cycleVariation(1);
+                    break;
+                // Go to Move One //
+                case "Home":
+                    tabDocument.chessDocument.chessData.goToStart();
+                    break;
+                // Go to last Move //
+                case "End":
+                    tabDocument.chessDocument.chessData.goToEnd();
+                    break;
+                default:
+                    break;
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [tabDocument]);
     return (
         <div className="chess-board">
             <PieceLayer

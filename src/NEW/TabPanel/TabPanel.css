@@ -44,7 +44,8 @@
 /* POPOVER CONTENT */
 .panel-popover-content {
     position: absolute;
-    background-color: red;
+    background-color: var(--secondary-bg);
+    border-top: 1px solid var(--border);
     height: 50%;
     width: 100%;
     bottom: 4%;

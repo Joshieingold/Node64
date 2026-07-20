@@ -27,6 +27,10 @@ function AnalysisPage({ activeTabRef }) {
     // For measuring the component for the board
     const elementRef = useRef(null);
     const [, forceUpdate] = useState(0);
+    const [flipped, setFlipped] = useState(false);
+    const onFlip = () => {
+        setFlipped((prev) => !prev);
+    };
     useEffect(() => {
         if (!activeTabRef) return;
         return activeTabRef.chessDocument.subscribe(() => {
@@ -48,7 +52,9 @@ function AnalysisPage({ activeTabRef }) {
     return (
         <div className="tab-page analysis-page">
             <div className="chess-board-components">
-                <div className="analysis-page-main-content">
+                <div
+                    className={`analysis-page-main-content ${flipped ? "flip-content" : ""}`}
+                >
                     <PlayerShowcase
                         inWidth={Math.min(dimensions.height, dimensions.width)}
                         name={"Josh"}
@@ -62,6 +68,7 @@ function AnalysisPage({ activeTabRef }) {
                                 dimensions.height,
                                 dimensions.width,
                             )}
+                            onFlip={onFlip}
                         />
                     </div>
                     <PlayerShowcase

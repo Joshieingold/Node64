@@ -8,7 +8,7 @@ import { useState } from "react";
 
 export default function TabPanel({ activeTabRef }) {
     const [hidden, setHidden] = useState(true);
-    const [activeLabel, setActiveLabel] = useState("Notation");
+    const [activeLabel, setActiveLabel] = useState("🗈");
 
     const panelContent = [
         {
