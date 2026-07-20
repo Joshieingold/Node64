@@ -20,6 +20,7 @@ export default function ShellPanel({ panelItems }) {
                             selectedItem === item.id ? "selected-switch" : ""
                         }`}
                         onClick={() => handleItemClick(item.id)}
+                        title={item.toolTip}
                     >
                         <img
                             src={item.logo}

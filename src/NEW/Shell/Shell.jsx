@@ -9,6 +9,7 @@ import TabBar from "./Components/TabBar/TabBar";
 import { useState } from "react";
 import { Tab } from "../Modals";
 import TabContent from "./Components/TabContent/TabContent";
+import Explorer from "../Explorer/Explorer";
 export default function NewShell() {
     // TAB MANAGEMENT //
     const [activeTab, setActiveTab] = useState(null);
@@ -58,8 +59,10 @@ export default function NewShell() {
         {
             id: 1,
             logo: Compass,
+            content: <Explorer />,
+            toolTip: "File Explorer",
         },
-        { id: 2, logo: DbLogo },
+        { id: 2, logo: DbLogo, toolTip: "Database Connections" },
     ];
     return (
         <div className="shell">
