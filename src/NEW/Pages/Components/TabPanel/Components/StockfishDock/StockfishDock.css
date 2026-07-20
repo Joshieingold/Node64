@@ -1,0 +1,62 @@
+.stockfish-dock {
+    display: flex;
+    height: 10%;
+    flex-direction: column;
+    border-bottom: 1px solid var(--border);
+}
+.top-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 80%;
+    align-items: center;
+}
+.evaluation-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 15%;
+}
+.best-move-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 15%;
+}
+.depth-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 15%;
+}
+.switch-button-wrapper {
+    display: flex;
+    width: 10%;
+    height: 30%;
+    background-color: gray;
+    border-radius: 1rem;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.circle {
+    height: 70%;
+    background-color: pink;
+    aspect-ratio: 1/1;
+    border-radius: 1rem;
+    position: absolute;
+    transition: 0.2s ease-in-out;
+    left: 0%;
+}
+.circle-on {
+    left: 50%;
+}
+.top-line-container {
+    display: flex;
+    flex-direction: row;
+    overflow: scroll;
+    box-sizing: border-box;
+    background-color: var(--secondary-bg);
+    height: 30%;
+    min-width: 100%;
+}

@@ -1,0 +1,120 @@
+.filetree-content {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.explorer-folder {
+    display: flex;
+    flex-direction: column;
+}
+
+.folder-label-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 6px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.folder-label-wrapper:hover {
+    background: var(--secondary-bg);
+}
+
+.folder-wrapper {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    padding: 3px 4px;
+    gap: 4px;
+}
+
+.folder-button.expand {
+    width: 1.4rem;
+    flex-shrink: 0;
+    text-align: center;
+    color: var(--fg);
+    font-size: 10pt;
+}
+
+.folder-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.folder-button.new {
+    flex-shrink: 0;
+    width: 1.2rem;
+    height: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.2rem;
+    color: var(--fg);
+    font-size: 12pt;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+}
+
+.folder-label-wrapper:hover .folder-button.new {
+    opacity: 1;
+}
+
+.folder-button.new:hover {
+    background: #3a3a3a;
+    color: var(--fg);
+}
+
+.folder-contents {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Files */
+.file-item {
+    padding: 3px 8px;
+    margin-left: 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    color: var(--fg);
+    display: flex;
+    gap: 5%;
+}
+
+.file-item:hover {
+    background: var(--secondary-bg);
+    color: var(--fg);
+}
+
+/* Rename input (shared by folders + files) */
+.rename-input {
+    background: var(--secondary-bg);
+    border: 1px solid var(--highlight);
+    border-radius: 3px;
+    color: var(--fd);
+    font-size: 13px;
+    padding: 1px 4px;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Create-file modal wrapper */
+.create-file-modal-wrapper {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.create-file-modal-wrapper.hidden {
+    display: none;
+}
