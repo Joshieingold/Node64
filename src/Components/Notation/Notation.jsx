@@ -7,7 +7,6 @@ export default function Notation({ data, update }) {
         update();
     };
     const [contextMenu, setContextMenu] = useState(null);
-    const [targetNode, setTargetNode] = useState(null);
 
     const handleContextMenu = (e, item) => {
         e.preventDefault();
