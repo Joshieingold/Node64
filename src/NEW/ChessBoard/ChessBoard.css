@@ -137,3 +137,9 @@
     pointer-events: none;
     will-change: transform;
 }
+.flip-rank {
+    flex-direction: column-reverse;
+}
+.flip-file {
+    flex-direction: row-reverse;
+}

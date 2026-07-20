@@ -76,6 +76,7 @@ export default function ChessBoard({
                 notify={notify}
                 dragSquare={dragInfo?.square ?? null}
                 setDragInfo={setDragInfo}
+                flipped={flipped}
             />
             <BoardBackground
                 inWidth={inWidth}
@@ -83,8 +84,9 @@ export default function ChessBoard({
                 selectedSquare={tabDocument.chessDocument.selectedSquare}
                 lastMove={tabDocument.chessDocument.lastMove}
                 checkedSquare={tabDocument.chessDocument.getCheckedKingSquare()}
+                flipped={flipped}
             />
-            <Frame inWidth={inWidth} />
+            <Frame inWidth={inWidth} isFlipped={flipped} />
             {dragInfo && (
                 <DragGhost
                     piece={dragInfo.piece}
@@ -97,17 +99,26 @@ export default function ChessBoard({
     );
 }
 
-function PieceLayer({ tabDocument, inWidth, notify, dragSquare, setDragInfo }) {
+function PieceLayer({
+    tabDocument,
+    inWidth,
+    notify,
+    dragSquare,
+    setDragInfo,
+    flipped,
+}) {
     const chessDocument = tabDocument.chessDocument;
     const boardDimensions = Math.max(inWidth - 45, 0);
     const squareDimensions = boardDimensions / 8;
     const board = chessDocument.game.board();
     const boardRender = [];
 
-    for (let y = 0; y < 8; y++) {
-        for (let x = 0; x < 8; x++) {
-            const piece = board[y][x];
-            const square = "abcdefgh"[x] + (8 - y);
+    for (let sy = 0; sy < 8; sy++) {
+        for (let sx = 0; sx < 8; sx++) {
+            const { row, col } = screenToBoardIndex(sy, sx, flipped);
+            const piece = board[row][col];
+            const square = "abcdefgh"[col] + (8 - row);
+
             boardRender.push(
                 <Square
                     key={square}
@@ -136,7 +147,6 @@ function PieceLayer({ tabDocument, inWidth, notify, dragSquare, setDragInfo }) {
         </div>
     );
 }
-
 function Square({
     square,
     piece,
@@ -285,20 +295,23 @@ function BoardBackground({
     selectedSquare,
     lastMove,
     checkedSquare,
+    flipped,
 }) {
     const boardDimensions = Math.max(inWidth - 45, 0);
     const squareDimensions = boardDimensions / 8;
 
     const squares = [];
-    for (let y = 0; y < 8; y++) {
-        for (let x = 0; x < 8; x++) {
-            const square = "abcdefgh"[x] + (8 - y);
+    for (let sy = 0; sy < 8; sy++) {
+        for (let sx = 0; sx < 8; sx++) {
+            const { row, col } = screenToBoardIndex(sy, sx, flipped);
+            const square = "abcdefgh"[col] + (8 - row);
+
             const isLastMove =
                 lastMove &&
                 (square === lastMove.from || square === lastMove.to);
             const classes = [
                 "square",
-                (x + y) % 2 === 0 ? "light" : "dark",
+                (col + row) % 2 === 0 ? "light" : "dark",
                 legalMoves.includes(square) ? "legal-move" : "",
                 isLastMove ? "last-move" : "",
                 selectedSquare === square ? "selected-square" : "",
@@ -306,6 +319,7 @@ function BoardBackground({
             ]
                 .filter(Boolean)
                 .join(" ");
+
             squares.push(
                 <div
                     key={square}
@@ -333,7 +347,7 @@ function BoardBackground({
     );
 }
 
-function Frame({ inWidth }) {
+function Frame({ inWidth, isFlipped }) {
     return (
         <div
             className="chess-frame"
@@ -341,7 +355,9 @@ function Frame({ inWidth }) {
         >
             <div className="spacer outer-spacer" />
             <div className="inner-frame">
-                <div className="spacer rank-container inner-spacer">
+                <div
+                    className={`spacer rank-container inner-spacer ${isFlipped ? "flip-rank" : ""}`}
+                >
                     <div className="engraving">8</div>
                     <div className="engraving">7</div>
                     <div className="engraving">6</div>
@@ -354,7 +370,9 @@ function Frame({ inWidth }) {
                 <div className="board"></div>
                 <div className="spacer inner-spacer" />
             </div>
-            <div className="spacer file-container outer-spacer">
+            <div
+                className={`spacer file-container outer-spacer ${isFlipped ? "flip-file" : ""}`}
+            >
                 <div className="engraving">A</div>
                 <div className="engraving">B</div>
                 <div className="engraving">C</div>
@@ -366,4 +384,7 @@ function Frame({ inWidth }) {
             </div>
         </div>
     );
+}
+function screenToBoardIndex(sy, sx, flipped) {
+    return flipped ? { row: 7 - sy, col: 7 - sx } : { row: sy, col: sx };
 }
