@@ -4,6 +4,16 @@ export default function PlayerShowcase({ inWidth, docRef, color }) {
     let name = "";
     let elo = "";
     let title = "";
+    const getName = (nameText) => {
+        if (nameText == "") return "--";
+        else if (nameText == null) return "--";
+        else return nameText;
+    };
+    const getElo = (eloText) => {
+        if (eloText == "") return "--";
+        else if (eloText == null) return "--";
+        else return eloText;
+    };
     const getTitle = (titleText) => {
         if (titleText == "None") return "";
         else if (titleText == "") return "";
@@ -11,12 +21,12 @@ export default function PlayerShowcase({ inWidth, docRef, color }) {
         else return titleText;
     };
     if (color == "white") {
-        name = docRef.chessDocument.pgnData.whiteName ?? "??";
-        elo = docRef.chessDocument.pgnData.whiteElo ?? "??";
+        name = getName(docRef.chessDocument.pgnData.whiteName);
+        elo = getElo(docRef.chessDocument.pgnData.whiteElo);
         title = getTitle(docRef.chessDocument.pgnData.whiteTitle);
     } else {
-        name = docRef.chessDocument.pgnData.blackName ?? "??";
-        elo = docRef.chessDocument.pgnData.blackElo ?? "??";
+        name = getName(docRef.chessDocument.pgnData.blackName);
+        elo = getElo(docRef.chessDocument.pgnData.blackElo);
         title = getTitle(docRef.chessDocument.pgnData.blackTitle);
     }
     return (
