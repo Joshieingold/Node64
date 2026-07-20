@@ -10,6 +10,11 @@
 .explorer-button {
     font-size: 12pt;
     cursor: pointer;
+    transition: 0.2s ease-in-out;
+}
+.explorer-button:hover {
+    color: var(--highlight);
+    transform: rotate(46deg) scale(110%);
 }
 .explorer-body {
     display: flex;

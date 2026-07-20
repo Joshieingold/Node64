@@ -22,6 +22,14 @@ export default function NewShell() {
         setActiveTab(newTab);
         setTabs((prev) => [...prev, newTab]);
     };
+    const createAnalysisTabFromFile = (path) => {
+        let newTab = new Tab();
+        newTab.createDefault("Analysis");
+        newTab.databaseRef = databaseConnection;
+        newTab.chessDocument.loadPgn(path);
+        setActiveTab(newTab);
+        setTabs((prev) => [...prev, newTab]);
+    };
     const killTab = (tabRef) => {
         setTabs((prev) => {
             const remaining = prev.filter((tab) => tab !== tabRef);
@@ -55,11 +63,15 @@ export default function NewShell() {
             clickFunc: () => createBlankTab("Repertoire"),
         },
     ];
+    const explorerRefs = {
+        analysis_callback: createAnalysisTabFromFile,
+    };
+
     const panelItems = [
         {
             id: 1,
             logo: Compass,
-            content: <Explorer />,
+            content: <Explorer callbackObj={explorerRefs} />,
             toolTip: "File Explorer",
         },
         { id: 2, logo: DbLogo, toolTip: "Database Connections" },
@@ -76,7 +88,10 @@ export default function NewShell() {
                         activeRef={activeTab}
                         killRef={killTab}
                     />
-                    <TabContent activeTabRef={activeTab} />
+                    <TabContent
+                        activeTabRef={activeTab}
+                        explorerObj={explorerRefs}
+                    />
                 </div>
             </div>
         </div>

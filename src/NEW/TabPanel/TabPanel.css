@@ -3,6 +3,8 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    width: 100%;
+    min-height: 0;
 }
 /* TOP BUTTONS */
 .panel-button-wrapper {
@@ -38,6 +40,7 @@
     height: 80%;
     width: 100%;
     border-bottom: 1px solid var(--border);
+    overflow: visible;
     position: relative;
 }
 
@@ -54,6 +57,7 @@
 }
 .panel-popover-content.hidden {
     transform: translateY(150%);
+    display: none;
 }
 .panel-popover-button-wrapper {
     display: flex;

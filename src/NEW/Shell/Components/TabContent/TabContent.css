@@ -1,5 +1,6 @@
 .tab-content {
     height: 100%;
+    box-sizing: border-box;
     display: flex;
     width: 100%;
     background-color: var(--secondary-bg);
@@ -20,7 +21,7 @@
 /* Analysis Page Things */
 .chess-board-components {
     display: flex;
-    width: 80%;
+    min-width: 80%;
     height: 100%;
     justify-content: center;
     gap: 1rem;
@@ -32,6 +33,7 @@
     justify-content: center;
     align-items: center;
     gap: 1rem;
+    background-color: red;
 }
 .analysis-board-location {
     width: 100%;
@@ -44,7 +46,10 @@
 .tab-panel-location {
     background-color: var(--bg);
     border-left: 1px solid var(--border);
-    width: 20%;
+    max-width: 20%;
+    min-width: 20%;
+    overflow: scroll;
+    min-height: 0;
     height: 100%;
 }
 .flip-content {

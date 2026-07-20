@@ -18,8 +18,6 @@ function ExplorerBody() {
     const {
         tree,
         reload,
-        searchTerm,
-        setSearchTerm,
         contextMenu,
         closeContextMenu,
         handleNewFileHere,
