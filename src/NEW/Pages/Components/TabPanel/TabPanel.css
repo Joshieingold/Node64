@@ -6,14 +6,16 @@
     height: 100%;
 }
 .panel-button {
-    background-color: var(--bg);
-    font-size: 16pt;
-    width: 10%;
-    border-bottom: 1px solid transparent;
     display: flex;
+    background-color: var(--bg);
     justify-content: center;
     align-items: center;
+    border-bottom: 1px solid transparent;
+    /* maybe this is a bad idea, come back to it later if thats true */
     cursor: pointer;
+    transition: 0.2s ease-in-out;
+    min-width: 4rem;
+    font-size: 16pt;
 }
 .panel-button:hover {
     background-color: var(--secondary-bg);
@@ -21,25 +23,51 @@
 }
 .panel-button-wrapper {
     display: flex;
-    width: 100%;
-    border-bottom: 1px solid var(--border);
     height: 5%;
-    align-items: center;
-    justify-content: space-around;
+    width: 100%;
+    justify-content: space-evenly;
+    border-bottom: 1px solid var(--border);
 }
 .panel-main-content {
     width: 100%;
     display: flex;
-    height: 70%;
+    height: 80%;
+    position: relative;
     overflow: scroll;
+}
+.panel-popover-content.hidden {
+    transform: translateY(150%);
 }
 .panel-popover-button-wrapper {
     display: flex;
-    background-color: red;
     height: 5%;
+    width: 100%;
+    z-index: 2;
+    background-color: var(--bg);
 }
 .pop-over-button {
-    background-color: pink;
+    display: flex;
+    cursor: pointer;
     height: 100%;
     aspect-ratio: 1/1;
+    justify-content: center;
+    align-items: center;
+    font-size: 16pt;
+    border-top: 1px solid transparent;
+    transition: 0.2s ease-in-out;
+}
+.pop-over-button:hover {
+    border-top: 1px solid var(--highlight);
+    background-color: var(--secondary-bg);
+}
+.panel-popover-content {
+    position: absolute;
+    transition: 0.2s ease-in-out;
+    background-color: var(--secondary-bg);
+    border-top: 1px solid var(--border);
+    height: 50%;
+    width: 100%;
+    bottom: 4%;
+    z-index: 1;
+    transition: 0.5s ease-in-out;
 }
