@@ -19,7 +19,7 @@ export default function TabPanel({ activeTabRef }) {
         {
             label: "🛈",
             type: "panelContent",
-            component: <PgnDetails />,
+            component: <PgnDetails tabDocument={activeTabRef} />,
         },
         { label: "🖫", type: "button", component: <SaveButton /> },
         {

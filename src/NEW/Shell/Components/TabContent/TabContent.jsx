@@ -57,8 +57,7 @@ function AnalysisPage({ activeTabRef }) {
                 >
                     <PlayerShowcase
                         inWidth={Math.min(dimensions.height, dimensions.width)}
-                        name={"Josh"}
-                        elo={"1900"}
+                        docRef={activeTabRef}
                         color={"black"}
                     ></PlayerShowcase>
                     <div className="analysis-board-location" ref={elementRef}>
@@ -73,8 +72,7 @@ function AnalysisPage({ activeTabRef }) {
                     </div>
                     <PlayerShowcase
                         inWidth={Math.min(dimensions.height, dimensions.width)}
-                        name={"Edilyn"}
-                        elo={"950"}
+                        docRef={activeTabRef}
                         color={"white"}
                     ></PlayerShowcase>
                 </div>
