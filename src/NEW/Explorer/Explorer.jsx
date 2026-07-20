@@ -3,7 +3,7 @@ import "./Explorer.css";
 import ExplorerButton from "./Components/ExplorerButton";
 import ExplorerFolder from "./Components/ExplorerFolder";
 import ExplorerFile from "./Components/ExplorerFile";
-import ContextMenu from "../../ReusableComponents/ContextMenu";
+import ContextMenu from "../../Old/ReusableComponents/ContextMenu";
 import { ExplorerProvider, useExplorer } from "./ExplorerContext";
 
 export default function Explorer({ callbackObj }) {

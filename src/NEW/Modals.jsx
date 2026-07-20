@@ -1,4 +1,4 @@
-import AnalysisDocument from "../Documents/AnalysisDocument";
+import AnalysisDocument from "../Old/Documents/AnalysisDocument";
 
 export class Tab {
     constructor() {

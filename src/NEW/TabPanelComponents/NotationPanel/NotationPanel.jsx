@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ContextMenu from "../../../ReusableComponents/ContextMenu";
+import ContextMenu from "../../../Old/ReusableComponents/ContextMenu";
 import "./NotationPanel.css";
 export default function NotationPanel({ tabDoc }) {
     const handleClick = (node) => {
