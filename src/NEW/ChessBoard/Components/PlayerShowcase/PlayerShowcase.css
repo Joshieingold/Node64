@@ -1,4 +1,5 @@
 .player-showcase {
+    min-height: 0;
     display: flex;
     flex-direction: column;
     background-color: var(--bg);
@@ -21,4 +22,7 @@
 }
 .elo-text {
     margin-left: 1rem;
+}
+.hide {
+    display: none;
 }

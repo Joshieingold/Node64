@@ -26,7 +26,7 @@
 /* Analysis Page Things */
 .chess-board-components {
     display: flex;
-    width: 80%;
+    width: 75%;
     height: 100%;
     justify-content: center;
     gap: 1rem;
@@ -34,6 +34,7 @@
 .analysis-page-main-content {
     display: flex;
     width: 50%;
+    height: 100%;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -54,7 +55,7 @@
     min-height: 0;
     max-height: 100%;
     box-sizing: border-box;
-    overflow: contain;
+    overflow: hidden;
 }
 .flip-content {
     flex-direction: column-reverse;

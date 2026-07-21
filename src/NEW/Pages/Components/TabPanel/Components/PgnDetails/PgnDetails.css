@@ -56,3 +56,14 @@
     font-family: inherit;
     color: inherit;
 }
+.pgn-field-value {
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 3px;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    max-width: 11ch; /* cap it instead of relying on width alone */
+}

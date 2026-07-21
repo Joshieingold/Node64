@@ -1,31 +1,47 @@
 .notation-panel {
     display: flex;
     height: 100%;
+    min-width: 0;
     width: 100%;
     box-sizing: border-box;
     background-color: var(--bg);
     flex-direction: column;
-    overflow: scroll;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
+}
+.notation-panel::-webkit-scrollbar {
+    width: 8px;
+}
+.notation-panel::-webkit-scrollbar-thumb {
+    background: var(--secondary-bg);
+    border-radius: 4px;
+}
+.notation-panel::-webkit-scrollbar-track {
+    background: transparent;
 }
 .notation-row {
     display: flex;
     text-align: left;
     font-size: 12pt;
+    box-sizing: border-box;
 }
 .notation-number {
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: var(--secondary-bg);
+    box-sizing: border-box;
     width: 10%;
-    padding: 0.2rem;
     text-align: center;
     border-right: 1px solid var(--border);
 }
 .notation-move {
-    width: 40%;
+    width: 45%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 0.5em;
     border: 1px solid var(--border);
-    padding: 0.5rem;
     cursor: pointer;
 }
 .notation-move:hover {

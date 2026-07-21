@@ -38,12 +38,21 @@ function AnalysisPage({ activeTabRef }) {
         });
     }, [activeTabRef]);
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+    const lastCommitted = useRef({ width: 0, height: 0 });
+
     useLayoutEffect(() => {
         if (!elementRef.current) return;
         const resizeObserver = new ResizeObserver((entries) => {
             for (let entry of entries) {
                 const { width, height } = entry.contentRect;
-                setDimensions({ width, height });
+                const prev = lastCommitted.current;
+                const changed =
+                    Math.abs(width - prev.width) >= 3 ||
+                    Math.abs(height - prev.height) >= 3;
+                if (changed) {
+                    lastCommitted.current = { width, height };
+                    setDimensions({ width, height });
+                }
             }
         });
         resizeObserver.observe(elementRef.current);
