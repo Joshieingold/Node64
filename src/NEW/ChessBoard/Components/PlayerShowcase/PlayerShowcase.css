@@ -10,8 +10,10 @@
 }
 .top-showcase {
     display: flex;
-    gap: 0.5rem;
     margin-left: 1rem;
+    width: 100%;
+    justify-content: flex-start;
+    gap: 0.2rem;
 }
 .title-text {
     font-weight: 900;

@@ -43,6 +43,7 @@
     height: 5%;
     width: 100%;
     z-index: 2;
+    border-top: 1px solid var(--border);
     background-color: var(--bg);
 }
 .pop-over-button {
