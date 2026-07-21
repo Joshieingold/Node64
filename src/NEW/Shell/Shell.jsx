@@ -22,11 +22,13 @@ export default function NewShell() {
         setActiveTab(newTab);
         setTabs((prev) => [...prev, newTab]);
     };
-    const createAnalysisTabFromFile = (path) => {
+    const createAnalysisTabFromFile = (filePath) => {
         let newTab = new Tab();
         newTab.createDefault("Analysis");
         newTab.databaseRef = databaseConnection;
-        newTab.chessDocument.loadPgn(path);
+        newTab.chessDocument.loadPgn(filePath);
+        let allSplit = filePath.split("/");
+        newTab.title = allSplit[allSplit.length - 1].split(".")[0];
         setActiveTab(newTab);
         setTabs((prev) => [...prev, newTab]);
     };
