@@ -4,6 +4,7 @@ import "./TabContent.css";
 import PlayerShowcase from "../../../ChessBoard/Components/PlayerShowcase/PlayerShowcase";
 import EvalBar from "../../../ChessBoard/Components/EvalBar/EvalBar";
 import TabPanel from "../../../Pages/Components/TabPanel/TabPanel";
+import DatabasePage from "../../../../Pages/DatabasePage/DatabasePage";
 export default function TabContent({ activeTabRef }) {
     const chooseTabLayout = (tabType) => {
         switch (tabType) {
@@ -11,6 +12,9 @@ export default function TabContent({ activeTabRef }) {
                 return <AnalysisPage activeTabRef={activeTabRef} />;
             case "Repertoire":
                 return <RepertoirePage />;
+            case "Database":
+                return <DatabasePage data={activeTabRef.databaseRef} />;
+
             default:
                 console.error("TabType not defined:", tabType);
         }

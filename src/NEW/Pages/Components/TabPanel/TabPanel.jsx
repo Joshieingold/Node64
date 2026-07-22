@@ -5,6 +5,7 @@ import PgnDetails from "./Components/PgnDetails/PgnDetails";
 import SaveButton from "./Components/SaveButton/SaveButton";
 import { openCpuPanel } from "./Components/CpuAnalysis/openCpuPanel";
 import { useState } from "react";
+import OpeningExplorer from "./Components/OpeningExplorer/OpeningExplorer";
 
 export default function TabPanel({ activeTabRef }) {
     const [hidden, setHidden] = useState(true);
@@ -60,9 +61,9 @@ export default function TabPanel({ activeTabRef }) {
                     activeLabel={activeLabel}
                 />
             </div>
-            <div
-                className={`panel-popover-content ${hidden ? "hidden" : ""}`}
-            ></div>
+            <div className={`panel-popover-content ${hidden ? "hidden" : ""}`}>
+                <OpeningExplorer tabData={activeTabRef} />
+            </div>
             <div className="panel-popover-button-wrapper">
                 <div
                     className="pop-over-button"

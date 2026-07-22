@@ -12,8 +12,8 @@ import { open as openFileDialog } from "@tauri-apps/plugin-dialog";
  * the single Database tab.
  */
 export default class DatabaseDocument {
-    constructor(onChange) {
-        this.onChange = onChange;
+    constructor() {
+        this.onChange = null;
 
         this.databasesDir = null; // resolved async in init()
         this.databases = []; // [{ name, path, sizeBytes, gameCount, positionCount, isOpen }]
@@ -43,6 +43,9 @@ export default class DatabaseDocument {
         this.importSummary = null;
         this.importProgress = null; // { done, total } while a multi-file import is running
         this.error = null;
+    }
+    setChanger(changeRef) {
+        this.onChange = changeRef;
     }
 
     notify() {

@@ -10,15 +10,19 @@ import { useState } from "react";
 import { Tab } from "../Documents/TabManager.jsx";
 import TabContent from "./Components/TabContent/TabContent";
 import Explorer from "./Components/ShellPanel/Componenets/Explorer/Explorer";
+import DatabaseDocument from "../Documents/DatabaseDocument.jsx";
 export default function NewShell() {
     // TAB MANAGEMENT //
     const [activeTab, setActiveTab] = useState(null);
-    const [databaseConnection, setDatabaseConnection] = useState(null);
+    const [databaseConnection, setDatabaseConnection] = useState(
+        new DatabaseDocument(),
+    );
     let [tabs, setTabs] = useState([]);
     const createBlankTab = (type) => {
         let newTab = new Tab();
         newTab.createDefault(type);
         newTab.databaseRef = databaseConnection;
+        newTab.setDatabaseReference();
         setActiveTab(newTab);
         setTabs((prev) => [...prev, newTab]);
     };
@@ -26,9 +30,9 @@ export default function NewShell() {
         let newTab = new Tab();
         newTab.createDefault("Analysis");
         newTab.databaseRef = databaseConnection;
+        newTab.setDatabaseReference();
         newTab.chessDocument.loadPgn(filePath);
-        let allSplit = filePath.split("/");
-        newTab.title = allSplit[allSplit.length - 1].split(".")[0];
+        newTab.title = GetTabNameFromPath(filePath);
         setActiveTab(newTab);
         setTabs((prev) => [...prev, newTab]);
     };
@@ -64,6 +68,11 @@ export default function NewShell() {
             label: "Repertoires",
             clickFunc: () => createBlankTab("Repertoire"),
         },
+        {
+            id: 3,
+            label: "Database Temp",
+            clickFunc: () => createBlankTab("Database"),
+        },
     ];
     const explorerRefs = {
         analysis_callback: createAnalysisTabFromFile,
@@ -98,4 +107,8 @@ export default function NewShell() {
             </div>
         </div>
     );
+}
+function GetTabNameFromPath(pathToFile) {
+    let array = pathToFile.split("/");
+    return array[array.length - 1].split(".")[0];
 }
