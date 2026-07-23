@@ -1,4 +1,4 @@
-.dark {
+.DARK {
     --bubble: #313131;
     --bg: #181818;
     --secondary-bg: #1f1f1f;
@@ -17,7 +17,7 @@
     --bad-red-transparent: rgba(255, 0, 0, 0.3);
 }
 
-* {
+.TOKYO {
     --bubble: #24283b;
     --bg: #1a1b26;
     --secondary-bg: #1f2335;
@@ -35,7 +35,25 @@
     --bad-red: #f7768e;
     --bad-red-transparent: rgba(247, 118, 142, 0.3);
 }
-* {
+.PINK {
+    --bubble: #232136;
+    --bg: #191724;
+    --secondary-bg: #1f1d2e;
+    --border: #393552;
+    --fg: #e0def4;
+    --highlight: #c4a7e7;
+
+    /* Chess Board Colors */
+    --light-sq-color: #f2e9e1;
+    --dark-sq-color: #907aa9;
+    --legal-move-color: rgba(196, 167, 231, 0.28);
+    --last-move-color: rgba(246, 193, 119, 0.85);
+
+    --good-green: #9ccfd8;
+    --bad-red: #eb6f92;
+    --bad-red-transparent: rgba(235, 111, 146, 0.3);
+}
+.real {
     --picture-light-sq: url("../public/light-square.png");
     --picture-dark-sq: url("../public/dark-square.png");
 }
@@ -55,6 +73,12 @@ body,
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+.app-wrapper {
+    display: flex;
+    width: 100%;
+    color: var(--fg);
+    height: 100%;
 }
 
 body {

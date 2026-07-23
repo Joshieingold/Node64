@@ -27,6 +27,15 @@ export default class ChessData {
         this.root = createNode(null, null);
         this.currentNode = this.root;
     }
+    getMoveSequenceForNode(node) {
+        return this.getPathFromRoot(node)
+            .map((n) => n.move.san)
+            .join(" ");
+    }
+
+    getMoveSequence() {
+        return this.getMoveSequenceForNode(this.currentNode);
+    }
 
     getPathFromRoot(node) {
         const path = [];

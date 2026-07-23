@@ -56,8 +56,8 @@ export class Tab {
     async requestOpeningExplorer() {
         await this.__initDatabase();
         if (!this.databaseRef.currentDatabase) return; // still nothing to query
-        await this.databaseRef.loadExplorerByFen(
-            this.chessDocument._getCurrentFen(),
+        await this.databaseRef.loadExplorer(
+            this.chessDocument.chessData.getMoveSequence(),
         );
     }
 

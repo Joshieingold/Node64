@@ -12,6 +12,11 @@
     font-size: 15pt;
     font-weight: 700;
     margin-left: 1rem;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+}
+.nav-logo:hover {
+    color: var(--highlight);
 }
 .nav-button-container {
     display: flex;

@@ -45,11 +45,9 @@ export default class AnalysisDocument extends StandardDocument {
     _getCurrentFen() {
         if (this.chessData.currentNode.move) {
             let result = this.chessData.currentNode.move.after;
-            console.log(1, result);
             return result;
         } else {
             let result = this.chessData.game.fen();
-            console.log(2, result);
             return result;
         }
     }

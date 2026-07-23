@@ -66,7 +66,9 @@ export default function OpeningExplorer({ tabData }) {
                 <div className="move-section-headers move-section-row">
                     <div className="move-section-header">Move</div>
                     <div className="move-section-header">Games</div>
-                    <div className="move-section-header">Score</div>
+                    <div className="move-section-header score-visual">
+                        Score
+                    </div>
                     <div className="move-section-header">Avg Rating</div>
                 </div>
                 <div className="move-section-content">
@@ -86,7 +88,7 @@ export default function OpeningExplorer({ tabData }) {
                                 <div className="move-section-data">
                                     {m.games}
                                 </div>
-                                <div className="move-section-data">
+                                <div className="move-section-data score-visual">
                                     <ScoreVisualization
                                         white={m.whiteWins}
                                         draw={m.draws}

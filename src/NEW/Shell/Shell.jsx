@@ -11,7 +11,7 @@ import { Tab } from "../Documents/TabManager.jsx";
 import TabContent from "./Components/TabContent/TabContent";
 import Explorer from "./Components/ShellPanel/Componenets/Explorer/Explorer";
 import DatabaseDocument from "../Documents/DatabaseDocument.jsx";
-export default function NewShell() {
+export default function NewShell({ themeSwitch }) {
     // TAB MANAGEMENT //
     const [activeTab, setActiveTab] = useState(null);
     const [databaseConnection, setDatabaseConnection] = useState(
@@ -89,7 +89,7 @@ export default function NewShell() {
     ];
     return (
         <div className="shell">
-            <NavBar navItems={navItems} />
+            <NavBar navItems={navItems} themeSwitch={themeSwitch} />
             <div className="shell-content">
                 <ShellPanel panelItems={panelItems} />
                 <div className="tab-data-wrapper">

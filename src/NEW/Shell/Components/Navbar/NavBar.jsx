@@ -1,8 +1,10 @@
 import "./NavBar.css";
-export function NavBar({ navItems }) {
+export function NavBar({ navItems, themeSwitch }) {
     return (
         <div className="nav-bar">
-            <div className="nav-logo">Node64</div>
+            <div className="nav-logo" onClick={() => themeSwitch()}>
+                Node64
+            </div>
             <div className="nav-button-container">
                 {navItems.map((item) => (
                     <div

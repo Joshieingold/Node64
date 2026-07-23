@@ -9,7 +9,7 @@ import RepertoireTrainer from "../Documents/RepertoireTrainer";
 import ExplorerNew from "../Components/Explorer/Explorer";
 import DatabasePage from "../Pages/DatabasePage/DatabasePage";
 import DatabaseDocument from "../Documents/DatabaseDocument";
-export default function Shell() {
+export default function Shell({ themeSwitch }) {
     const [tabs, setTabs] = useState([]);
     const [activeTab, setActiveTab] = useState(null);
     const [leftPanelOpen, setLeftPanelOpen] = useState(true);
@@ -222,7 +222,9 @@ export default function Shell() {
         <div className="shell">
             <div className="top-items">
                 <div className="control-bar">
-                    <div className="title-text">Node64</div>
+                    <div className="title-text" onClick={themeSwitch}>
+                        Node64
+                    </div>
                     <div className="control-wrapper">
                         <div className="control" onClick={CreateAnalysisTab}>
                             Analysis
